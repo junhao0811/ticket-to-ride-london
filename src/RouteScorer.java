@@ -1,5 +1,16 @@
+/**
+ * A simple class that calculates Ticket to Ride route scores
+ * based on the claimed route length.
+ */
 public class RouteScorer {
 
+    /**
+     * Returns the points scored for a claimed route.
+     *
+     * @param routeLength the length of the claimed route
+     * @return the points awarded for the route
+     * @throws IllegalArgumentException if the route length is not between 1 and 6
+     */
     public int getPoints(int routeLength) {
         if (routeLength < 1 || routeLength > 6) {
             throw new IllegalArgumentException("Route length must be between 1 and 6.");
@@ -23,6 +34,11 @@ public class RouteScorer {
         }
     }
 
+    /**
+     * Runs the program and prints the score for route lengths 1 to 6.
+     *
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         RouteScorer scorer = new RouteScorer();
 
