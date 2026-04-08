@@ -3,10 +3,16 @@ import java.util.List;
 public class Player {
 
     public List<TrainCard> trainCards;
-    public List<DestinationTicketCard> ticketCards;
+    public List<DestinationTicketCard> ticketCardsCompleted;
+    public List<DestinationTicketCard> ticketCardsUncompleted;
     public String color;
     public int coloredTrainCars;
     public int score;
+
+    public Player(){
+        this.coloredTrainCars = 45;
+
+    }
 
 
     public boolean triggeredEndGame(){
