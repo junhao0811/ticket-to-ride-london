@@ -9,6 +9,7 @@ public class Player {
     public int coloredTrainCars;
     public int score;
 
+    //dummy constructor
     public Player(){
         this.coloredTrainCars = 45;
 
