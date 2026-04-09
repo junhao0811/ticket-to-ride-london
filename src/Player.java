@@ -1,3 +1,4 @@
+ import java.util.ArrayList;
  import java.util.List;
 
 public class Player {
@@ -5,6 +6,7 @@ public class Player {
     public List<TrainCard> trainCards;
     public List<DestinationTicketCard> ticketCardsCompleted;
     public List<DestinationTicketCard> ticketCardsUncompleted;
+    public List<DestinationTicketCard> ticketCards;
     public String color;
     public int coloredTrainCars;
     public int score;
@@ -12,6 +14,14 @@ public class Player {
     //dummy constructor
     public Player(){
         this.coloredTrainCars = 45;
+        this.ticketCards = new ArrayList<>();
+    }
+
+
+    public void addTicketCard(DestinationTicketCard ticketCard){
+
+        this.ticketCards.add(ticketCard);
+
     }
 
 
