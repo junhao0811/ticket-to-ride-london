@@ -34,6 +34,10 @@ public class Route {
         return this.owner;
     }
 
+    public void setOwner(Player owner){
+        this.owner = owner;
+    }
+
 
 
 }
