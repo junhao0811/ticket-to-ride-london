@@ -1,0 +1,35 @@
+public class Route {
+
+    private City cityA;
+    private City cityB;
+    public int length;
+    public TrainColor requiredColor;
+    public Player owner;
+
+
+    public Route(City cityA, City cityB, int length, TrainColor requiredColor){
+        this.cityA = cityA;
+        this.cityB = cityB;
+        this.length = length;
+        this.requiredColor = requiredColor;
+    }
+
+    public City getOppositeCity(City currentCity) {
+        if (this.cityA.equals(currentCity)) {
+            return this.cityB;
+        } else {
+            return this.cityA;
+        }
+    }
+
+    public City getCityA(){
+        return this.cityA;
+    }
+
+    public City getCityB(){
+        return this.cityB;
+    }
+
+
+
+}
