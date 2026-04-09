@@ -12,10 +12,10 @@ public class Main {
         City chicago = new City("Chicago");
 
         System.out.println("--- 2. INITIALIZING PLAYERS ---");
-        Player player1 = new Player(); // Let's say Player 1 is Red
-        //player1.ticketCards = new ArrayList<>(); // Fixing the null list
+        Player player1 = new Player();
+        //player1.ticketCards = new ArrayList<>();
 
-        Player player2 = new Player(); // Let's say Player 2 is Blue
+        Player player2 = new Player();
         //player2.ticketCards = new ArrayList<>();
 
         System.out.println("--- 3. INITIALIZING ROUTES & OWNERSHIP ---");
@@ -32,7 +32,7 @@ public class Main {
 
         // Unclaimed Route connecting the two sides
         Route r4 = new Route(boston, toronto, 2, null);
-        // owner remains null!
+        // owner remains null
 
         System.out.println("--- 4. BUILDING MASTER MAP ---");
         MapGraph masterMap = new MapGraph();
@@ -53,7 +53,7 @@ public class Main {
 
         System.out.println("\n--- 6. EXECUTING END GAME LOGIC ---");
         EndGameLogic endGame = new EndGameLogic(masterMap, Arrays.asList(player1, player2));
-        endGame.populatePlayerGraphs(); // This is the method you wrote!
+        endGame.populatePlayerGraphs();
 
         Map<Player, MapGraph> extractedGraphs = endGame.getPlayerGraphs();
         MapGraph p1Graph = extractedGraphs.get(player1);

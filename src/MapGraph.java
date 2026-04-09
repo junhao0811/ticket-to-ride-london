@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MapGraph{
 
@@ -25,6 +22,7 @@ public class MapGraph{
     }
 
     public List<Route> getCityRoutes(City city) {
+
         return graph.get(city);
     }
 
@@ -42,6 +40,39 @@ public class MapGraph{
 
             if (existingRoute.getCityA().equals(cityB) || existingRoute.getCityB().equals(cityB)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+
+    public boolean pathExists(City source, City target){
+
+        Queue<City> discovered_q = new LinkedList<>();
+        Set<City> discoveredSet = new HashSet<>();
+
+
+        discovered_q.add(source);
+        discoveredSet.add(source);
+
+        while ( !discovered_q.isEmpty() ){
+
+            City currCity = discovered_q.poll();
+
+            if (currCity == target){
+                return true;
+            }
+
+
+            List<Route> currRoutes= this.getCityRoutes(currCity);
+
+            for (Route route : currRoutes){
+                City nextCity = route.getOppositeCity(currCity);
+
+                if (!discoveredSet.contains(nextCity)){
+                    discovered_q.add(nextCity);
+                    discoveredSet.add(nextCity);
+                }
             }
         }
         return false;
