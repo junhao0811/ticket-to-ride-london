@@ -1,23 +1,73 @@
-public class Main {
+import java.util.Arrays;
+import java.util.Map;
 
+public class Main {
     public static void main(String[] args) {
 
-        Player player1 = new Player();
-        Player player2 = new Player();
-        Player player3 = new Player();
+        System.out.println("--- 1. INITIALIZING CITIES ---");
+        City ny = new City("New York");
+        City boston = new City("Boston");
+        City montreal = new City("Montreal");
+        City toronto = new City("Toronto");
+        City chicago = new City("Chicago");
 
-        City MontReal = new City("Montreal");
-        City NewYork = new City("New York");
-        City Boston = new City("Boston");
+        System.out.println("--- 2. INITIALIZING PLAYERS ---");
+        Player player1 = new Player(); // Let's say Player 1 is Red
+        //player1.ticketCards = new ArrayList<>(); // Fixing the null list
 
-        Route montNew = new Route(MontReal, NewYork, 3, TrainColor.BLUE);
-        Route newBost = new Route(NewYork, Boston, 2, TrainColor.YELLOW);
+        Player player2 = new Player(); // Let's say Player 2 is Blue
+        //player2.ticketCards = new ArrayList<>();
 
-        MapGraph map = new MapGraph();
+        System.out.println("--- 3. INITIALIZING ROUTES & OWNERSHIP ---");
+        // Player 1 claims the East Coast
+        Route r1 = new Route(ny, boston, 2, null);
+        r1.setOwner(player1);
 
-        
+        Route r2 = new Route(boston, montreal, 2, null);
+        r2.setOwner(player1);
 
+        // Player 2 claims the Midwest
+        Route r3 = new Route(toronto, chicago, 4, null);
+        r3.setOwner(player2);
 
+        // Unclaimed Route connecting the two sides
+        Route r4 = new Route(boston, toronto, 2, null);
+        // owner remains null!
+
+        System.out.println("--- 4. BUILDING MASTER MAP ---");
+        MapGraph masterMap = new MapGraph();
+        masterMap.addRoute(r1);
+        masterMap.addRoute(r2);
+        masterMap.addRoute(r3);
+        masterMap.addRoute(r4);
+
+        System.out.println("--- 5. ASSIGNING TICKETS ---");
+        // Player 1 Ticket A: NY to Montreal (They own this full path)
+        DestinationTicketCard p1TicketA = new DestinationTicketCard(ny, montreal, 10);
+
+        // Player 1 Ticket B: NY to Toronto (Requires unclaimed route r4 - should fail)
+        DestinationTicketCard p1TicketB = new DestinationTicketCard(ny, toronto, 15);
+
+        // Player 2 Ticket: Toronto to Chicago (They own this)
+        DestinationTicketCard p2Ticket = new DestinationTicketCard(toronto, chicago, 7);
+
+        System.out.println("\n--- 6. EXECUTING END GAME LOGIC ---");
+        EndGameLogic endGame = new EndGameLogic(masterMap, Arrays.asList(player1, player2));
+        endGame.populatePlayerGraphs(); // This is the method you wrote!
+
+        Map<Player, MapGraph> extractedGraphs = endGame.getPlayerGraphs();
+        MapGraph p1Graph = extractedGraphs.get(player1);
+        MapGraph p2Graph = extractedGraphs.get(player2);
+
+        System.out.println("\n--- 7. TESTING PLAYER 1'S BFS ---");
+        boolean p1TestA = p1Graph.pathExists(p1TicketA.cityA, p1TicketA.cityB);
+        System.out.println("Ticket NY -> Montreal: " + p1TestA + " | Expected: true");
+
+        boolean p1TestB = p1Graph.pathExists(p1TicketB.cityA, p1TicketB.cityB);
+        System.out.println("Ticket NY -> Toronto:  " + p1TestB + " | Expected: false (r4 is unclaimed)");
+
+        System.out.println("\n--- 8. TESTING PLAYER 2'S BFS ---");
+        boolean p2Test = p2Graph.pathExists(p2Ticket.cityA, p2Ticket.cityB);
+        System.out.println("Ticket Toronto -> Chicago: " + p2Test + " | Expected: true");
     }
-
 }
