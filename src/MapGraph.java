@@ -16,13 +16,39 @@ public class MapGraph{
 
 
     public void addRoute(Route newRoute){
+        addCity(newRoute.getCityA());
+        addCity(newRoute.getCityB());
+
         graph.get(newRoute.getCityA()).add(newRoute);
         graph.get(newRoute.getCityB()).add(newRoute);
+
     }
 
     public List<Route> getCityRoutes(City city) {
         return graph.get(city);
     }
+
+    public Map<City, List<Route>> getGraph(){
+        return this.graph;
+    }
+
+
+    public boolean hasConnection(City cityA, City cityB) {
+        if (!graph.containsKey(cityA)) {
+            return false;
+        }
+
+        for (Route existingRoute : graph.get(cityA)) {
+
+            if (existingRoute.getCityA().equals(cityB) || existingRoute.getCityB().equals(cityB)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
 
     //public void removeCity(City city) {
    //     graph.remove(city);
