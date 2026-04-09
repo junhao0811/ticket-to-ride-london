@@ -1,4 +1,4 @@
-import java.util.List;
+ import java.util.List;
 
 public class Player {
 
@@ -12,7 +12,6 @@ public class Player {
     //dummy constructor
     public Player(){
         this.coloredTrainCars = 45;
-
     }
 
 
