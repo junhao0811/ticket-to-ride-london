@@ -2,7 +2,7 @@ public class Route {
 
     private City cityA;
     private City cityB;
-    public int length;
+    private int length;
     public TrainColor requiredColor;
     private Player owner;
 
@@ -36,6 +36,10 @@ public class Route {
 
     public void setOwner(Player owner){
         this.owner = owner;
+    }
+
+    public int getLength(){
+        return this.length;
     }
 
 
