@@ -7,5 +7,6 @@ public enum CardColor {
     WHITE,
     ORANGE,
     PURPLE,
-    GREY
+    GREY,
+    LOCOMOTIVE
 }
