@@ -3,7 +3,7 @@ import java.util.Collections;
 import java.util.List;
 
 public final class Player {
-    private static final int STARTING_TRAIN_CARS = 45;
+    private static final int STARTING_TRAIN_CARS = 17;
 
     private final String name;
     private final String color;
