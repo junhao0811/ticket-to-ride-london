@@ -2,12 +2,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class GameBoard {
+public final class GameController {
     private final List<Player> players;
     private int currentPlayerIndex;
     private boolean actionUsed;
 
-    public GameBoard(List<Player> players) {
+    public GameController(List<Player> players) {
         this.players = new ArrayList<>(players);
         this.currentPlayerIndex = 0;
         this.actionUsed = false;
