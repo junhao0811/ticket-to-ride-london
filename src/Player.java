@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class Player {
+public class Player {
     private static final int STARTING_TRAIN_CARS = 17;
 
     private final String name;

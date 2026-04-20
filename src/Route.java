@@ -1,6 +1,6 @@
 import java.util.List;
 
-public final class Route {
+public class Route {
     private final City firstCity;
     private final City secondCity;
     private final int length;

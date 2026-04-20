@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class GameController {
+public class GameController {
     private final List<Player> players;
     private int currentPlayerIndex;
     private boolean actionUsed;
