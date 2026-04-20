@@ -1,4 +1,4 @@
-public enum CardColor {
+public enum TrainTypes {
     RED,
     BLUE,
     GREEN,

@@ -1,12 +1,12 @@
 public final class RegularTrainCard extends TrainCard {
-    private final CardColor color;
+    private final TrainTypes color;
 
-    public RegularTrainCard(CardColor color) {
+    public RegularTrainCard(TrainTypes color) {
         this.color = color;
     }
 
     @Override
-    public CardColor getColor() {
+    public TrainTypes getColor() {
         return color;
     }
 

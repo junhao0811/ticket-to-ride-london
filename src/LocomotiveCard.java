@@ -1,8 +1,8 @@
 public final class LocomotiveCard extends TrainCard {
 
     @Override
-    public CardColor getColor() {
-        return CardColor.LOCOMOTIVE;
+    public TrainTypes getColor() {
+        return TrainTypes.LOCOMOTIVE;
     }
 
     @Override

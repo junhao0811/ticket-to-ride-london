@@ -4,10 +4,10 @@ public final class Route {
     private final City firstCity;
     private final City secondCity;
     private final int length;
-    private final CardColor requiredColor;
+    private final TrainTypes requiredColor;
     private Player owner;
 
-    public Route(City firstCity, City secondCity, int length, CardColor requiredColor) {
+    public Route(City firstCity, City secondCity, int length, TrainTypes requiredColor) {
         this.firstCity = firstCity;
         this.secondCity = secondCity;
         this.length = length;
@@ -26,7 +26,7 @@ public final class Route {
         return length;
     }
 
-    public CardColor getRequiredColor() {
+    public TrainTypes getRequiredColor() {
         return requiredColor;
     }
 
@@ -47,7 +47,7 @@ public final class Route {
             return false;
         }
 
-        if (requiredColor != CardColor.GREY) {
+        if (requiredColor != TrainTypes.GREY) {
             return matchesColoredRoute(cards);
         }
 
@@ -64,7 +64,7 @@ public final class Route {
     }
 
     private boolean matchesGreyRoute(List<TrainCard> cards) {
-        CardColor chosenColor = null;
+        TrainTypes chosenColor = null;
 
         for (TrainCard card : cards) {
             if (card.isLocomotive()) {
