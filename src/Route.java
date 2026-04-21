@@ -44,8 +44,5 @@ public class Route {
     
     public String getColor() {
         return color;
-    }{
-    
     }
-    
 }
