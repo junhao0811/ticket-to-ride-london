@@ -2,14 +2,16 @@ import java.util.*;
 
 public class EndGameLogic {
 
-    private Map<City, List<Route>> mapGraph;
+
     private List<Player> players;
     private Map<Player, MapGraph> playerGraphs;
+    private MapGraph masterBoard;
+    private final int longestPathBonus = 10;
 
     public EndGameLogic(MapGraph map, List<Player> players){
-        this.mapGraph = map.getGraph();
+        this.masterBoard = map;
+        //this.mapGraph = map.getGraph();
         this.players = players;
-
         Map<Player, MapGraph> playerGraphs = new HashMap<>();
         this.playerGraphs = playerGraphs;
 
@@ -19,25 +21,18 @@ public class EndGameLogic {
     }
 
     public void populatePlayerGraphs(){
-        for (Map.Entry<City, List<Route>> entry : mapGraph.entrySet()) {
-            // key = entry.getKey()
-            // value = entry.getValue(
+        Set<Route> allRoutes = masterBoard.getAllRoutes();
+        for (Route route: allRoutes) {
+            if (route.getOwner() == null) {
+                continue;
+            }
+            Player owner = route.getOwner();
+            City cityA = route.getCityA();
+            City cityB = route.getCityB();
 
-            City city = entry.getKey();
-            List<Route> routesList = entry.getValue();
-
-            for (Route route: routesList){
-                if (route.getOwner() == null){
-                    continue;
-                }
-                Player owner = route.getOwner();
-                City cityA = route.getCityA();
-                City cityB = route.getCityB();
-
-                MapGraph playerGraph = this.playerGraphs.get(owner);
-                if (!playerGraph.hasConnection(cityA, cityB)){
-                    playerGraph.addRoute(route);
-                }
+            MapGraph playerGraph = this.playerGraphs.get(owner);
+            if (!playerGraph.hasConnection(cityA, cityB)) {
+                playerGraph.addRoute(route);
             }
         }
     }
@@ -91,7 +86,7 @@ public class EndGameLogic {
             }
         }
         for (Player player : wonBonus){
-            player.addScore(10);
+            player.addScore(this.longestPathBonus);
             player.setTrueHasLongestPathBonus();
         }
     }
