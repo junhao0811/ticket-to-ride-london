@@ -3,12 +3,9 @@
 
 public class Player {
 
-    public List<TrainCard> trainCards;
-    public List<DestinationTicketCard> ticketCardsCompleted;
-    public List<DestinationTicketCard> ticketCardsUncompleted;
     public List<DestinationTicketCard> ticketCards;
     public String color;
-    public int coloredTrainCars;
+    private int coloredTrainCars;
     private int score;
     private int maxDist;
     private boolean hasLongestPathBonus;
@@ -23,14 +20,12 @@ public class Player {
 
 
     public void addTicketCard(DestinationTicketCard ticketCard){
-
         this.ticketCards.add(ticketCard);
 
     }
 
 
     public boolean triggeredEndGame(){
-
         if ( this.coloredTrainCars <=2 ){
             return false;
         }
@@ -60,6 +55,12 @@ public class Player {
     public boolean getHasLongestPathBonus(){
         return this.hasLongestPathBonus;
     }
+
+    public int getColoredTrainCarsCount(){
+        return this.coloredTrainCars;
+    }
+
+
 
 
 }

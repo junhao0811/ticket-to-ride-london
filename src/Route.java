@@ -3,7 +3,7 @@ public class Route {
     private City cityA;
     private City cityB;
     private int length;
-    public TrainColor requiredColor;
+    private TrainColor requiredColor;
     private Player owner;
 
 
@@ -40,6 +40,10 @@ public class Route {
 
     public int getLength(){
         return this.length;
+    }
+
+    public TrainColor getRequiredColor(){
+        return this.requiredColor;
     }
 
 

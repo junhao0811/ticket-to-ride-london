@@ -60,14 +60,14 @@ public class Main {
         MapGraph p2Graph = extractedGraphs.get(player2);
 
         System.out.println("\n--- 7. TESTING PLAYER 1'S BFS ---");
-        boolean p1TestA = p1Graph.pathExists(p1TicketA.cityA, p1TicketA.cityB);
+        boolean p1TestA = p1Graph.pathExists(p1TicketA.getCityA(), p1TicketA.getCityB());
         System.out.println("Ticket NY -> Montreal: " + p1TestA + " | Expected: true");
 
-        boolean p1TestB = p1Graph.pathExists(p1TicketB.cityA, p1TicketB.cityB);
+        boolean p1TestB = p1Graph.pathExists(p1TicketB.getCityA(), p1TicketB.getCityB());
         System.out.println("Ticket NY -> Toronto:  " + p1TestB + " | Expected: false (r4 is unclaimed)");
 
         System.out.println("\n--- 8. TESTING PLAYER 2'S BFS ---");
-        boolean p2Test = p2Graph.pathExists(p2Ticket.cityA, p2Ticket.cityB);
+        boolean p2Test = p2Graph.pathExists(p2Ticket.getCityA(), p2Ticket.getCityB());
         System.out.println("Ticket Toronto -> Chicago: " + p2Test + " | Expected: true");
     }
 }
