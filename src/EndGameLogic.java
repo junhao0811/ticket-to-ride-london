@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class EndGameLogic {
+public class  EndGameLogic {
 
 
     private List<Player> players;
@@ -61,7 +61,7 @@ public class EndGameLogic {
                 Set<Route> discoveredSet = new HashSet<>();
                 int currentDist = 0;
 
-                DequeResult result = dfsFindMax(currGraph, discoveredSet, city, currentPath, currentDist);
+                MapGraph.DequeResult result = currGraph.dfsFindMax(discoveredSet, city, currentPath, currentDist);
                 if (result.value() > maxDist){
                     maxDist = result.value();
                     maxPath = result.deque();
@@ -90,37 +90,5 @@ public class EndGameLogic {
             player.setTrueHasLongestPathBonus();
         }
     }
-
-
-    public DequeResult dfsFindMax(MapGraph graph, Set<Route> discoveredSet, City source, Deque<City> currentPath, int currentDist) {
-
-
-        int maxDist = currentDist;
-        Deque<City> maxPath = new ArrayDeque<>(currentPath);
-
-        for (Route route : graph.getCityRoutes(source)) {
-            if (!discoveredSet.contains(route)) {
-                discoveredSet.add(route);
-                City oppositeCity = route.getOppositeCity(source);
-                currentPath.push(oppositeCity);
-                int weight = route.getLength();
-                int nextDist = currentDist + weight;
-                DequeResult childResult = dfsFindMax(graph, discoveredSet, oppositeCity, currentPath, nextDist);
-                if (childResult.value() > maxDist) {
-                    maxDist = childResult.value();
-                    maxPath = childResult.deque();
-                }
-                currentPath.pop();
-                discoveredSet.remove(route);
-            }
-        }
-        return new DequeResult(maxPath, maxDist);
-    }
-
-
-
-    public record DequeResult(Deque<City> deque, int value) {}
-
-
 
 }
