@@ -9,12 +9,16 @@ public class Player {
     public List<DestinationTicketCard> ticketCards;
     public String color;
     public int coloredTrainCars;
-    public int score;
+    private int score;
+    private int maxDist;
+    private boolean hasLongestPathBonus;
 
     //dummy constructor
     public Player(){
         this.coloredTrainCars = 45;
         this.ticketCards = new ArrayList<>();
+        this.score = 0;
+        this.hasLongestPathBonus = false;
     }
 
 
@@ -31,6 +35,30 @@ public class Player {
             return false;
         }
         return true;
+    }
+
+    public void setMaxDist(int max){
+        this.maxDist = max;
+    }
+
+    public int getMaxDist(){
+        return this.maxDist;
+    }
+
+    public void addScore(int points){
+        this.score = this.score + points;
+    }
+
+    public int getScore(){
+        return this.score;
+    }
+
+    public void setTrueHasLongestPathBonus(){
+        this.hasLongestPathBonus = true;
+    }
+
+    public boolean getHasLongestPathBonus(){
+        return this.hasLongestPathBonus;
     }
 
 
