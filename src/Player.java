@@ -27,9 +27,9 @@ public class Player {
 
     public boolean triggeredEndGame(){
         if ( this.coloredTrainCars <=2 ){
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public void setMaxDist(int max){
