@@ -26,6 +26,12 @@ public class MapGraph{
         return graph.get(city);
     }
 
+    public Set<City> getAllCities(){
+
+        Set<City> keys = this.graph.keySet();
+        return keys;
+    }
+
     public Map<City, List<Route>> getGraph(){
         return this.graph;
     }
@@ -56,9 +62,7 @@ public class MapGraph{
         discoveredSet.add(source);
 
         while ( !discovered_q.isEmpty() ){
-
             City currCity = discovered_q.poll();
-
             if (currCity == target){
                 return true;
             }
