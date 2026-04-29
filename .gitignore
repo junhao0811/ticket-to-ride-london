@@ -10,6 +10,7 @@ META-INF/
 # Claude Code
 .claude/
 CLAUDE.md
+*.md
 
 # Build helpers
 compile_args.txt
