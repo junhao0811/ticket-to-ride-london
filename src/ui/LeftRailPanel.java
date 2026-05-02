@@ -36,12 +36,40 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
         removeAll();
         setBorder(BorderFactory.createEmptyBorder(16, 12, 16, 8));
 
-        // Settings icon placeholder
-        JLabel gear = new JLabel("⚙");
-        gear.setFont(UiTheme.display(18));
-        gear.setForeground(new Color(0xFF, 0xFF, 0xFF, 120));
-        gear.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-        add(gear);
+        // ── Help Button Bar ──
+        JPanel helpBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
+        helpBar.setOpaque(false);
+        helpBar.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel helpObj = helpIcon("❓", "Game Objective");
+        helpObj.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override public void mouseClicked(java.awt.event.MouseEvent e) {
+                Frame owner = (Frame) SwingUtilities.getWindowAncestor(LeftRailPanel.this);
+                HelpDialog.showObjective(owner);
+            }
+        });
+
+        JLabel helpActions = helpIcon("📖", "Turn Actions");
+        helpActions.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override public void mouseClicked(java.awt.event.MouseEvent e) {
+                Frame owner = (Frame) SwingUtilities.getWindowAncestor(LeftRailPanel.this);
+                HelpDialog.showTurnActions(owner);
+            }
+        });
+
+        JLabel helpTickets = helpIcon("🎫", "Tickets Rule");
+        helpTickets.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override public void mouseClicked(java.awt.event.MouseEvent e) {
+                Frame owner = (Frame) SwingUtilities.getWindowAncestor(LeftRailPanel.this);
+                HelpDialog.showTicketsRule(owner);
+            }
+        });
+
+        helpBar.add(helpObj);
+        helpBar.add(helpActions);
+        helpBar.add(helpTickets);
+        add(helpBar);
+        add(Box.createVerticalStrut(14));
 
         // Opponent chips
         List<Player> players = GameManager.getInstance().getPlayers();
@@ -232,6 +260,19 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private JLabel helpIcon(String icon, String tooltip) {
+        JLabel lbl = new JLabel(icon);
+        lbl.setFont(UiTheme.display(18));
+        lbl.setForeground(new Color(0xFF, 0xFF, 0xFF, 120));
+        lbl.setToolTipText(tooltip);
+        lbl.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        lbl.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override public void mouseEntered(java.awt.event.MouseEvent e) { lbl.setForeground(Color.WHITE); }
+            @Override public void mouseExited(java.awt.event.MouseEvent e) { lbl.setForeground(new Color(0xFF, 0xFF, 0xFF, 120)); }
+        });
+        return lbl;
+    }
 
     private JLabel makeAvatar(Player p, Color colour, int size, int fontSize) {
         JLabel avatar = new JLabel(String.valueOf(p.getName().charAt(0)));
