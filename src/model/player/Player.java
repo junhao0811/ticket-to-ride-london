@@ -1,8 +1,7 @@
 package model.player;
 
-import model.cards.CardColour;
 import model.cards.DestinationTicketCard;
-import model.cards.TrainCard;
+import model.cards.TransportationCard;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +16,7 @@ public class Player {
 
     private final String name;
     private final PlayerColour colour;
-    private final List<TrainCard> hand;
+    private final List<TransportationCard> hand;
     private final List<DestinationTicketCard> tickets;
     private int trainPieces;
     private final Score score;
@@ -37,14 +36,14 @@ public class Player {
     }
 
     /** Adds a single card to the player's hand. */
-    public void addCard(TrainCard card) {
+    public void addCard(TransportationCard card) {
         if (card != null) {
             hand.add(card);
         }
     }
 
     /** Removes the specified cards from the player's hand (e.g. after claiming a route). */
-    public void discard(List<TrainCard> cards) {
+    public void discard(List<TransportationCard> cards) {
         if (cards != null) {
             hand.removeAll(cards);
         }
@@ -68,17 +67,17 @@ public class Player {
     }
 
     /** @return true if the player's hand contains all the given cards */
-    public boolean hasCards(List<TrainCard> cards) {
+    public boolean hasCards(List<TransportationCard> cards) {
         if (cards == null) return false;
-        List<TrainCard> copy = new ArrayList<>(hand);
-        for (TrainCard c : cards) {
+        List<TransportationCard> copy = new ArrayList<>(hand);
+        for (TransportationCard c : cards) {
             if (!copy.remove(c)) return false;
         }
         return true;
     }
 
     /** @return unmodifiable view of the player's hand */
-    public List<TrainCard> getHand() {
+    public List<TransportationCard> getHand() {
         return Collections.unmodifiableList(hand);
     }
 

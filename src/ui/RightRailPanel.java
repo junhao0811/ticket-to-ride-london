@@ -5,8 +5,8 @@ import actions.DrawTrainCardAction;
 import actions.DrawTrainCardAction.DrawSource;
 import game.GameManager;
 import game.GameStateListener;
-import model.cards.CardColour;
-import model.cards.TrainCard;
+import model.cards.TransportationTypes;
+import model.cards.TransportationCard;
 import model.player.Player;
 
 import javax.swing.*;
@@ -22,20 +22,20 @@ import java.util.Map;
  */
 public class RightRailPanel extends JPanel implements GameStateListener {
 
-    // Maps config cart_type strings to Java CardColour enum constants
-    private static final Map<String, CardColour> CONFIG_TO_COLOUR = Map.of(
-        "ORANGE",     CardColour.ORANGE,
-        "YELLOW",     CardColour.YELLOW,
-        "GREEN",      CardColour.GREEN,
-        "BLUE",       CardColour.BLUE,
-        "PURPLE",     CardColour.PURPLE,
-        "BLACK",      CardColour.BLACK,
-        "LOCOMOTIVE", CardColour.WILD
+    // Maps config cart_type strings to Java TransportationTypes enum constants
+    private static final Map<String, TransportationTypes> CONFIG_TO_COLOUR = Map.of(
+        "ORANGE",     TransportationTypes.ORANGE,
+        "YELLOW",     TransportationTypes.YELLOW,
+        "GREEN",      TransportationTypes.GREEN,
+        "BLUE",       TransportationTypes.BLUE,
+        "PURPLE",     TransportationTypes.PURPLE,
+        "BLACK",      TransportationTypes.BLACK,
+        "LOCOMOTIVE", TransportationTypes.LOCOMOTIVE
     );
 
     private final Runnable               onDrawTickets;
     private       Runnable               onEndTurn;
-    private final Map<CardColour, Image> cardImages;
+    private final Map<TransportationTypes, Image> cardImages;
     private final Image                  trainCardBack;
     private final Image                  ticketCardBack;
 
@@ -88,7 +88,7 @@ public class RightRailPanel extends JPanel implements GameStateListener {
         add(Box.createVerticalGlue());
 
         // Middle: Face-up cards
-        List<TrainCard> slots = GameManager.getInstance().getFaceUpPool().getSlots();
+        List<TransportationCard> slots = GameManager.getInstance().getFaceUpPool().getSlots();
         for (int i = 0; i < slots.size(); i++) {
             add(makeFaceUpCard(slots.get(i), i));
             if (i < slots.size() - 1) add(Box.createVerticalStrut(10));
@@ -142,10 +142,10 @@ public class RightRailPanel extends JPanel implements GameStateListener {
         return panel;
     }
 
-    private JPanel makeFaceUpCard(TrainCard card, int index) {
+    private JPanel makeFaceUpCard(TransportationCard card, int index) {
         Color fill   = card != null ? UiTheme.routeColour(card.getColour()) : UiTheme.PANEL_BG;
         Image img    = card != null ? cardImages.get(card.getColour()) : null;
-        String label = card != null ? (card.isWild() ? "WILD" : card.getColour().badge()) : "";
+        String label = card != null ? (card.isLocomotive() ? "WILD" : card.getColour().badge()) : "";
         DrawSource source = DrawSource.values()[index];
         boolean selectable = card != null && canSelect(source);
 
@@ -283,7 +283,7 @@ public class RightRailPanel extends JPanel implements GameStateListener {
         }
 
         int index = source.ordinal();
-        List<TrainCard> slots = gm.getFaceUpPool().getSlots();
+        List<TransportationCard> slots = gm.getFaceUpPool().getSlots();
         return index < slots.size() && slots.get(index) != null;
     }
 
@@ -315,11 +315,11 @@ public class RightRailPanel extends JPanel implements GameStateListener {
         return l;
     }
 
-    private static Map<CardColour, Image> loadCardImages() {
-        Map<CardColour, Image> map = new EnumMap<>(CardColour.class);
+    private static Map<TransportationTypes, Image> loadCardImages() {
+        Map<TransportationTypes, Image> map = new EnumMap<>(TransportationTypes.class);
         ConfigLoader cfg = ConfigLoader.get();
         cfg.getCardImagePaths().forEach((type, path) -> {
-            CardColour colour = CONFIG_TO_COLOUR.get(type);
+            TransportationTypes colour = CONFIG_TO_COLOUR.get(type);
             if (colour == null) return;
             Image img = cfg.loadImage(path);
             if (img != null) map.put(colour, img);

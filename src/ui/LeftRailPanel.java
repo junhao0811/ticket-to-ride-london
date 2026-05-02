@@ -168,7 +168,7 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
         JLabel name  = new JLabel(p.getName());
         name.setFont(UiTheme.display(12));
         name.setForeground(Color.WHITE);
-        JLabel stats = new JLabel(p.getScore().get() + " pts  ·  🚌 " + p.getTrainPieces());
+        JLabel stats = new JLabel(p.getScore().getPoints() + " pts  ·  🚌 " + p.getTrainPieces());
         stats.setFont(UiTheme.mono(10));
         stats.setForeground(new Color(0xAA, 0xBB, 0xCC));
         info.add(name);
@@ -278,7 +278,7 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
     }
 
     private JLabel makeScoreBadge(Player p, Color colour, int size) {
-        JLabel badge = new JLabel(String.valueOf(p.getScore().get()));
+        JLabel badge = new JLabel(String.valueOf(p.getScore().getPoints()));
         badge.setFont(UiTheme.display(size * 0.45f));
         badge.setForeground(Color.WHITE);
         badge.setOpaque(true);

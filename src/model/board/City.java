@@ -1,7 +1,6 @@
 package model.board;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -14,12 +13,12 @@ public class City {
     private final String name;
     private final List<Route> routes;
 
+
     /** @param name display name of the city */
     public City(String name) {
         this.name = name;
         this.routes = new ArrayList<>();
     }
-
     /** @return the city's display name */
     public String getName() {
         return name;
@@ -30,10 +29,5 @@ public class City {
         if (route != null) {
             routes.add(route);
         }
-    }
-
-    /** @return unmodifiable view of all routes connected to this city */
-    public List<Route> getRoutes() {
-        return Collections.unmodifiableList(routes);
     }
 }

@@ -2,7 +2,7 @@ package variant;
 
 import model.board.City;
 import model.board.Route;
-import model.deck.DestinationTicketDeck;
+import model.deck.DestinationTicketCardDeck;
 import model.deck.TrainCardDeck;
 import java.util.List;
 
@@ -22,5 +22,5 @@ public interface MapConfiguration {
     TrainCardDeck buildTrainDeck();
 
     /** @return a freshly shuffled destination-ticket deck for this map */
-    DestinationTicketDeck buildTicketDeck();
+    DestinationTicketCardDeck buildTicketDeck();
 }

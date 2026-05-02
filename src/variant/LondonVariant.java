@@ -1,6 +1,6 @@
 package variant;
 
-import strategy.LondonScoringConfig;
+import strategy.LondonScoringStrategy;
 import strategy.ScoringStrategy;
 
 /**
@@ -10,7 +10,7 @@ import strategy.ScoringStrategy;
 public class LondonVariant implements GameVariant {
 
     private final LondonMapConfig mapConfig = new LondonMapConfig();
-    private final ScoringStrategy scoring   = new LondonScoringConfig();
+    private final ScoringStrategy scoring   = new LondonScoringStrategy();
 
     @Override
     public MapConfiguration getMapConfiguration() {

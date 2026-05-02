@@ -1,8 +1,7 @@
 package ui;
 
 import model.board.Route;
-import model.cards.CardColour;
-import model.cards.TrainCard;
+import model.cards.TransportationCard;
 import model.player.Player;
 import strategy.RouteScoreStrategy;
 
@@ -20,7 +19,7 @@ import java.util.function.Consumer;
  */
 public class ClaimDialog extends JDialog {
 
-    private List<TrainCard> selectedCards;
+    private List<TransportationCard> selectedCards;
 
     /**
      * @param parent  parent frame
@@ -29,7 +28,7 @@ public class ClaimDialog extends JDialog {
      * @param onConfirm called with the selected cards when the player confirms
      */
     public ClaimDialog(Frame parent, Route route, Player player,
-                       Consumer<List<TrainCard>> onConfirm) {
+                       Consumer<List<TransportationCard>> onConfirm) {
         super(parent, "Claim Route", true);
         selectedCards = new ArrayList<>();
 
@@ -107,7 +106,7 @@ public class ClaimDialog extends JDialog {
         long handCount = player.getHand().stream()
             .filter(c -> route.getRequiredColour() == null || c.matches(route.getRequiredColour()))
             .count();
-        long wilds = player.getHand().stream().filter(TrainCard::isWild).count();
+        long wilds = player.getHand().stream().filter(TransportationCard::isLocomotive).count();
         String text = "Pay " + route.getLength() + "× " + colourName
             + "  ·  You hold " + handCount + " matching + " + wilds + " wild  ·  +" + pts + " pts";
         JLabel lbl = new JLabel(text);
@@ -121,16 +120,16 @@ public class ClaimDialog extends JDialog {
         panel.setOpaque(false);
 
         // Group hand by colour
-        Map<String, List<TrainCard>> groups = new TreeMap<>();
-        for (TrainCard c : player.getHand()) {
+        Map<String, List<TransportationCard>> groups = new TreeMap<>();
+        for (TransportationCard c : player.getHand()) {
             if (c.matches(route.getRequiredColour())) {
                 groups.computeIfAbsent(c.getColour().displayName(), k -> new ArrayList<>()).add(c);
             }
         }
 
         ButtonGroup bg = new ButtonGroup();
-        for (Map.Entry<String, List<TrainCard>> entry : groups.entrySet()) {
-            List<TrainCard> group = entry.getValue();
+        for (Map.Entry<String, List<TransportationCard>> entry : groups.entrySet()) {
+            List<TransportationCard> group = entry.getValue();
             if (group.size() < route.getLength()) continue;
             JToggleButton btn = new JToggleButton(
                 entry.getKey() + " ×" + group.size());

@@ -1,6 +1,6 @@
 package actions;
 
-import model.cards.TrainCard;
+import model.cards.TransportationCard;
 import model.deck.FaceUpTrainCardPool;
 import model.deck.TrainCardDeck;
 import model.player.Player;
@@ -95,12 +95,12 @@ public class DrawTrainCardAction extends PlayerAction {
     }
 
     private ActionResult executeFirstPick() {
-        Optional<TrainCard> drawn = drawFrom(firstSource, DrawPhase.FIRST_PICK);
+        Optional<TransportationCard> drawn = drawFrom(firstSource, DrawPhase.FIRST_PICK);
         if (drawn.isEmpty()) {
             return ActionResult.failure("No transport card available from that source.");
         }
 
-        TrainCard card = drawn.get();
+        TransportationCard card = drawn.get();
         keepCard(firstSource, card);
 
         if (isFaceUpLocomotive(firstSource, card)) {
@@ -118,7 +118,7 @@ public class DrawTrainCardAction extends PlayerAction {
     }
 
     private ActionResult executeSecondPick() {
-        Optional<TrainCard> drawn = drawFrom(secondSource, DrawPhase.SECOND_PICK);
+        Optional<TransportationCard> drawn = drawFrom(secondSource, DrawPhase.SECOND_PICK);
         if (drawn.isEmpty()) {
             return ActionResult.failure("That transport card cannot be taken as the second draw.");
         }
@@ -130,7 +130,7 @@ public class DrawTrainCardAction extends PlayerAction {
 
     // -- Helpers ---------------------------------------------------------------
 
-    private Optional<TrainCard> drawFrom(DrawSource source, DrawPhase requestedPhase) {
+    private Optional<TransportationCard> drawFrom(DrawSource source, DrawPhase requestedPhase) {
         if (!isSourceAvailable(source, requestedPhase)) return Optional.empty();
         if (source == DrawSource.BLIND_DECK) {
             return deck.draw();
@@ -146,12 +146,12 @@ public class DrawTrainCardAction extends PlayerAction {
         }
 
         int idx = slotIndex(source);
-        List<TrainCard> slots = pool.getSlots();
+        List<TransportationCard> slots = pool.getSlots();
         if (idx >= slots.size()) return false;
 
-        TrainCard card = slots.get(idx);
+        TransportationCard card = slots.get(idx);
         if (card == null) return false;
-        return !(requestedPhase == DrawPhase.SECOND_PICK && card.isWild());
+        return !(requestedPhase == DrawPhase.SECOND_PICK && card.isLocomotive());
     }
 
     private boolean hasAnyLegalSourceFor(DrawPhase requestedPhase) {
@@ -161,20 +161,20 @@ public class DrawTrainCardAction extends PlayerAction {
         return false;
     }
 
-    private void keepCard(DrawSource source, TrainCard card) {
+    private void keepCard(DrawSource source, TransportationCard card) {
         player.addCard(card);
         drawLog.add(describe(source, card));
     }
 
-    private boolean isFaceUpLocomotive(DrawSource source, TrainCard card) {
-        return source != DrawSource.BLIND_DECK && card.isWild();
+    private boolean isFaceUpLocomotive(DrawSource source, TransportationCard card) {
+        return source != DrawSource.BLIND_DECK && card.isLocomotive();
     }
 
     private int slotIndex(DrawSource source) {
         return source.ordinal();
     }
 
-    private String describe(DrawSource source, TrainCard card) {
+    private String describe(DrawSource source, TransportationCard card) {
         String name = card.getColour().displayName();
         return source == DrawSource.BLIND_DECK ? "blind:" + name : name;
     }

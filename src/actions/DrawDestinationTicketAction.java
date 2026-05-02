@@ -1,7 +1,7 @@
 package actions;
 
 import model.cards.DestinationTicketCard;
-import model.deck.DestinationTicketDeck;
+import model.deck.DestinationTicketCardDeck;
 import model.player.Player;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class DrawDestinationTicketAction extends PlayerAction {
 
     private static final int DRAW_COUNT = 3;
 
-    private final DestinationTicketDeck ticketDeck;
+    private final DestinationTicketCardDeck ticketDeck;
     private final int minKeep;
     private List<DestinationTicketCard> drawnTickets;
     private List<DestinationTicketCard> keptTickets;
@@ -25,7 +25,7 @@ public class DrawDestinationTicketAction extends PlayerAction {
      * @param ticketDeck the destination ticket deck
      * @param minKeep    minimum tickets the player must keep (1 mid-game, 2 at setup)
      */
-    public DrawDestinationTicketAction(Player player, DestinationTicketDeck ticketDeck,
+    public DrawDestinationTicketAction(Player player, DestinationTicketCardDeck ticketDeck,
                                        int minKeep) {
         super(player);
         this.ticketDeck   = ticketDeck;

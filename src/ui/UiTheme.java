@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.*;
+import model.cards.TransportationTypes;
 
 /**
  * Centralised colour and font constants ported from the London Lines CSS design.
@@ -68,7 +69,7 @@ public final class UiTheme {
     public static Font mono(float size)    { return FONT_MONO.deriveFont(Font.BOLD, size); }
 
     // ── Route colour lookup ──────────────────────────────────────────────────
-    public static Color routeColour(model.cards.CardColour c) {
+    public static Color routeColour(TransportationTypes c) {
         if (c == null) return ROUTE_WILD;
         return switch (c) {
             case BLUE   -> ROUTE_BLUE;
@@ -77,7 +78,7 @@ public final class UiTheme {
             case BLACK  -> ROUTE_BLACK;
             case ORANGE -> ROUTE_ORANGE;
             case PURPLE -> ROUTE_PINK;
-            case WILD   -> ROUTE_WILD;
+            case LOCOMOTIVE -> ROUTE_WILD;
         };
     }
 

@@ -1,8 +1,8 @@
 package model.cards;
 
-/** Colour values for train cards. WILD is the locomotive sentinel (any colour). */
-public enum CardColour {
-    BLUE, GREEN, YELLOW, BLACK, ORANGE, PURPLE, WILD;
+/** Colour values for train cards. WILD is the locomotive card*/
+public enum TransportationTypes {
+    BLUE, GREEN, YELLOW, BLACK, ORANGE, PURPLE, LOCOMOTIVE;
 
     /** Display name shown in the UI. */
     public String displayName() {
@@ -13,7 +13,7 @@ public enum CardColour {
             case BLACK  -> "Black";
             case ORANGE -> "Orange";
             case PURPLE -> "Pink";
-            case WILD   -> "Locomotive";
+            case LOCOMOTIVE -> "Locomotive";
         };
     }
 
@@ -31,7 +31,7 @@ public enum CardColour {
             case BLACK  -> "#1A1A1A";
             case ORANGE -> "#E08A2B";
             case PURPLE -> "#FF6AD5";
-            case WILD   -> "#B8B8B8";
+            case LOCOMOTIVE -> "#B8B8B8";
         };
     }
 }

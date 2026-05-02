@@ -1,4 +1,5 @@
 package model.cards;
+import model.board.City;
 
 /**
  * Immutable destination ticket. Holds two city names and a point value.
@@ -6,8 +7,8 @@ package model.cards;
  */
 public final class DestinationTicketCard {
 
-    private final String cityA;
-    private final String cityB;
+    private final City cityA;
+    private final City cityB;
     private final int pointValue;
 
     /**
@@ -15,19 +16,19 @@ public final class DestinationTicketCard {
      * @param cityB      name of the second city
      * @param pointValue points awarded (positive) or lost (negative sign applied by scorer)
      */
-    public DestinationTicketCard(String cityA, String cityB, int pointValue) {
+    public DestinationTicketCard(City cityA, City cityB, int pointValue) {
         this.cityA = cityA;
         this.cityB = cityB;
         this.pointValue = pointValue;
     }
 
     /** @return name of the origin city */
-    public String getCityA() {
+    public City getCityA() {
         return cityA;
     }
 
     /** @return name of the destination city */
-    public String getCityB() {
+    public City getCityB() {
         return cityB;
     }
 
@@ -38,6 +39,6 @@ public final class DestinationTicketCard {
 
     @Override
     public String toString() {
-        return cityA + " → " + cityB + " (" + pointValue + "pts)";
+        return cityA + " -> " + cityB + " (" + pointValue + "points)";
     }
 }

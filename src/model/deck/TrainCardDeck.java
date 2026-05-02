@@ -1,6 +1,6 @@
 package model.deck;
 
-import model.cards.TrainCard;
+import model.cards.TransportationCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,23 +10,23 @@ import java.util.Optional;
  * Deck of train cards. Maintains a discard pile that is reshuffled
  * back into the draw pile when the deck is exhausted.
  */
-public class TrainCardDeck extends Deck<TrainCard> {
+public class TrainCardDeck extends Deck<TransportationCard> {
 
-    private final List<TrainCard> discardPile;
+    private final List<TransportationCard> discardPile;
 
     public TrainCardDeck() {
         this.discardPile = new ArrayList<>();
     }
 
     /** Adds a card to the discard pile. */
-    public void discard(TrainCard card) {
+    public void discard(TransportationCard card) {
         if (card != null) {
             discardPile.add(card);
         }
     }
 
     /** Discards a list of cards (e.g. after a route claim). */
-    public void discardAll(List<TrainCard> cardList) {
+    public void discardAll(List<TransportationCard> cardList) {
         if (cardList != null) {
             discardPile.addAll(cardList);
         }
@@ -60,7 +60,7 @@ public class TrainCardDeck extends Deck<TrainCard> {
      * Draws the top card. Returns empty only if both draw and discard piles are empty.
      */
     @Override
-    public Optional<TrainCard> draw() {
+    public Optional<TransportationCard> draw() {
         return super.draw();
     }
 }

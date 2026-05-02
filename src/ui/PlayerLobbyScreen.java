@@ -1,7 +1,6 @@
 package ui;
 
 import game.GameManager;
-import model.cards.CardColour;
 import model.player.Player;
 import model.player.PlayerColour;
 import variant.LondonVariant;

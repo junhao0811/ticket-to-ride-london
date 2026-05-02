@@ -3,11 +3,12 @@ package variant;
 import model.board.City;
 import model.board.Route;
 import model.board.SegmentPoint;
-import model.cards.CardColour;
+import model.cards.TransportationTypes;
 import model.cards.DestinationTicketCard;
 import model.cards.LocomotiveCard;
-import model.cards.RegularTrainCard;
-import model.deck.DestinationTicketDeck;
+import model.cards.RegularTransportationCard;
+import model.cards.TransportationCard;
+import model.deck.DestinationTicketCardDeck;
 import model.deck.TrainCardDeck;
 import strategy.AnyColourStrategy;
 import strategy.SpecificColourStrategy;
@@ -37,14 +38,14 @@ public class LondonMapConfig implements MapConfiguration {
 
     @Override
     public TrainCardDeck buildTrainDeck() {
-        List<model.cards.TrainCard> cards = new ArrayList<>();
+        List<TransportationCard> cards = new ArrayList<>();
         for (TransportCardConfig tc : ConfigLoader.get().getTransportCards()) {
             if (tc.cartType().equals("LOCOMOTIVE")) {
                 for (int i = 0; i < tc.cardCount(); i++) cards.add(new LocomotiveCard());
             } else {
-                CardColour colour = parseColour(tc.cartType());
+                TransportationTypes colour = parseColour(tc.cartType());
                 if (colour != null) {
-                    for (int i = 0; i < tc.cardCount(); i++) cards.add(new RegularTrainCard(colour));
+                    for (int i = 0; i < tc.cardCount(); i++) cards.add(new RegularTransportationCard(colour));
                 }
             }
         }
@@ -55,15 +56,19 @@ public class LondonMapConfig implements MapConfiguration {
     }
 
     @Override
-    public DestinationTicketDeck buildTicketDeck() {
+    public DestinationTicketCardDeck buildTicketDeck() {
         List<DestinationTicketCard> tickets = new ArrayList<>();
+        Map<String, City> cityMap = buildCityMap();
         for (TicketImageEntry t : ConfigLoader.get().getTicketImages()) {
             String fromName = ConfigLoader.CITY_ID_TO_JAVA_NAME.getOrDefault(t.fromId(), t.fromId());
             String toName   = ConfigLoader.CITY_ID_TO_JAVA_NAME.getOrDefault(t.toId(), t.toId());
-            tickets.add(new DestinationTicketCard(fromName, toName, t.points()));
+            City fromCity = cityMap.get(fromName);
+            City toCity = cityMap.get(toName);
+            if (fromCity != null && toCity != null) {
+                tickets.add(new DestinationTicketCard(fromCity, toCity, t.points()));
+            }
         }
-        DestinationTicketDeck deck = new DestinationTicketDeck();
-        deck.addAll(tickets);
+        DestinationTicketCardDeck deck = new DestinationTicketCardDeck(tickets);
         deck.shuffleCards();
         return deck;
     }
@@ -93,7 +98,7 @@ public class LondonMapConfig implements MapConfiguration {
             if (from == null || to == null) continue;
 
             List<SegmentPoint> segs = rc.segments();
-            CardColour colour = parseColour(rc.cartType());
+            TransportationTypes colour = parseColour(rc.cartType());
             Route route;
             if (colour == null) {
                 route = new Route(rc.nodeName(), fromName, toName, rc.routeLength(),
@@ -109,15 +114,15 @@ public class LondonMapConfig implements MapConfiguration {
         return routes;
     }
 
-    /** Maps a config {@code cart_type} string to a {@link CardColour}; returns null for "GRAY". */
-    private CardColour parseColour(String cartType) {
+    /** Maps a config {@code cart_type} string to a {@link TransportationTypes}; returns null for "GRAY". */
+    private TransportationTypes parseColour(String cartType) {
         return switch (cartType) {
-            case "BLUE"   -> CardColour.BLUE;
-            case "GREEN"  -> CardColour.GREEN;
-            case "YELLOW" -> CardColour.YELLOW;
-            case "BLACK"  -> CardColour.BLACK;
-            case "ORANGE" -> CardColour.ORANGE;
-            case "PURPLE" -> CardColour.PURPLE;
+            case "BLUE"   -> TransportationTypes.BLUE;
+            case "GREEN"  -> TransportationTypes.GREEN;
+            case "YELLOW" -> TransportationTypes.YELLOW;
+            case "BLACK"  -> TransportationTypes.BLACK;
+            case "ORANGE" -> TransportationTypes.ORANGE;
+            case "PURPLE" -> TransportationTypes.PURPLE;
             default       -> null;
         };
     }

@@ -9,7 +9,7 @@ import model.player.Player;
  * Wires the three scoring strategies together for the London variant.
  * Delegates each concern to the appropriate specialist.
  */
-public class LondonScoringConfig implements ScoringStrategy {
+public class LondonScoringStrategy implements ScoringStrategy {
 
     private final RouteScoreStrategy    routeScorer   = new RouteScoreStrategy();
     private final TicketScoreStrategy   ticketScorer  = new TicketScoreStrategy();

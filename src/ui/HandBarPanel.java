@@ -3,15 +3,14 @@ package ui;
 import game.GameManager;
 import game.GameStateListener;
 import model.board.Route;
-import model.cards.CardColour;
-import model.cards.TrainCard;
+import model.cards.TransportationTypes;
+import model.cards.TransportationCard;
 import model.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.util.*;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -20,24 +19,24 @@ import java.util.function.Consumer;
  */
 public class HandBarPanel extends JPanel implements GameStateListener {
 
-    private static final CardColour[] ORDER = {
-        CardColour.BLUE, CardColour.GREEN, CardColour.YELLOW,
-        CardColour.BLACK, CardColour.ORANGE, CardColour.PURPLE, CardColour.WILD
+    private static final TransportationTypes[] ORDER = {
+        TransportationTypes.BLUE, TransportationTypes.GREEN, TransportationTypes.YELLOW,
+        TransportationTypes.BLACK, TransportationTypes.ORANGE, TransportationTypes.PURPLE, TransportationTypes.LOCOMOTIVE
     };
 
-    // Maps config cart_type strings to Java CardColour enum constants
-    private static final Map<String, CardColour> CONFIG_TO_COLOUR = Map.of(
-        "ORANGE",     CardColour.ORANGE,
-        "YELLOW",     CardColour.YELLOW,
-        "GREEN",      CardColour.GREEN,
-        "BLUE",       CardColour.BLUE,
-        "PURPLE",     CardColour.PURPLE,
-        "BLACK",      CardColour.BLACK,
-        "LOCOMOTIVE", CardColour.WILD
+    // Maps config cart_type strings to Java TransportationTypes enum constants
+    private static final Map<String, TransportationTypes> CONFIG_TO_COLOUR = Map.of(
+        "ORANGE",     TransportationTypes.ORANGE,
+        "YELLOW",     TransportationTypes.YELLOW,
+        "GREEN",      TransportationTypes.GREEN,
+        "BLUE",       TransportationTypes.BLUE,
+        "PURPLE",     TransportationTypes.PURPLE,
+        "BLACK",      TransportationTypes.BLACK,
+        "LOCOMOTIVE", TransportationTypes.LOCOMOTIVE
     );
 
     private final Player              you;
-    private final Map<CardColour, Image> cardImages;
+    private final Map<TransportationTypes, Image> cardImages;
     private       Route               selectedRoute;
     private       Consumer<Route>     onClaim;
     private       Runnable            onEndTurn;
@@ -118,8 +117,8 @@ public class HandBarPanel extends JPanel implements GameStateListener {
         panel.removeAll();
 
         Player current = GameManager.getInstance().getCurrentPlayer();
-        Map<CardColour, Integer> counts = new EnumMap<>(CardColour.class);
-        for (TrainCard card : current.getHand()) counts.merge(card.getColour(), 1, Integer::sum);
+        Map<TransportationTypes, Integer> counts = new EnumMap<>(TransportationTypes.class);
+        for (TransportationCard card : current.getHand()) counts.merge(card.getColour(), 1, Integer::sum);
 
         if (counts.isEmpty()) {
             JLabel empty = new JLabel("EMPTY HAND  —  DRAW CARDS FROM THE POOL OR DECK");
@@ -127,7 +126,7 @@ public class HandBarPanel extends JPanel implements GameStateListener {
             empty.setForeground(new Color(0xFF, 0xFF, 0xFF, 80));
             panel.add(empty);
         } else {
-            for (CardColour c : ORDER) {
+            for (TransportationTypes c : ORDER) {
                 Integer cnt = counts.get(c);
                 if (cnt != null) panel.add(makeHandCard(c, cnt));
             }
@@ -136,7 +135,7 @@ public class HandBarPanel extends JPanel implements GameStateListener {
 
     // ── Card tile rendering ───────────────────────────────────────────────────
 
-    private JPanel makeHandCard(CardColour colour, int count) {
+    private JPanel makeHandCard(TransportationTypes colour, int count) {
         Image  img = cardImages.get(colour);
         Color  bg  = UiTheme.routeColour(colour);
         Color  ink = UiTheme.inkOn(bg);
@@ -221,11 +220,11 @@ public class HandBarPanel extends JPanel implements GameStateListener {
 
     // ── Image loading ──────────────────────────────���─────────────────────��───
 
-    private static Map<CardColour, Image> loadCardImages() {
-        Map<CardColour, Image> map = new EnumMap<>(CardColour.class);
+    private static Map<TransportationTypes, Image> loadCardImages() {
+        Map<TransportationTypes, Image> map = new EnumMap<>(TransportationTypes.class);
         ConfigLoader cfg = ConfigLoader.get();
         cfg.getCardImagePaths().forEach((type, path) -> {
-            CardColour colour = CONFIG_TO_COLOUR.get(type);
+            TransportationTypes colour = CONFIG_TO_COLOUR.get(type);
             if (colour == null) return;
             Image img = cfg.loadImage(path);
             if (img != null) map.put(colour, img);

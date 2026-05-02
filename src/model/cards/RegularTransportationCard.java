@@ -5,15 +5,15 @@ package model.cards;
  * Matches routes whose required colour equals this card's colour.
  * Locomotives are handled by {@link LocomotiveCard}.
  */
-public class RegularTrainCard extends TrainCard {
+public class RegularTransportationCard extends TransportationCard {
 
     /** @param colour the card colour — must not be WILD */
-    public RegularTrainCard(CardColour colour) {
+    public RegularTransportationCard(TransportationTypes colour) {
         super(colour);
     }
 
     @Override
-    public boolean isWild() {
+    public boolean isLocomotive() {
         return false;
     }
 
@@ -21,7 +21,12 @@ public class RegularTrainCard extends TrainCard {
      * Matches when {@code required} is null (gray/any route) or equals this card's colour.
      */
     @Override
-    public boolean matches(CardColour required) {
+    public boolean matches(TransportationTypes required) {
         return required == null || required == getColour();
+    }
+    
+    @Override
+    public String toString() {
+        return "RegularTransportationCard{" + "colour=" + getColour() + '}';
     }
 }

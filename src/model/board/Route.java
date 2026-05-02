@@ -1,7 +1,7 @@
 package model.board;
 
-import model.cards.CardColour;
-import model.cards.TrainCard;
+import model.cards.TransportationTypes;
+import model.cards.TransportationCard;
 import model.player.Player;
 import strategy.ClaimStrategy;
 import java.util.List;
@@ -13,11 +13,11 @@ import java.util.List;
 public class Route {
 
     private final String id;
-    private final String cityA;
-    private final String cityB;
+    private final City cityA;
+    private final City cityB;
     private final int length;
     /** Null means gray — any colour may be used. */
-    private final CardColour requiredColour;
+    private final TransportationTypes requiredColour;
     private final ClaimStrategy claimStrategy;
     private Player claimedBy;
     private final List<SegmentPoint> segmentPoints;
@@ -31,8 +31,8 @@ public class Route {
      * @param claimStrategy  validates whether a given set of cards may claim this route
      * @param segmentPoints  pixel positions of each train-car slot, in order
      */
-    public Route(String id, String cityA, String cityB, int length,
-                 CardColour requiredColour, ClaimStrategy claimStrategy,
+    public Route(String id, City cityA, City cityB, int length,
+                 TransportationTypes requiredColour, ClaimStrategy claimStrategy,
                  List<SegmentPoint> segmentPoints) {
         this.id = id;
         this.cityA = cityA;
@@ -53,7 +53,7 @@ public class Route {
      * Returns true if {@code cards} legally pay for this route.
      * Delegates entirely to the assigned {@link ClaimStrategy}.
      */
-    public boolean canBeClaimedWith(List<TrainCard> cards) {
+    public boolean canBeClaimedWith(List<TransportationCard> cards) {
         return claimStrategy.canClaim(length, cards);
     }
 
@@ -73,12 +73,12 @@ public class Route {
     }
 
     /** @return name of the first endpoint city */
-    public String getCityA() {
+    public City getCityA() {
         return cityA;
     }
 
     /** @return name of the second endpoint city */
-    public String getCityB() {
+    public City getCityB() {
         return cityB;
     }
 
@@ -88,7 +88,7 @@ public class Route {
     }
 
     /** @return required colour, or null for gray routes */
-    public CardColour getRequiredColour() {
+    public TransportationTypes getRequiredColour() {
         return requiredColour;
     }
 
@@ -100,5 +100,18 @@ public class Route {
     /** @return pixel positions of each train-car slot on this route, in order */
     public List<SegmentPoint> getSegmentPoints() {
         return segmentPoints;
+    }
+    
+    public String toString() {
+        return "Route{"
+            + "firstCity="
+            + getCityA()
+            + ", secondCity="
+            + getCityB()
+            + ", length="
+            + getLength()
+            + ", requiredColor="
+            + getRequiredColour()
+            + '}';
     }
 }
