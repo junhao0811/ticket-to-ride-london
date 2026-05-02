@@ -45,8 +45,8 @@ public class RightRailPanel extends JPanel implements GameStateListener {
     public RightRailPanel(Runnable onDrawTickets) {
         this.onDrawTickets  = onDrawTickets;
         this.cardImages     = loadCardImages();
-        this.trainCardBack  = ConfigLoader.get().loadImage("trainCarCardRear.png");
-        this.ticketCardBack = ConfigLoader.get().loadImage("ticketCardFaceDown.png");
+        this.trainCardBack  = ConfigLoader.get().loadImage("/trainCarCardRear.png");
+        this.ticketCardBack = ConfigLoader.get().loadImage("/ticketCardFaceDown.png");
         setOpaque(false);
         setPreferredSize(new Dimension(110, 0));
         GameManager.getInstance().addListener(this);
@@ -72,17 +72,23 @@ public class RightRailPanel extends JPanel implements GameStateListener {
     private void rebuild() {
         removeAll();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(16, 4, 16, 12));
+        setBorder(BorderFactory.createEmptyBorder(20, 4, 20, 12));
 
+        // Top: Ticket Deck
         add(makeTicketDeck());
-        add(Box.createVerticalStrut(6));
+        
+        add(Box.createVerticalGlue());
 
+        // Middle: Face-up cards
         List<TrainCard> slots = GameManager.getInstance().getFaceUpPool().getSlots();
         for (int i = 0; i < slots.size(); i++) {
             add(makeFaceUpCard(slots.get(i), i));
-            add(Box.createVerticalStrut(4));
+            if (i < slots.size() - 1) add(Box.createVerticalStrut(10));
         }
 
+        add(Box.createVerticalGlue());
+
+        // Bottom: Train Deck
         add(makeDeckCard());
     }
 
@@ -96,7 +102,7 @@ public class RightRailPanel extends JPanel implements GameStateListener {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                 int w = getWidth(), h = getHeight();
-                Shape clip = new RoundRectangle2D.Float(1, 1, w - 2, h - 2, 6, 6);
+                Shape clip = new RoundRectangle2D.Float(1, 1, w - 2, h - 2, 8, 8);
 
                 if (ticketCardBack != null) {
                     g2.setClip(clip);
@@ -107,24 +113,16 @@ public class RightRailPanel extends JPanel implements GameStateListener {
                     g2.fill(clip);
                 }
 
-                // Label overlay
-                g2.setColor(new Color(0, 0, 0, 100));
-                g2.fillRoundRect(w / 2 - 25, h / 2 - 8, 50, 16, 4, 4);
-                g2.setFont(UiTheme.mono(9));
-                g2.setColor(Color.WHITE);
-                FontMetrics fm = g2.getFontMetrics();
-                g2.drawString("TICKETS", w / 2 - fm.stringWidth("TICKETS") / 2, h / 2 + fm.getAscent() / 2 - 1);
-
                 // Border
-                g2.setColor(new Color(255, 255, 255, 40));
-                g2.setStroke(new BasicStroke(1f));
+                g2.setColor(new Color(255, 255, 255, 50));
+                g2.setStroke(new BasicStroke(1.2f));
                 g2.draw(clip);
             }
         };
         panel.setLayout(new BorderLayout());
         panel.setOpaque(false);
-        panel.setMaximumSize(new Dimension(96, 56));
-        panel.setPreferredSize(new Dimension(96, 56));
+        panel.setMaximumSize(new Dimension(96, 62));
+        panel.setPreferredSize(new Dimension(96, 62));
         panel.add(badge(GameManager.getInstance().getTicketDeck().size(), UiTheme.ACCENT_RED),
             BorderLayout.SOUTH);
         panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -150,7 +148,7 @@ public class RightRailPanel extends JPanel implements GameStateListener {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                 int w = getWidth(), h = getHeight();
-                Shape clip = new RoundRectangle2D.Float(1, 1, w - 2, h - 2, 6, 6);
+                Shape clip = new RoundRectangle2D.Float(1, 1, w - 2, h - 2, 8, 8);
 
                 if (img != null) {
                     g2.setClip(clip);
@@ -173,14 +171,14 @@ public class RightRailPanel extends JPanel implements GameStateListener {
                     }
                 }
                 // Border
-                g2.setColor(new Color(255, 255, 255, 40));
-                g2.setStroke(new BasicStroke(1f));
+                g2.setColor(new Color(255, 255, 255, 50));
+                g2.setStroke(new BasicStroke(1.2f));
                 g2.draw(clip);
             }
         };
         panel.setOpaque(false);
-        panel.setMaximumSize(new Dimension(96, 56));
-        panel.setPreferredSize(new Dimension(96, 56));
+        panel.setMaximumSize(new Dimension(96, 62));
+        panel.setPreferredSize(new Dimension(96, 62));
         panel.setCursor(selectable ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
                                    : Cursor.getDefaultCursor());
 
@@ -202,7 +200,7 @@ public class RightRailPanel extends JPanel implements GameStateListener {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                 int w = getWidth(), h = getHeight();
-                Shape clip = new RoundRectangle2D.Float(1, 1, w - 2, h - 2, 6, 6);
+                Shape clip = new RoundRectangle2D.Float(1, 1, w - 2, h - 2, 8, 8);
 
                 if (trainCardBack != null) {
                     g2.setClip(clip);
@@ -213,17 +211,9 @@ public class RightRailPanel extends JPanel implements GameStateListener {
                     g2.fill(clip);
                 }
 
-                // Label overlay
-                g2.setColor(new Color(0, 0, 0, 100));
-                g2.fillRoundRect(w / 2 - 20, h / 2 - 8, 40, 16, 4, 4);
-                g2.setFont(UiTheme.mono(9));
-                g2.setColor(Color.WHITE);
-                FontMetrics fm = g2.getFontMetrics();
-                g2.drawString("DECK", w / 2 - fm.stringWidth("DECK") / 2, h / 2 + fm.getAscent() / 2 - 1);
-
                 // Border
-                g2.setColor(new Color(255, 255, 255, 40));
-                g2.setStroke(new BasicStroke(1f));
+                g2.setColor(new Color(255, 255, 255, 50));
+                g2.setStroke(new BasicStroke(1.2f));
                 g2.draw(clip);
             }
         };
