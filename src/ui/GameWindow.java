@@ -148,7 +148,10 @@ public class GameWindow extends JFrame implements GameStateListener {
         layeredStage.add(toast,       JLayeredPane.PALETTE_LAYER);
 
         // Pass-device overlay -> POPUP_LAYER (highest)
-        passOverlay = new PassDeviceOverlay(() -> passOverlay.setVisible(false));
+        passOverlay = new PassDeviceOverlay(() -> {
+            passOverlay.setVisible(false);
+            onStateChanged();
+        });
         layeredStage.add(passOverlay, JLayeredPane.POPUP_LAYER);
         passOverlay.setVisible(false);
 
@@ -180,6 +183,7 @@ public class GameWindow extends JFrame implements GameStateListener {
 
         GameManager.getInstance().addListener(this);
         lastKnownPlayer = GameManager.getInstance().getCurrentPlayer();
+        onStateChanged(); // Trigger initial check
     }
 
     private void layoutStage(JLayeredPane p, int w, int h) {
@@ -200,6 +204,30 @@ public class GameWindow extends JFrame implements GameStateListener {
         passOverlay.setBounds(0, 0, w, h);
     }
 
+    private void drawInitialTickets() {
+        Player current = GameManager.getInstance().getCurrentPlayer();
+        int minKeep = GameManager.getInstance().getVariant().getMinTicketsKeptInitial();
+        
+        DrawDestinationTicketAction action = new DrawDestinationTicketAction(
+            current,
+            GameManager.getInstance().getTicketDeck(),
+            minKeep);
+        
+        List<DestinationTicketCard> drawn = action.peekDrawnTickets();
+        if (drawn.isEmpty()) return;
+
+        TicketKeepDialog dialog = new TicketKeepDialog(this, drawn, minKeep, true, kept -> {
+            action.setKeptTickets(kept);
+            var result = GameManager.getInstance().submitAction(action);
+            toast.show("Welcome " + current.getName() + "! Initial tickets picked.");
+            isDrawingInitial = false;
+        });
+        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override public void windowClosed(java.awt.event.WindowEvent e) { isDrawingInitial = false; }
+        });
+        dialog.setVisible(true);
+    }
+
     private void drawTickets() {
         Player current = GameManager.getInstance().getCurrentPlayer();
         DrawDestinationTicketAction action = new DrawDestinationTicketAction(
@@ -213,12 +241,15 @@ public class GameWindow extends JFrame implements GameStateListener {
         }
         new TicketKeepDialog(this, drawn,
             GameManager.getInstance().getVariant().getMinTicketsKeptDraw(),
+            false,
             kept -> {
                 action.setKeptTickets(kept);
                 var result = GameManager.getInstance().submitAction(action);
                 toast.show(result.getMessage());
             }).setVisible(true);
     }
+
+    private boolean isDrawingInitial = false;
 
     @Override
     public void onStateChanged() {
@@ -227,10 +258,19 @@ public class GameWindow extends JFrame implements GameStateListener {
         scorePanel.setVisible(ended);
 
         Player current = GameManager.getInstance().getCurrentPlayer();
+        
+        // Handle Pass-Device overlay
         if (!ended && lastKnownPlayer != null && lastKnownPlayer != current) {
             passOverlay.setNextPlayer(current);
             passOverlay.setVisible(true);
         }
+        
+        // Mandatory initial ticket draw
+        if (!ended && !passOverlay.isVisible() && current.getTickets().isEmpty() && !isDrawingInitial) {
+            isDrawingInitial = true;
+            SwingUtilities.invokeLater(this::drawInitialTickets);
+        }
+
         lastKnownPlayer = current;
 
         String currentName = current.getName();

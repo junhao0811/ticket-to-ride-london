@@ -166,12 +166,14 @@ public final class ConfigLoader {
      * Returns null if the resource is missing or unreadable.
      */
     public Image loadImage(String resourcePath) {
-        if (imageCache.containsKey(resourcePath)) return imageCache.get(resourcePath);
+        if (resourcePath == null || resourcePath.isEmpty()) return null;
+        String path = resourcePath.startsWith("/") ? resourcePath : "/" + resourcePath;
+        if (imageCache.containsKey(path)) return imageCache.get(path);
         Image img = null;
-        try (InputStream is = ConfigLoader.class.getResourceAsStream(resourcePath)) {
+        try (InputStream is = ConfigLoader.class.getResourceAsStream(path)) {
             if (is != null) img = ImageIO.read(is);
         } catch (IOException ignored) {}
-        imageCache.put(resourcePath, img);
+        imageCache.put(path, img);
         return img;
     }
 
