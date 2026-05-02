@@ -20,7 +20,7 @@ public class GameMenuScreen extends JFrame {
 
   /** Constructs and wires the menu screen. Call {@code setVisible(true)} to show. */
   public GameMenuScreen() {
-    super("Ticket to Ride — London Lines");
+    super("Ticket to Ride London");
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setExtendedState(MAXIMIZED_BOTH);
 
@@ -28,7 +28,6 @@ public class GameMenuScreen extends JFrame {
     p2Field = nameField("Otis");
 
     JPanel bg        = buildBg();
-    JPanel topBar    = buildTopBar();
     JPanel center    = buildCenter();
     JPanel bottomBar = buildBottomBar();
 
@@ -46,14 +45,12 @@ public class GameMenuScreen extends JFrame {
         int botH   = (int) (sh * 0.145);
 
         bg.setBounds(ox, oy, sw, sh);
-        topBar.setBounds(ox, oy, sw, topH);
         center.setBounds(ox, oy + topH, sw, sh - topH - botH);
         bottomBar.setBounds(ox, oy + sh - botH, sw, botH);
       }
     };
 
     layered.add(bg,        JLayeredPane.DEFAULT_LAYER);
-    layered.add(topBar,    JLayeredPane.PALETTE_LAYER);
     layered.add(center,    JLayeredPane.PALETTE_LAYER);
     layered.add(bottomBar, JLayeredPane.PALETTE_LAYER);
 
@@ -63,24 +60,42 @@ public class GameMenuScreen extends JFrame {
   // ── Background layer ─────────────────────────────────────────────────────
 
   private JPanel buildBg() {
+    final Image logo = ConfigLoader.get().loadImage("/ticketToRideLondon.png");
     return new JPanel() {
       @Override
       protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         int w = getWidth(), h = getHeight();
-        // Dark navy-to-near-black vertical gradient
-        g2.setPaint(new GradientPaint(0, 0, new Color(0x1A, 0x24, 0x3E),
-                                      0, h, new Color(0x0C, 0x10, 0x1E)));
-        g2.fillRect(0, 0, w, h);
-        // Soft blue radial glow centred above the title area
-        if (w > 0 && h > 0) {
-          g2.setPaint(new RadialGradientPaint(
-              w / 2f, h * 0.38f, w * 0.52f,
-              new float[]{0f, 1f},
-              new Color[]{new Color(0x28, 0x42, 0x7A, 65), new Color(0, 0, 0, 0)}));
+
+        if (logo != null) {
+          double imgW = logo.getWidth(null);
+          double imgH = logo.getHeight(null);
+          double scale = Math.max((double) w / imgW, (double) h / imgH);
+          int sw = (int) (imgW * scale);
+          int sh = (int) (imgH * scale);
+          int ox = (w - sw) / 2;
+          int oy = (h - sh) / 2;
+          g2.drawImage(logo, ox, oy, sw, sh, null);
+
+          // Subtle dark overlay to ensure readability of UI elements
+          g2.setColor(new Color(0, 0, 0, 80));
           g2.fillRect(0, 0, w, h);
+        } else {
+          // Dark navy-to-near-black vertical gradient
+          g2.setPaint(new GradientPaint(0, 0, new Color(0x1A, 0x24, 0x3E),
+                                        0, h, new Color(0x0C, 0x10, 0x1E)));
+          g2.fillRect(0, 0, w, h);
+          // Soft blue radial glow centred above the title area
+          if (w > 0 && h > 0) {
+            g2.setPaint(new RadialGradientPaint(
+                w / 2f, h * 0.38f, w * 0.52f,
+                new float[]{0f, 1f},
+                new Color[]{new Color(0x28, 0x42, 0x7A, 65), new Color(0, 0, 0, 0)}));
+            g2.fillRect(0, 0, w, h);
+          }
         }
+
         // Subtle grid overlay
         g2.setColor(new Color(0xFF, 0xFF, 0xFF, 7));
         g2.setStroke(new BasicStroke(0.5f));
@@ -89,26 +104,7 @@ public class GameMenuScreen extends JFrame {
       }
     };
   }
-
-  // ── Top bar ───────────────────────────────────────────────────────────────
-
-  private JPanel buildTopBar() {
-    JPanel bar = new JPanel(new BorderLayout());
-    bar.setOpaque(false);
-    bar.setBorder(BorderFactory.createEmptyBorder(0, 36, 0, 36));
-
-    JLabel brand = new JLabel("🎫  LONDON LINES");
-    brand.setFont(UiTheme.mono(13));
-    brand.setForeground(new Color(0xFF, 0xFF, 0xFF, 130));
-    bar.add(brand, BorderLayout.WEST);
-
-    JLabel edition = new JLabel("EDITION I  ·  FIT3077 SPRINT 2");
-    edition.setFont(UiTheme.mono(11));
-    edition.setForeground(new Color(0xFF, 0xFF, 0xFF, 60));
-    bar.add(edition, BorderLayout.EAST);
-
-    return bar;
-  }
+  
 
   // ── Center content ────────────────────────────────────────────────────────
 
@@ -120,11 +116,19 @@ public class GameMenuScreen extends JFrame {
     c.gridx = 0;
     c.anchor = GridBagConstraints.CENTER;
 
-    c.gridy = 0; c.insets = new Insets(0, 0, 2, 0);
-    panel.add(titleLabel("TICKET TO RIDE", Color.WHITE), c);
+    Image logo = ConfigLoader.get().loadImage("/ticketToRideLondon.png");
+    if (logo == null) {
+      c.gridy = 0; c.insets = new Insets(0, 0, 2, 0);
+      panel.add(titleLabel("TICKET TO RIDE", Color.WHITE), c);
 
-    c.gridy = 1; c.insets = new Insets(0, 0, 26, 0);
-    panel.add(titleLabel("LONDON", UiTheme.GOLD), c);
+      c.gridy = 1; c.insets = new Insets(0, 0, 26, 0);
+      panel.add(titleLabel("LONDON", UiTheme.GOLD), c);
+    } else {
+      // Add a spacer to push input fields down if logo is background
+      c.gridy = 0;
+      c.insets = new Insets(0, 0, 180, 0);
+      panel.add(Box.createVerticalStrut(100), c);
+    }
 
     // Gold hairline rule
     JPanel rule = new JPanel() {
@@ -141,12 +145,6 @@ public class GameMenuScreen extends JFrame {
     };
     c.gridy = 2; c.insets = new Insets(0, 0, 18, 0);
     panel.add(rule, c);
-
-    JLabel hint = new JLabel("ENTER PLAYER NAMES TO BEGIN");
-    hint.setFont(UiTheme.mono(13));
-    hint.setForeground(new Color(0xFF, 0xFF, 0xFF, 85));
-    c.gridy = 3; c.insets = new Insets(0, 0, 36, 0);
-    panel.add(hint, c);
 
     c.gridy = 4; c.insets = new Insets(0, 0, 0, 0);
     panel.add(buildInputPanel(), c);
@@ -190,7 +188,7 @@ public class GameMenuScreen extends JFrame {
     JPanel bar = new JPanel(new FlowLayout(FlowLayout.CENTER, 32, 0));
     bar.setOpaque(false);
     bar.setBorder(BorderFactory.createEmptyBorder(24, 0, 0, 0));
-    bar.add(pillButton("MY GAMES", false, this::onMyGames));
+    bar.add(pillButton("SAVED GAMES", false, this::onMyGames));
     bar.add(pillButton("NEW GAME", true,  this::onNewGame));
     return bar;
   }
@@ -298,7 +296,7 @@ public class GameMenuScreen extends JFrame {
   private void onMyGames() {
     JOptionPane.showMessageDialog(
         this,
-        "My Games will be available in a future update.",
+        "Saved Games will be available in a future update.",
         "Coming Soon",
         JOptionPane.INFORMATION_MESSAGE);
   }
