@@ -1,9 +1,10 @@
  import java.util.ArrayList;
+ import java.util.Collections;
  import java.util.List;
 
 public class Player {
 
-    public List<DestinationTicketCard> ticketCards;
+    private List<DestinationTicketCard> ticketCards;
     public String color;
     private int coloredTrainCars;
     private int score;
@@ -22,6 +23,11 @@ public class Player {
     public void addTicketCard(DestinationTicketCard ticketCard){
         this.ticketCards.add(ticketCard);
 
+    }
+
+
+    public List<DestinationTicketCard> getTicketCards() {
+        return Collections.unmodifiableList(ticketCards);
     }
 
 
