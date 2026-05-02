@@ -24,8 +24,8 @@ public class GameMenuScreen extends JFrame {
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setExtendedState(MAXIMIZED_BOTH);
 
-    p1Field = nameField("Amelia");
-    p2Field = nameField("Otis");
+    p1Field = nameField("");
+    p2Field = nameField("");
 
     JPanel bg        = buildBg();
     JPanel center    = buildCenter();

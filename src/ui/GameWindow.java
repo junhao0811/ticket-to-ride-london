@@ -200,7 +200,7 @@ public class GameWindow extends JFrame implements GameStateListener {
         scorePanel.setBounds(leftW, 0, boardW, boardH);
 
         int toastW = 800, toastH = 70;
-        toast.setBounds((w - toastW) / 2, h - handH - toastH - 30, toastW, toastH);
+        toast.setBounds((w - toastW) / 2, h - handH - toastH - 8, toastW, toastH);
         passOverlay.setBounds(0, 0, w, h);
     }
 

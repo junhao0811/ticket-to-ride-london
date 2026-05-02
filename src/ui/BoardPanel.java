@@ -11,7 +11,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -51,10 +54,10 @@ public class BoardPanel extends JPanel implements GameStateListener {
         streetBg = cfg.loadImage("/randomLondonStreet.png");
         
         busImages = new java.util.EnumMap<>(model.player.PlayerColour.class);
-        busImages.put(model.player.PlayerColour.RED, cfg.loadImage("/busPiece/redbus.png"));
-        busImages.put(model.player.PlayerColour.BLUE, cfg.loadImage("/busPiece/blueBus.png"));
-        busImages.put(model.player.PlayerColour.WHITE, cfg.loadImage("/busPiece/whiteBus.png"));
-        busImages.put(model.player.PlayerColour.PURPLE, cfg.loadImage("/busPiece/purpleBus.png"));
+        busImages.put(model.player.PlayerColour.RED,    makeTransparent(cfg.loadImage("/busPiece/redbus.png")));
+        busImages.put(model.player.PlayerColour.BLUE,   makeTransparent(cfg.loadImage("/busPiece/blueBus.png")));
+        busImages.put(model.player.PlayerColour.WHITE,  makeTransparent(cfg.loadImage("/busPiece/whiteBus.png")));
+        busImages.put(model.player.PlayerColour.PURPLE, makeTransparent(cfg.loadImage("/busPiece/purpleBus.png")));
 
         GameManager.getInstance().addListener(this);
         addMouseListener(new MouseAdapter() {
@@ -176,8 +179,6 @@ public class BoardPanel extends JPanel implements GameStateListener {
         boolean claimed  = route.isClaimed();
         Image busImg = claimed ? busImages.get(route.getClaimedBy().getColour()) : null;
 
-        // In the classic board game, the route color is always visible under the piece.
-        // We always use the route's required color for the slot background.
         Color routeColor = UiTheme.routeColour(route.getRequiredColour());
 
         AffineTransform saved = g2.getTransform();
@@ -189,7 +190,7 @@ public class BoardPanel extends JPanel implements GameStateListener {
             g2.translate(cx, cy);
             g2.rotate(sp.rotationRadians());
 
-            // 1. Draw the slot background (Original route color)
+            // Selection highlight
             if (selected) {
                 g2.setColor(new Color(0xFF, 0xD7, 0x00, 180));
                 g2.fill(new RoundRectangle2D.Double(
@@ -197,19 +198,76 @@ public class BoardPanel extends JPanel implements GameStateListener {
                     slotLen + 8, slotH + 8, arc + 2, arc + 2));
             }
 
-            g2.setColor(routeColor);
+            // Slot background — darker when claimed so the bus stands out
+            g2.setColor(claimed ? routeColor.darker() : routeColor);
             g2.fill(new RoundRectangle2D.Double(-slotLen / 2, -slotH / 2, slotLen, slotH, arc, arc));
 
             g2.setColor(new Color(0, 0, 0, 60));
             g2.setStroke(new BasicStroke(1.2f));
             g2.draw(new RoundRectangle2D.Double(-slotLen / 2, -slotH / 2, slotLen, slotH, arc, arc));
 
-            // 2. Draw the bus piece on top (Exactly same size as slot)
+            // Bus piece — transparent PNG drawn 1.55× taller than the slot so it
+            // sits visually above the track rather than being flush with it.
             if (claimed && busImg != null) {
-                g2.drawImage(busImg, (int)(-slotLen / 2), (int)(-slotH / 2), (int)slotLen, (int)slotH, null);
+                double busH = slotH * 1.55;
+                double busW = slotLen * 0.98;
+                g2.drawImage(busImg, (int)(-busW / 2), (int)(-busH / 2), (int)busW, (int)busH, null);
             }
         }
         g2.setTransform(saved);
+    }
+
+    /**
+     * BFS flood-fill from every border pixel: any white/near-white pixel reachable
+     * from the image edge is treated as background and made fully transparent.
+     * Interior white pixels (e.g. the body of the white bus) are preserved because
+     * they are enclosed by the bus outline and never touched by the fill.
+     */
+    private Image makeTransparent(Image src) {
+        if (src == null) return null;
+        int iw = src.getWidth(null), ih = src.getHeight(null);
+        if (iw <= 0 || ih <= 0) return src;
+        BufferedImage buf = new BufferedImage(iw, ih, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = buf.createGraphics();
+        g.drawImage(src, 0, 0, null);
+        g.dispose();
+
+        boolean[][] visited = new boolean[iw][ih];
+        Queue<int[]> queue  = new LinkedList<>();
+
+        for (int x = 0; x < iw; x++) {
+            addIfBackground(buf, queue, visited, x, 0,      iw, ih);
+            addIfBackground(buf, queue, visited, x, ih - 1, iw, ih);
+        }
+        for (int y = 0; y < ih; y++) {
+            addIfBackground(buf, queue, visited, 0,      y, iw, ih);
+            addIfBackground(buf, queue, visited, iw - 1, y, iw, ih);
+        }
+
+        int[] dx = {0, 0, 1, -1};
+        int[] dy = {1, -1, 0, 0};
+        while (!queue.isEmpty()) {
+            int[] p = queue.poll();
+            buf.setRGB(p[0], p[1], 0);
+            for (int i = 0; i < 4; i++) {
+                addIfBackground(buf, queue, visited, p[0] + dx[i], p[1] + dy[i], iw, ih);
+            }
+        }
+        return buf;
+    }
+
+    private void addIfBackground(BufferedImage buf, Queue<int[]> q, boolean[][] visited,
+                                  int x, int y, int iw, int ih) {
+        if (x < 0 || x >= iw || y < 0 || y >= ih || visited[x][y]) return;
+        int rgba = buf.getRGB(x, y);
+        int a = (rgba >> 24) & 0xFF;
+        int r = (rgba >> 16) & 0xFF;
+        int g = (rgba >>  8) & 0xFF;
+        int b =  rgba        & 0xFF;
+        if (a > 10 && r > 200 && g > 200 && b > 200) {
+            visited[x][y] = true;
+            q.add(new int[]{x, y});
+        }
     }
 
     private Color getRouteFill(Route route) {

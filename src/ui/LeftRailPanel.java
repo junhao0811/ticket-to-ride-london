@@ -76,9 +76,17 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
                 HelpDialog.showTicketsRule(owner);
             }
         });
+        JLabel helpScoring = helpIcon("📊", "Scoring Guide");
+        helpScoring.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override public void mouseClicked(java.awt.event.MouseEvent e) {
+                Frame owner = (Frame) SwingUtilities.getWindowAncestor(LeftRailPanel.this);
+                HelpDialog.showScoringGuide(owner);
+            }
+        });
         helpBar.add(helpObj);
         helpBar.add(helpActions);
         helpBar.add(helpTickets);
+        helpBar.add(helpScoring);
         
         c.gridy = 0;
         c.insets = new Insets(0, 0, 14, 0);
