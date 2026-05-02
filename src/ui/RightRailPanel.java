@@ -154,12 +154,6 @@ public class RightRailPanel extends JPanel implements GameStateListener {
                     g2.setClip(clip);
                     g2.drawImage(img, 0, 0, w, h, null);
                     g2.setClip(null);
-                    // Top-left badge overlay
-                    g2.setColor(new Color(0, 0, 0, 140));
-                    g2.fillRoundRect(3, 3, 32, 14, 4, 4);
-                    g2.setFont(UiTheme.mono(8));
-                    g2.setColor(Color.WHITE);
-                    g2.drawString(label, 6, 13);
                 } else {
                     g2.setColor(fill);
                     g2.fill(clip);
