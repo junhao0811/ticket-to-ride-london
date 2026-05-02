@@ -39,11 +39,13 @@ public class BoardPanel extends JPanel implements GameStateListener {
     );
 
     private final ConfigLoader    cfg = ConfigLoader.get();
+    private final Image           bgImage;
     private       String          selectedRouteId;
     private       Consumer<Route> onRouteClick;
 
     public BoardPanel() {
         setOpaque(true);
+        bgImage = cfg.loadImage("/londonMap2.png");
         GameManager.getInstance().addListener(this);
         addMouseListener(new MouseAdapter() {
             @Override public void mouseClicked(MouseEvent e) { handleClick(e); }
@@ -69,9 +71,15 @@ public class BoardPanel extends JPanel implements GameStateListener {
         g2.setRenderingHint(RenderingHints.KEY_RENDERING,         RenderingHints.VALUE_RENDER_QUALITY);
 
         int w = getWidth(), h = getHeight();
-        drawBackground(g2, w, h);
-        drawRiver(g2, w, h);
-        drawMapDecor(g2, w, h);
+
+        if (bgImage != null) {
+            g2.drawImage(bgImage, 0, 0, w, h, null);
+        } else {
+            drawBackground(g2, w, h);
+            drawRiver(g2, w, h);
+            drawMapDecor(g2, w, h);
+        }
+
         drawRoutes(g2, w, h);
         drawNodes(g2, w, h);
     }
@@ -130,8 +138,8 @@ public class BoardPanel extends JPanel implements GameStateListener {
     }
 
     private void drawRoute(Graphics2D g2, Route route, int w, int h) {
-        ConfigLoader.RouteConfig rc = cfg.findRoute(route.getCityA(), route.getCityB());
-        if (rc == null || rc.segments().isEmpty()) return;
+        List<SegmentPoint> segments = route.getSegmentPoints();
+        if (segments.isEmpty()) return;
 
         double scaleX = w / MAP_W;
         double scaleY = h / MAP_H;
@@ -145,13 +153,13 @@ public class BoardPanel extends JPanel implements GameStateListener {
         boolean selected = route.getId().equals(selectedRouteId);
 
         AffineTransform saved = g2.getTransform();
-        for (SegmentPoint sp : rc.segments()) {
+        for (SegmentPoint sp : segments) {
             double cx = sp.x() * scaleX;
             double cy = sp.y() * scaleY;
 
-            AffineTransform at = AffineTransform.getTranslateInstance(cx, cy);
-            at.rotate(sp.rotationRadians());
-            g2.setTransform(at);
+            g2.setTransform(saved);
+            g2.translate(cx, cy);
+            g2.rotate(sp.rotationRadians());
 
             // Selection glow
             if (selected) {
@@ -173,14 +181,13 @@ public class BoardPanel extends JPanel implements GameStateListener {
         g2.setTransform(saved);
 
         // Cost badge on routes with ≥ 3 slots
-        if (rc.segments().size() >= 3) {
-            drawCostBadge(g2, rc, route.getLength(), w, h);
+        if (segments.size() >= 3) {
+            drawCostBadge(g2, segments, route.getLength(), w, h);
         }
     }
 
-    private void drawCostBadge(Graphics2D g2, ConfigLoader.RouteConfig rc, int len, int w, int h) {
-        List<SegmentPoint> segs = rc.segments();
-        SegmentPoint mid = segs.get(segs.size() / 2);
+    private void drawCostBadge(Graphics2D g2, List<SegmentPoint> segments, int len, int w, int h) {
+        SegmentPoint mid = segments.get(segments.size() / 2);
         int mx = (int)(mid.x() * w / MAP_W);
         int my = (int)(mid.y() * h / MAP_H);
         g2.setColor(new Color(UiTheme.MAP_CREAM.getRGB() & 0xFFFFFF | 0xCC000000, true));
@@ -228,7 +235,7 @@ public class BoardPanel extends JPanel implements GameStateListener {
         // Border
         g2.setColor(hub ? UiTheme.INK : UiTheme.INK_DIM);
         g2.setStroke(new BasicStroke(hub ? 2f : 1.2f));
-        g2.drawOval(cx - r, cy - r, r * 2, r * 2);
+        drawOval(g2, cx - r, cy - r, r * 2, r * 2);
         // Abbreviation inside node
         String abbr = abbreviate(name);
         g2.setFont(UiTheme.mono(FONT_NODE));
@@ -245,6 +252,10 @@ public class BoardPanel extends JPanel implements GameStateListener {
         g2.drawString(line1, cx - fm.stringWidth(line1) / 2, cy + r + 10);
         if (!line2.isEmpty() && !line2.equals(line1))
             g2.drawString(line2, cx - fm.stringWidth(line2) / 2, cy + r + 20);
+    }
+
+    private void drawOval(Graphics2D g2, int x, int y, int w, int h) {
+        g2.drawOval(x, y, w, h);
     }
 
     private String abbreviate(String name) {
@@ -270,9 +281,7 @@ public class BoardPanel extends JPanel implements GameStateListener {
         Route  best     = null;
         double bestDist = 22;
         for (Route route : GameManager.getInstance().getBoard().getRoutes()) {
-            ConfigLoader.RouteConfig rc = cfg.findRoute(route.getCityA(), route.getCityB());
-            if (rc == null) continue;
-            for (SegmentPoint sp : rc.segments()) {
+            for (SegmentPoint sp : route.getSegmentPoints()) {
                 double d = Math.hypot(px - sp.x() * scaleX, py - sp.y() * scaleY);
                 if (d < bestDist) { bestDist = d; best = route; }
             }

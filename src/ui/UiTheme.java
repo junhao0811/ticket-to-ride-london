@@ -29,7 +29,7 @@ public final class UiTheme {
     public static final Color ROUTE_YELLOW = new Color(0xF0, 0xC4, 0x3A);
     public static final Color ROUTE_BLACK  = new Color(0x1A, 0x1A, 0x1A);
     public static final Color ROUTE_ORANGE = new Color(0xE0, 0x8A, 0x2B);
-    public static final Color ROUTE_PURPLE = new Color(0x7B, 0x3F, 0xE4);
+    public static final Color ROUTE_PINK   = new Color(0xFF, 0x6A, 0xD5);
     public static final Color ROUTE_WILD   = new Color(0xB8, 0xB8, 0xB8);
 
     // ── Player token colours ─────────────────────────────────────────────────
@@ -62,7 +62,7 @@ public final class UiTheme {
             case YELLOW -> ROUTE_YELLOW;
             case BLACK  -> ROUTE_BLACK;
             case ORANGE -> ROUTE_ORANGE;
-            case PURPLE -> ROUTE_PURPLE;
+            case PURPLE -> ROUTE_PINK;
             case WILD   -> ROUTE_WILD;
         };
     }
