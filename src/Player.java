@@ -7,7 +7,8 @@ public class Player {
     private List<DestinationTicketCard> ticketCards;
     public String color;
     private int coloredTrainCars;
-    private int score;
+    //private int score;
+    private Score score;
     private int maxDist;
     private boolean hasLongestPathBonus;
 
@@ -15,8 +16,10 @@ public class Player {
     public Player(){
         this.coloredTrainCars = 45;
         this.ticketCards = new ArrayList<>();
-        this.score = 0;
+        //this.score = 0;
         this.hasLongestPathBonus = false;
+        this.score = new Score();
+
     }
 
 
@@ -47,10 +50,11 @@ public class Player {
     }
 
     public void addScore(int points){
-        this.score = this.score + points;
+
+        this.score.addPoints(points);
     }
 
-    public int getScore(){
+    public Score getScore(){
         return this.score;
     }
 
