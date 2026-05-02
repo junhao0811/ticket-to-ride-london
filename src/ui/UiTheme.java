@@ -33,11 +33,25 @@ public final class UiTheme {
     public static final Color ROUTE_WILD   = new Color(0xB8, 0xB8, 0xB8);
 
     // ── Player token colours ─────────────────────────────────────────────────
+    public static final Color PLAYER_RED    = new Color(0xD3, 0x2F, 0x2F);
+    public static final Color PLAYER_BLUE   = new Color(0x28, 0x64, 0xC4);
+    public static final Color PLAYER_WHITE  = new Color(0xEE, 0xEE, 0xEE);
+    public static final Color PLAYER_PURPLE = new Color(0x8E, 0x24, 0xAA);
+
+    public static Color playerColour(model.player.PlayerColour c) {
+        if (c == null) return PLAYER_RED;
+        return switch (c) {
+            case RED    -> PLAYER_RED;
+            case BLUE   -> PLAYER_BLUE;
+            case WHITE  -> PLAYER_WHITE;
+            case PURPLE -> PLAYER_PURPLE;
+        };
+    }
+
+    /** Deprecated: use playerColour(PlayerColour) instead. */
+    @Deprecated
     public static final Color[] PLAYER_COLOURS = {
-        new Color(0xC8, 0x50, 0x40),  // p1 red-orange
-        new Color(0x40, 0xA0, 0x70),  // p2 teal-green
-        new Color(0x70, 0x60, 0xC8),  // p3 purple
-        new Color(0xC8, 0xA0, 0x30),  // p4 amber
+        PLAYER_RED, PLAYER_BLUE, PLAYER_WHITE, PLAYER_PURPLE
     };
 
     // ── Fonts ────────────────────────────────────────────────────────────────

@@ -16,22 +16,23 @@ import java.util.List;
 public class Player {
 
     private final String name;
-    private final CardColour colour;
+    private final PlayerColour colour;
     private final List<TrainCard> hand;
     private final List<DestinationTicketCard> tickets;
     private int trainPieces;
     private final Score score;
 
     /**
-     * @param name   player display name
-     * @param colour player token colour
+     * @param name               player display name
+     * @param colour             player token colour
+     * @param initialTrainPieces number of train/bus pieces to start with
      */
-    public Player(String name, CardColour colour) {
+    public Player(String name, PlayerColour colour, int initialTrainPieces) {
         this.name = name;
         this.colour = colour;
         this.hand = new ArrayList<>();
         this.tickets = new ArrayList<>();
-        this.trainPieces = 45;
+        this.trainPieces = initialTrainPieces;
         this.score = new Score();
     }
 
@@ -102,7 +103,7 @@ public class Player {
     }
 
     /** @return player token colour */
-    public CardColour getColour() {
+    public PlayerColour getColour() {
         return colour;
     }
 }

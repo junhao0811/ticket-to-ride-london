@@ -12,16 +12,15 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.List;
 
 /**
- * Left rail: opponent player chips at top, current-player chip at bottom with
- * a scrollable strip of destination ticket thumbnails.
+ * Left rail: displays all players. The active player (current turn) is always 
+ * at the bottom in a large interactive panel with their ticket drop-up.
+ * Inactive players are shown as chips at the top.
  */
 public class LeftRailPanel extends JPanel implements GameStateListener {
 
-    private final Player you;
-    private boolean      isExpanded = false;
+    private boolean isExpanded = false;
 
     public LeftRailPanel(Player you) {
-        this.you = you;
         setOpaque(false);
         setPreferredSize(new Dimension(220, 0));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -44,13 +43,18 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
 
     private void rebuild() {
         removeAll();
+        setLayout(new GridBagLayout());
         setBorder(BorderFactory.createEmptyBorder(16, 12, 16, 12));
 
-        // ── Help Button Bar ──
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.NORTH;
+        c.weightx = 1.0;
+
+        // ── Help Button Bar (Row 0) ──
         JPanel helpBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
         helpBar.setOpaque(false);
-        helpBar.setAlignmentX(Component.LEFT_ALIGNMENT);
-
         JLabel helpObj = helpIcon("❓", "Game Objective");
         helpObj.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -58,7 +62,6 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
                 HelpDialog.showObjective(owner);
             }
         });
-
         JLabel helpActions = helpIcon("📖", "Turn Actions");
         helpActions.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -66,7 +69,6 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
                 HelpDialog.showTurnActions(owner);
             }
         });
-
         JLabel helpTickets = helpIcon("🎫", "Tickets Rule");
         helpTickets.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -74,67 +76,83 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
                 HelpDialog.showTicketsRule(owner);
             }
         });
-
         helpBar.add(helpObj);
         helpBar.add(helpActions);
         helpBar.add(helpTickets);
-        add(helpBar);
-        add(Box.createVerticalStrut(14));
+        
+        c.gridy = 0;
+        c.insets = new Insets(0, 0, 14, 0);
+        add(helpBar, c);
 
-        // Opponent chips
+        // ── Inactive Players (Rows 1+) ──
         List<Player> players = GameManager.getInstance().getPlayers();
         Player       current = GameManager.getInstance().getCurrentPlayer();
-        int idx = 0;
+        int nextRow = 1;
         for (Player p : players) {
-            if (p == you) { idx++; continue; }
-            add(makeOpponentChip(p, p == current,
-                UiTheme.PLAYER_COLOURS[idx % UiTheme.PLAYER_COLOURS.length]));
-            add(Box.createVerticalStrut(8));
-            idx++;
+            if (p == current) continue;
+            c.gridy = nextRow++;
+            c.insets = new Insets(0, 0, 8, 0);
+            add(makeInactiveChip(p, UiTheme.playerColour(p.getColour())), c);
         }
 
-        add(Box.createVerticalGlue());
-
-        // ── Your Interactive Panel (Drop-up) ──
+        // ── Flexible Ticket Area (Row nextRow) ──
         if (isExpanded) {
-            JPanel tickets = makeExpandedTickets();
+            JPanel tickets = makeExpandedTickets(current);
             JScrollPane scroll = new JScrollPane(tickets,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            scroll.setOpaque(false);
-            scroll.getViewport().setOpaque(false);
+            
+            scroll.setOpaque(true);
+            scroll.setBackground(new Color(0x12, 0x1A, 0x30));
+            scroll.getViewport().setOpaque(true);
+            scroll.getViewport().setBackground(new Color(0x12, 0x1A, 0x30));
             scroll.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
-            scroll.setBorder(null);
-            scroll.setAlignmentX(Component.CENTER_ALIGNMENT);
+            scroll.setBorder(BorderFactory.createLineBorder(new Color(0x2E, 0x3A, 0x55), 1));
             scroll.getVerticalScrollBar().setPreferredSize(new Dimension(6, 0));
             scroll.getVerticalScrollBar().setUnitIncrement(24);
 
-            // Cap the height strictly to prevent it from reaching the player panel
-            scroll.setMinimumSize(new Dimension(200, 100));
-            scroll.setMaximumSize(new Dimension(200, 280));
-            add(scroll);
-            add(Box.createVerticalStrut(40));
+            // This allows the tickets to take all remaining middle space
+            c.gridy = nextRow++;
+            c.weighty = 1.0; 
+            c.fill = GridBagConstraints.BOTH;
+            c.insets = new Insets(12, 0, 12, 0);
+            add(scroll, c);
+        } else {
+            // Invisible filler to push things apart when not expanded
+            c.gridy = nextRow++;
+            c.weighty = 1.0;
+            JPanel filler = new JPanel();
+            filler.setOpaque(false);
+            add(filler, c);
         }
 
-        int youIdx    = players.indexOf(you);
-        Color youColour = UiTheme.PLAYER_COLOURS[youIdx % UiTheme.PLAYER_COLOURS.length];
-        add(makeYouPanel(you, you == current, youColour));
+        // ── Active Player Panel (Bottom Row) ──
+        int curIdx    = players.indexOf(current);
+        Color curColour = UiTheme.playerColour(current.getColour());
+        
+        c.gridy = nextRow;
+        c.weighty = 0.0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.SOUTH;
+        c.insets = new Insets(0, 0, 0, 0);
+        add(makeActivePanel(current, curColour), c);
     }
 
-    // ── Opponent chip ─────────────────────────────────────────────────────────
+    // ── Inactive player chip ──────────────────────────────────────────────────
 
-    private JPanel makeOpponentChip(Player p, boolean active, Color colour) {
-        JPanel chip = new JPanel(new BorderLayout(6, 0));
+    private JPanel makeInactiveChip(Player p, Color colour) {
+        JPanel chip = new JPanel(new BorderLayout(10, 0));
         chip.setOpaque(true);
         chip.setBackground(new Color(0x1E, 0x28, 0x42));
         chip.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(active ? colour : UiTheme.PANEL_BORDER, active ? 2 : 1, true),
+            BorderFactory.createLineBorder(UiTheme.PANEL_BORDER, 1, true),
             BorderFactory.createEmptyBorder(6, 8, 6, 8)));
         chip.setMaximumSize(new Dimension(200, 56));
         chip.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel avatar = makeAvatar(p, colour, 36, 16);
-        chip.add(avatar, BorderLayout.WEST);
+        // Score Badge (Consistent Square)
+        JLabel scoreBadge = makeScoreBadge(p, colour, 38);
+        chip.add(scoreBadge, BorderLayout.WEST);
 
         JPanel info = new JPanel();
         info.setOpaque(false);
@@ -149,18 +167,12 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
         info.add(stats);
         chip.add(info, BorderLayout.CENTER);
 
-        if (active) {
-            JLabel dot = new JLabel("●");
-            dot.setFont(UiTheme.body(10));
-            dot.setForeground(colour);
-            chip.add(dot, BorderLayout.EAST);
-        }
         return chip;
     }
 
-    // ── Your chip ─────────────────────────────────────────────────────────────
+    // ── Active player panel ───────────────────────────────────────────────────
 
-    private JPanel makeYouPanel(Player p, boolean active, Color colour) {
+    private JPanel makeActivePanel(Player p, Color colour) {
         JPanel panel = new JPanel(null);
         panel.setOpaque(false);
         panel.setPreferredSize(new Dimension(200, 110));
@@ -175,8 +187,8 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(new Color(0x18, 0x20, 0x38));
                 g2.fillRoundRect(0, 30, getWidth(), getHeight() - 30, 12, 12);
-                g2.setColor(active ? colour : UiTheme.PANEL_BORDER);
-                g2.setStroke(new BasicStroke(active ? 2f : 1f));
+                g2.setColor(colour);
+                g2.setStroke(new BasicStroke(2.5f));
                 g2.drawRoundRect(0, 30, getWidth() - 1, getHeight() - 31, 12, 12);
                 g2.dispose();
             }
@@ -202,10 +214,10 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
 
         JLabel incLbl = new JLabel("✕ " + incomplete);
         incLbl.setFont(UiTheme.display(12));
-        incLbl.setForeground(new Color(0xC8, 0x24, 0x2A)); // Red
+        incLbl.setForeground(new Color(0xC8, 0x24, 0x2A));
         JLabel comLbl = new JLabel("✓ " + completed);
         comLbl.setFont(UiTheme.display(12));
-        comLbl.setForeground(new Color(0x2C, 0x8C, 0x4D)); // Green
+        comLbl.setForeground(new Color(0x2C, 0x8C, 0x4D));
 
         stats.add(incLbl);
         stats.add(comLbl);
@@ -219,9 +231,9 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
         toggle.setOpaque(true);
         toggle.setBackground(new Color(0x30, 0x3A, 0x55));
         toggle.setHorizontalAlignment(SwingConstants.CENTER);
-        toggle.setBounds(120, 18, 26, 26);
+        toggle.setBounds(154, 18, 30, 30);
         toggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        toggle.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1, true));
+        toggle.setBorder(BorderFactory.createLineBorder(colour, 1, true));
         toggle.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseClicked(java.awt.event.MouseEvent e) {
                 isExpanded = !isExpanded;
@@ -233,60 +245,66 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
         panel.add(toggle);
         panel.setComponentZOrder(toggle, 0);
 
-        // Name and Score
-        JLabel name = new JLabel(p.getName());
-        name.setFont(UiTheme.display(14));
-        name.setForeground(Color.WHITE);
-        name.setBounds(55, 50, 130, 20);
-        panel.add(name);
-        panel.setComponentZOrder(name, 0);
-
-        // Score Badge
-        JLabel scoreBadge = new JLabel(String.valueOf(p.getScore().get()));
-        scoreBadge.setFont(UiTheme.display(16));
-        scoreBadge.setForeground(Color.WHITE);
-        scoreBadge.setHorizontalAlignment(SwingConstants.CENTER);
-        scoreBadge.setOpaque(true);
-        scoreBadge.setBackground(new Color(0xC8, 0x24, 0x2A));
-        scoreBadge.setBounds(10, 70, 36, 36);
-        scoreBadge.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2, true));
+        // Score Badge (Consistent Square, moved to the left of the name)
+        JLabel scoreBadge = makeScoreBadge(p, colour, 42);
+        scoreBadge.setBounds(10, 50, 42, 42);
         panel.add(scoreBadge);
         panel.setComponentZOrder(scoreBadge, 0);
 
-        JLabel pieceInfo = new JLabel("🚌 " + p.getTrainPieces() + " buses left");
+        // Name
+        JLabel name = new JLabel(p.getName());
+        name.setFont(UiTheme.display(15));
+        name.setForeground(colour);
+        name.setBounds(62, 50, 130, 22);
+        panel.add(name);
+        panel.setComponentZOrder(name, 0);
+
+        JLabel pieceInfo = new JLabel("🚌 " + p.getTrainPieces() + " left");
         pieceInfo.setFont(UiTheme.mono(10));
         pieceInfo.setForeground(new Color(0xAA, 0xBB, 0xCC));
-        pieceInfo.setBounds(55, 70, 130, 15);
+        pieceInfo.setBounds(62, 72, 130, 15);
         panel.add(pieceInfo);
         panel.setComponentZOrder(pieceInfo, 0);
 
         return panel;
     }
 
+    private JLabel makeScoreBadge(Player p, Color colour, int size) {
+        JLabel badge = new JLabel(String.valueOf(p.getScore().get()));
+        badge.setFont(UiTheme.display(size * 0.45f));
+        badge.setForeground(Color.WHITE);
+        badge.setOpaque(true);
+        badge.setBackground(colour);
+        badge.setPreferredSize(new Dimension(size, size));
+        badge.setHorizontalAlignment(SwingConstants.CENTER);
+        badge.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1, true));
+        return badge;
+    }
+
     // ── Expanded Tickets View ────────────────────────────────────────────────
 
-    private JPanel makeExpandedTickets() {
+    private JPanel makeExpandedTickets(Player activePlayer) {
         JPanel container = new JPanel(new GridBagLayout());
-        container.setOpaque(false);
+        container.setOpaque(true);
+        container.setBackground(new Color(0x12, 0x1A, 0x30));
         
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1.0;
-        c.insets = new Insets(0, 0, 8, 0);
+        c.insets = new Insets(8, 0, 8, 0);
 
-        List<DestinationTicketCard> tickets = you.getTickets();
+        List<DestinationTicketCard> tickets = activePlayer.getTickets();
         GameBoard board = GameManager.getInstance().getBoard();
         strategy.ScoringStrategy scorer = GameManager.getInstance().getVariant().getScoring();
 
         int row = 0;
         for (DestinationTicketCard t : tickets) {
-            boolean done = scorer.scoreTicket(t, you, board) > 0;
+            boolean done = scorer.scoreTicket(t, activePlayer, board) > 0;
             c.gridy = row++;
             container.add(makeTicketDetailCard(t, done), c);
         }
         
-        // Add a shim at the bottom to push everything up
         c.gridy = row;
         c.weighty = 1.0;
         JPanel filler = new JPanel();
@@ -324,14 +342,12 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
                 }
 
                 if (completed) {
-                    // Success overlay
                     g2.setColor(new Color(0x2C, 0x8C, 0x4D, 180));
                     g2.fill(new RoundRectangle2D.Float(w - 28, 4, 24, 24, 6, 6));
                     g2.setColor(Color.WHITE);
                     g2.setFont(UiTheme.display(12));
                     g2.drawString("✓", w - 21, 21);
                 } else {
-                    // Incomplete marker
                     g2.setColor(new Color(0, 0, 0, 100));
                     g2.fill(clip);
                     g2.setColor(Color.WHITE);
@@ -339,7 +355,6 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
                     g2.drawString("✕", w - 21, 21);
                 }
 
-                // Point value badge
                 g2.setColor(new Color(0, 0, 0, 180));
                 g2.fillRoundRect(8, h - 26, 36, 18, 8, 8);
                 g2.setColor(UiTheme.GOLD);
@@ -376,18 +391,6 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
             @Override public void mouseExited(java.awt.event.MouseEvent e) { lbl.setForeground(new Color(0xFF, 0xFF, 0xFF, 120)); }
         });
         return lbl;
-    }
-
-    private JLabel makeAvatar(Player p, Color colour, int size, int fontSize) {
-        JLabel avatar = new JLabel(String.valueOf(p.getName().charAt(0)));
-        avatar.setFont(UiTheme.display(fontSize));
-        avatar.setForeground(Color.WHITE);
-        avatar.setOpaque(true);
-        avatar.setBackground(colour);
-        avatar.setPreferredSize(new Dimension(size, size));
-        avatar.setHorizontalAlignment(SwingConstants.CENTER);
-        avatar.setBorder(BorderFactory.createLineBorder(colour.darker(), 1, true));
-        return avatar;
     }
 
     private String abbrev(String city) {

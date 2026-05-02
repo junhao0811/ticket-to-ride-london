@@ -278,9 +278,9 @@ public class GameWindow extends JFrame implements GameStateListener {
         if (!ended) {
             String banner = currentName.equals(you.getName())
                 ? "It's your turn" : "Waiting on " + currentName + "…";
-            setTitle("London Lines — " + banner);
+            setTitle("Winner: " + banner);
         } else {
-            setTitle("London Lines — Game Over");
+            setTitle("Game Over");
         }
         repaint();
     }

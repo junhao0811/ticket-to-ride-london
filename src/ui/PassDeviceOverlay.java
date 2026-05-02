@@ -82,7 +82,7 @@ public class PassDeviceOverlay extends JPanel {
   }
 
   private void paintPlayerSection(Graphics2D g2, int w, int h, int band1Y, int band2Y) {
-    Color playerColour = UiTheme.routeColour(nextPlayer.getColour());
+    Color playerColour = UiTheme.playerColour(nextPlayer.getColour());
     String name = nextPlayer.getName();
     String initial = name.isEmpty() ? "?" : String.valueOf(name.charAt(0)).toUpperCase();
 

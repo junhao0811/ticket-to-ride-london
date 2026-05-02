@@ -1,6 +1,6 @@
 package ui;
 
-import model.cards.CardColour;
+import model.player.PlayerColour;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,15 +16,14 @@ import java.util.function.Consumer;
  */
 public class PlayerColorScreen extends JDialog {
 
-  private static final CardColour[] COLOURS = {
-      CardColour.BLUE, CardColour.GREEN, CardColour.YELLOW,
-      CardColour.BLACK, CardColour.ORANGE, CardColour.PURPLE
+  private static final PlayerColour[] COLOURS = {
+      PlayerColour.RED, PlayerColour.BLUE, PlayerColour.WHITE, PlayerColour.PURPLE
   };
 
-  private CardColour selectedColour;
+  private PlayerColour selectedColour;
   private final String playerName;
-  private final Set<CardColour> takenColours;
-  private final Consumer<CardColour> onDone;
+  private final Set<PlayerColour> takenColours;
+  private final Consumer<PlayerColour> onDone;
 
   private JPanel avatarPanel;
   private JPanel swatchPanel;
@@ -36,8 +35,8 @@ public class PlayerColorScreen extends JDialog {
    * @param takenColours colours locked by other players
    * @param onDone       called with the chosen colour when DONE is clicked
    */
-  public PlayerColorScreen(Frame owner, String playerName, CardColour current,
-                            Set<CardColour> takenColours, Consumer<CardColour> onDone) {
+  public PlayerColorScreen(Frame owner, String playerName, PlayerColour current,
+                            Set<PlayerColour> takenColours, Consumer<PlayerColour> onDone) {
     super(owner, true);
     this.playerName   = playerName;
     this.selectedColour = current;
@@ -155,7 +154,7 @@ public class PlayerColorScreen extends JDialog {
                             RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         int w = getWidth(), h = getHeight();
-        Color col = UiTheme.routeColour(selectedColour);
+        Color col = UiTheme.playerColour(selectedColour);
         int r = 70;
         int cx = w / 2, cy = h / 2 - 16;
 
@@ -193,23 +192,17 @@ public class PlayerColorScreen extends JDialog {
   // ── Swatch grid ───────────────────────────────────────────────────────────
 
   private JPanel buildSwatchPanel() {
-    // 4 columns, 2 rows; last cell is intentionally blank
-    JPanel grid = new JPanel(new GridLayout(2, 4, 16, 16));
+    // 1 row, 4 columns
+    JPanel grid = new JPanel(new GridLayout(1, 4, 24, 0));
     grid.setOpaque(false);
 
-    for (int i = 0; i < 8; i++) {
-      if (i < COLOURS.length) {
-        grid.add(makeSwatch(COLOURS[i]));
-      } else {
-        JPanel blank = new JPanel();
-        blank.setOpaque(false);
-        grid.add(blank);
-      }
+    for (PlayerColour c : COLOURS) {
+      grid.add(makeSwatch(c));
     }
     return grid;
   }
 
-  private JPanel makeSwatch(CardColour colour) {
+  private JPanel makeSwatch(PlayerColour colour) {
     JPanel swatch = new JPanel() {
       private boolean hovered = false;
 
@@ -242,7 +235,7 @@ public class PlayerColorScreen extends JDialog {
         int r = Math.min(w, h) - 8;
         int ox = (w - r) / 2, oy = (h - r) / 2;
 
-        Color base = UiTheme.routeColour(colour);
+        Color base = UiTheme.playerColour(colour);
         boolean taken    = takenColours.contains(colour);
         boolean selected = colour == selectedColour;
 

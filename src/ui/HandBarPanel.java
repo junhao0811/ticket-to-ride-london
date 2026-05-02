@@ -109,8 +109,9 @@ public class HandBarPanel extends JPanel implements GameStateListener {
         if (!(cardsArea instanceof JPanel panel)) return;
         panel.removeAll();
 
+        Player current = GameManager.getInstance().getCurrentPlayer();
         Map<CardColour, Integer> counts = new EnumMap<>(CardColour.class);
-        for (TrainCard card : you.getHand()) counts.merge(card.getColour(), 1, Integer::sum);
+        for (TrainCard card : current.getHand()) counts.merge(card.getColour(), 1, Integer::sum);
 
         if (counts.isEmpty()) {
             JLabel empty = new JLabel("EMPTY HAND  —  DRAW CARDS FROM THE POOL OR DECK");
@@ -203,9 +204,11 @@ public class HandBarPanel extends JPanel implements GameStateListener {
     }
 
     private void updateButtonState() {
-        boolean isYourTurn = GameManager.getInstance().getCurrentPlayer() == you;
-        claimBtn.setEnabled(selectedRoute != null && isYourTurn);
-        endBtn.setEnabled(isYourTurn);
+        Player current = GameManager.getInstance().getCurrentPlayer();
+        boolean isYourTurn = current == you; // Actually, in a unified view, is it always 'your' turn? 
+        // Let's make it more robust: the HandBarPanel always shows the current player's actions.
+        claimBtn.setEnabled(selectedRoute != null); 
+        endBtn.setEnabled(true);
     }
 
     // ── Image loading ──────────────────────────────���─────────────────────��───

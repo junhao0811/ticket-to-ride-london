@@ -3,6 +3,7 @@ package ui;
 import game.GameManager;
 import model.cards.CardColour;
 import model.player.Player;
+import model.player.PlayerColour;
 import variant.LondonVariant;
 
 import javax.swing.*;
@@ -24,9 +25,9 @@ public class PlayerLobbyScreen extends JFrame {
   /** Lightweight config holder — actual Player objects are created only on START GAME. */
   private static class PlayerConfig {
     String name;
-    CardColour colour;
+    PlayerColour colour;
 
-    PlayerConfig(String name, CardColour colour) {
+    PlayerConfig(String name, PlayerColour colour) {
       this.name   = name;
       this.colour = colour;
     }
@@ -45,8 +46,8 @@ public class PlayerLobbyScreen extends JFrame {
     setExtendedState(MAXIMIZED_BOTH);
 
     configs = new PlayerConfig[]{
-        new PlayerConfig(name1, CardColour.ORANGE),
-        new PlayerConfig(name2, CardColour.BLUE)
+        new PlayerConfig(name1, PlayerColour.RED),
+        new PlayerConfig(name2, PlayerColour.BLUE)
     };
 
     cardsRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 24, 0));
@@ -86,10 +87,12 @@ public class PlayerLobbyScreen extends JFrame {
 
   private void populateCardsRow() {
     cardsRow.removeAll();
+    // 2 filled slots (host + guest)
     for (int i = 0; i < 2; i++) {
       cardsRow.add(makeFilledSlot(i));
     }
-    for (int i = 0; i < 3; i++) {
+    // 2 empty slots (3rd and 4th player)
+    for (int i = 0; i < 2; i++) {
       cardsRow.add(makeEmptySlot());
     }
   }
@@ -104,7 +107,7 @@ public class PlayerLobbyScreen extends JFrame {
 
   private JPanel makeFilledSlot(int idx) {
     PlayerConfig cfg = configs[idx];
-    Color avatarCol  = UiTheme.routeColour(cfg.colour);
+    Color avatarCol  = UiTheme.playerColour(cfg.colour);
 
     JPanel card = new JPanel(null) {
       @Override protected void paintComponent(Graphics g) {
@@ -222,6 +225,14 @@ public class PlayerLobbyScreen extends JFrame {
     JButton addPerson = tealButton("＋  ADD PERSON");
     JButton addAi     = tealButton("＋  ADD AI");
 
+    addPerson.addActionListener(e -> JOptionPane.showMessageDialog(this,
+        "Adding extra players will be available in a future update.",
+        "Coming Soon", JOptionPane.INFORMATION_MESSAGE));
+
+    addAi.addActionListener(e -> JOptionPane.showMessageDialog(this,
+        "AI opponents will be available in a future update.",
+        "Coming Soon", JOptionPane.INFORMATION_MESSAGE));
+
     addPerson.setBounds(22, 120, 176, 48);
     addAi.setBounds(22, 184, 176, 48);
 
@@ -267,7 +278,7 @@ public class PlayerLobbyScreen extends JFrame {
   // ── Action handlers ───────────────────────────────────────────────────────
 
   private void openColorScreen(int idx) {
-    Set<CardColour> taken = new HashSet<>();
+    Set<PlayerColour> taken = new HashSet<>();
     for (int i = 0; i < configs.length; i++) {
       if (i != idx) taken.add(configs[i].colour);
     }
@@ -281,9 +292,11 @@ public class PlayerLobbyScreen extends JFrame {
   }
 
   private void onStartGame() {
-    Player p1 = new Player(configs[0].name, configs[0].colour);
-    Player p2 = new Player(configs[1].name, configs[1].colour);
-    GameManager.getInstance().init(new LondonVariant(), List.of(p1, p2));
+    LondonVariant variant = new LondonVariant();
+    int pieces = variant.getInitialTrainPieces();
+    Player p1 = new Player(configs[0].name, configs[0].colour, pieces);
+    Player p2 = new Player(configs[1].name, configs[1].colour, pieces);
+    GameManager.getInstance().init(variant, List.of(p1, p2));
     dispose();
     SwingUtilities.invokeLater(() -> new GameWindow().setVisible(true));
   }
@@ -343,17 +356,6 @@ public class PlayerLobbyScreen extends JFrame {
     JPanel bar = new JPanel(new BorderLayout());
     bar.setOpaque(false);
     bar.setBorder(BorderFactory.createEmptyBorder(0, 36, 0, 36));
-
-    JLabel brand = new JLabel("🎫  LONDON LINES");
-    brand.setFont(UiTheme.mono(13));
-    brand.setForeground(new Color(0xFF, 0xFF, 0xFF, 130));
-    bar.add(brand, BorderLayout.WEST);
-
-    JLabel edition = new JLabel("EDITION I  ·  FIT3077 SPRINT 2");
-    edition.setFont(UiTheme.mono(11));
-    edition.setForeground(new Color(0xFF, 0xFF, 0xFF, 60));
-    bar.add(edition, BorderLayout.EAST);
-
     return bar;
   }
 
@@ -385,12 +387,6 @@ public class PlayerLobbyScreen extends JFrame {
     JPanel bar = new JPanel(new BorderLayout());
     bar.setOpaque(false);
     bar.setBorder(BorderFactory.createEmptyBorder(24, 36, 0, 36));
-
-    JLabel rules = new JLabel("RULES");
-    rules.setFont(UiTheme.mono(13));
-    rules.setForeground(new Color(0xFF, 0xFF, 0xFF, 100));
-    rules.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-    bar.add(rules, BorderLayout.WEST);
 
     JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 16, 0));
     btnRow.setOpaque(false);

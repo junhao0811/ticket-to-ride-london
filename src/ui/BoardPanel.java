@@ -199,9 +199,7 @@ public class BoardPanel extends JPanel implements GameStateListener {
 
     private Color getRouteFill(Route route) {
         if (route.getClaimedBy() != null) {
-            int idx = GameManager.getInstance().getPlayers().indexOf(route.getClaimedBy());
-            return idx >= 0 ? UiTheme.PLAYER_COLOURS[idx % UiTheme.PLAYER_COLOURS.length]
-                            : UiTheme.INK_DIM;
+            return UiTheme.playerColour(route.getClaimedBy().getColour());
         }
         return UiTheme.routeColour(route.getRequiredColour());
     }

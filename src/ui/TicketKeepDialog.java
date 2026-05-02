@@ -58,7 +58,7 @@ public class TicketKeepDialog extends JDialog {
         c.anchor = GridBagConstraints.CENTER;
 
         // ── Title ──
-        String titleText = isInitial ? "INITIAL SETUP: CHOOSE " + minKeep + "+" : "PICK " + minKeep + " OR MORE TICKETS";
+        String titleText = "PICK " + minKeep + " OR MORE TICKETS";
         JLabel title = new JLabel(titleText);
         title.setFont(UiTheme.display(isInitial ? 32 : 24));
         title.setForeground(isInitial ? UiTheme.GOLD : Color.WHITE);
