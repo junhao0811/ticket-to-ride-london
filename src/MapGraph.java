@@ -34,9 +34,6 @@ public class MapGraph{
         return allRoutes;
     }
 
-    public Map<City, List<Route>> getGraph(){
-        return this.graph;
-    }
 
 
     public boolean hasConnection(City cityA, City cityB) {
@@ -53,6 +50,10 @@ public class MapGraph{
 
 
     public boolean pathExists(City source, City target){
+        if (!graph.containsKey(source) || !graph.containsKey(target)) {
+            return false; //safety check for when player made no routes towards these 2 cities so can never be connected and the cities wont exist in player's graph
+        }
+
         Queue<City> discovered_q = new LinkedList<>();
         Set<City> discoveredSet = new HashSet<>();
 
@@ -61,7 +62,11 @@ public class MapGraph{
 
         while ( !discovered_q.isEmpty() ){
             City currCity = discovered_q.poll();
-            if (currCity == target){
+            //if (currCity == target){
+                //return true;
+            //}
+
+            if (currCity.equals(target)) {
                 return true;
             }
 
@@ -83,7 +88,27 @@ public class MapGraph{
         return this.graph.entrySet();
     }
 
-    public DequeResult dfsFindMax( Set<Route> discoveredSet, City source, Deque<City> currentPath, int currentDist) {
+    public boolean containsRoute(Route route) {
+        return getAllRoutes().contains(route);
+    }
+
+    public int findLongestPathDistance(){
+        int maxDist = 0;
+
+        for (City city : this.getAllCities()){
+
+            Deque<City> currentPath = new ArrayDeque<>();
+            currentPath.push(city);
+            Set<Route> discoveredSet = new HashSet<>();
+            int currentDist = 0;
+
+            MapGraph.DequeResult result = dfsFindMax(discoveredSet, city, currentPath, currentDist);
+            maxDist = Math.max(maxDist, result.value());
+        }
+        return maxDist;
+    }
+
+    private DequeResult dfsFindMax( Set<Route> discoveredSet, City source, Deque<City> currentPath, int currentDist) {
 
 
         int maxDist = currentDist;
