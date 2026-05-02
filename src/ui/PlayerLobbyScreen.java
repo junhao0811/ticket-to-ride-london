@@ -297,13 +297,13 @@ public class PlayerLobbyScreen extends JFrame {
     Player p1 = new Player(configs[0].name, configs[0].colour, pieces);
     Player p2 = new Player(configs[1].name, configs[1].colour, pieces);
     GameManager.getInstance().init(variant, List.of(p1, p2));
+    new GameWindow().setVisible(true);
     dispose();
-    SwingUtilities.invokeLater(() -> new GameWindow().setVisible(true));
   }
 
   private void onBack() {
+    new GameMenuScreen().setVisible(true);
     dispose();
-    SwingUtilities.invokeLater(() -> new GameMenuScreen().setVisible(true));
   }
 
   // ── Background ────────────────────────────────────────────────────────────

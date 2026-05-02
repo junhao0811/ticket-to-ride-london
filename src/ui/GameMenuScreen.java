@@ -289,8 +289,8 @@ public class GameMenuScreen extends JFrame {
     if (name1.isEmpty()) name1 = "Player 1";
     if (name2.isEmpty()) name2 = "Player 2";
     String n1 = name1, n2 = name2;
+    new PlayerLobbyScreen(n1, n2).setVisible(true);
     dispose();
-    SwingUtilities.invokeLater(() -> new PlayerLobbyScreen(n1, n2).setVisible(true));
   }
 
   private void onMyGames() {
