@@ -1,8 +1,28 @@
-import java.util.Arrays;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+
+        List<Player> players = new ArrayList<>();
+        Player playerTest = new Player();
+        Player playerTest2 = new Player();
+
+        players.add(playerTest);
+        players.add(playerTest2);
+
+        MapGraph boardGraph = new MapGraph();
+        // add routes here
+
+        Game game = new Game(boardGraph, players);
+
+        //endgame helper classes instances
+        EndGameScorer endGameScorer = new EndGameScorer(new PlayerGraphsBuilder(), new DestinationTicketScorer(), new LongestPathBonusScorer());
+        GameController controller = new GameController(game, endGameScorer);
+        controller.runGameLoop();
+
+
+
 
         System.out.println("--- 1. INITIALIZING CITIES ---");
         City ny = new City("New York");
@@ -52,22 +72,22 @@ public class Main {
         DestinationTicketCard p2Ticket = new DestinationTicketCard(toronto, chicago, 7);
 
         System.out.println("\n--- 6. EXECUTING END GAME LOGIC ---");
-        EndGameLogic endGame = new EndGameLogic(masterMap, Arrays.asList(player1, player2));
-        endGame.populatePlayerGraphs();
+        //EndGameLogic endGame = new EndGameLogic(masterMap, Arrays.asList(player1, player2));
+        //endGame.populatePlayerGraphs();
 
-        Map<Player, MapGraph> extractedGraphs = endGame.getPlayerGraphs();
-        MapGraph p1Graph = extractedGraphs.get(player1);
-        MapGraph p2Graph = extractedGraphs.get(player2);
+        //Map<Player, MapGraph> extractedGraphs = endGame.getPlayerGraphs();
+        //MapGraph p1Graph = extractedGraphs.get(player1);
+       // MapGraph p2Graph = extractedGraphs.get(player2);
 
-        System.out.println("\n--- 7. TESTING PLAYER 1'S BFS ---");
-        boolean p1TestA = p1Graph.pathExists(p1TicketA.getCityA(), p1TicketA.getCityB());
-        System.out.println("Ticket NY -> Montreal: " + p1TestA + " | Expected: true");
+       // System.out.println("\n--- 7. TESTING PLAYER 1'S BFS ---");
+        //boolean p1TestA = p1Graph.pathExists(p1TicketA.getCityA(), p1TicketA.getCityB());
+       // System.out.println("Ticket NY -> Montreal: " + p1TestA + " | Expected: true");
 
-        boolean p1TestB = p1Graph.pathExists(p1TicketB.getCityA(), p1TicketB.getCityB());
-        System.out.println("Ticket NY -> Toronto:  " + p1TestB + " | Expected: false (r4 is unclaimed)");
+        //boolean p1TestB = p1Graph.pathExists(p1TicketB.getCityA(), p1TicketB.getCityB());
+        //System.out.println("Ticket NY -> Toronto:  " + p1TestB + " | Expected: false (r4 is unclaimed)");
 
-        System.out.println("\n--- 8. TESTING PLAYER 2'S BFS ---");
-        boolean p2Test = p2Graph.pathExists(p2Ticket.getCityA(), p2Ticket.getCityB());
-        System.out.println("Ticket Toronto -> Chicago: " + p2Test + " | Expected: true");
+        //System.out.println("\n--- 8. TESTING PLAYER 2'S BFS ---");
+       // boolean p2Test = p2Graph.pathExists(p2Ticket.getCityA(), p2Ticket.getCityB());
+       // System.out.println("Ticket Toronto -> Chicago: " + p2Test + " | Expected: true");
     }
 }
