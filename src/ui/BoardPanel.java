@@ -40,12 +40,14 @@ public class BoardPanel extends JPanel implements GameStateListener {
 
     private final ConfigLoader    cfg = ConfigLoader.get();
     private final Image           bgImage;
+    private final Image           streetBg;
     private       String          selectedRouteId;
     private       Consumer<Route> onRouteClick;
 
     public BoardPanel() {
-        setOpaque(true);
+        setOpaque(false);
         bgImage = cfg.loadImage("/londonMap.png");
+        streetBg = cfg.loadImage("/randomLondonStreet.png");
         GameManager.getInstance().addListener(this);
         addMouseListener(new MouseAdapter() {
             @Override public void mouseClicked(MouseEvent e) { handleClick(e); }
@@ -75,7 +77,21 @@ public class BoardPanel extends JPanel implements GameStateListener {
         if (bgImage != null) {
             g2.drawImage(bgImage, 0, 0, w, h, null);
         } else {
-            drawBackground(g2, w, h);
+            // Draw street background as a fallback if the main map image fails
+            if (streetBg != null) {
+                double imgW = streetBg.getWidth(null);
+                double imgH = streetBg.getHeight(null);
+                double scale = Math.max((double) w / imgW, (double) h / imgH);
+                int sw = (int) (imgW * scale);
+                int sh = (int) (imgH * scale);
+                int ox = (w - sw) / 2;
+                int oy = (h - sh) / 2;
+                g2.drawImage(streetBg, ox, oy, sw, sh, null);
+                g2.setColor(new Color(0, 0, 0, 100));
+                g2.fillRect(0, 0, w, h);
+            } else {
+                drawBackground(g2, w, h);
+            }
             drawRiver(g2, w, h);
             drawMapDecor(g2, w, h);
         }
@@ -87,7 +103,7 @@ public class BoardPanel extends JPanel implements GameStateListener {
     // ── Static map elements ───────────────────────────────────────────────────
 
     private void drawBackground(Graphics2D g2, int w, int h) {
-        g2.setColor(UiTheme.MAP_CREAM);
+        g2.setColor(new Color(UiTheme.MAP_CREAM.getRGB() & 0xFFFFFF | 0xDD000000, true));
         g2.fillRoundRect(8, 8, w - 16, h - 16, 12, 12);
         g2.setColor(new Color(0, 0, 0, 12));
         g2.setStroke(new BasicStroke(0.5f));

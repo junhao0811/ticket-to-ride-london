@@ -85,44 +85,71 @@ public class GameWindow extends JFrame implements GameStateListener {
             toast.show(result.getMessage());
         });
 
-        // ── Assemble stage (absolute layout, scaled) ───────────────────────
-        stage = new JPanel(null) {
+        // ── Assemble stage (JLayeredPane for proper overlay z-ordering) ────
+        final Image street = ConfigLoader.get().loadImage("/randomLondonStreet.png");
+        JLayeredPane layeredStage = new JLayeredPane() {
             @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 int w = getWidth(), h = getHeight();
                 if (w <= 0 || h <= 0) return;
                 Graphics2D g2 = (Graphics2D) g;
-                RadialGradientPaint grad = new RadialGradientPaint(
-                    w / 2f, h / 2f, Math.max(w, h) / 1.5f,
-                    new float[]{0f, 0.6f, 1f},
-                    new Color[]{
-                        UiTheme.BG_WATER,
-                        new Color(0x2A, 0x35, 0x55),
-                        UiTheme.BG_DEEP
-                    });
-                g2.setPaint(grad);
-                g2.fillRect(0, 0, w, h);
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                if (street != null) {
+                    double imgW = street.getWidth(null);
+                    double imgH = street.getHeight(null);
+                    double scale = Math.max((double) w / imgW, (double) h / imgH);
+                    int sw = (int) (imgW * scale);
+                    int sh = (int) (imgH * scale);
+                    int ox = (w - sw) / 2;
+                    int oy = (h - sh) / 2;
+                    g2.drawImage(street, ox, oy, sw, sh, null);
+
+                    // Dark overlay to ensure UI elements (rails, cards) stand out
+                    g2.setColor(new Color(0, 0, 0, 140));
+                    g2.fillRect(0, 0, w, h);
+                } else {
+                    // Fallback: Dark navy-to-near-black vertical gradient
+                    g2.setPaint(new GradientPaint(0, 0, new Color(0x1A, 0x24, 0x3E),
+                                                  0, h, new Color(0x0C, 0x10, 0x1E)));
+                    g2.fillRect(0, 0, w, h);
+
+                    // Soft blue radial glow centred on the board
+                    g2.setPaint(new RadialGradientPaint(
+                        w / 2f, h * 0.45f, w * 0.6f,
+                        new float[]{0f, 1f},
+                        new Color[]{new Color(0x28, 0x42, 0x7A, 50), new Color(0, 0, 0, 0)}));
+                    g2.fillRect(0, 0, w, h);
+                }
+
+                // Subtle grid overlay to match menu aesthetic
+                g2.setColor(new Color(0xFF, 0xFF, 0xFF, 5));
+                g2.setStroke(new BasicStroke(0.5f));
+                for (int x = 0; x < w; x += 64) g2.drawLine(x, 0, x, h);
+                for (int y = 0; y < h; y += 64) g2.drawLine(0, y, w, y);
             }
         };
-        stage.setOpaque(true);
-        stage.setPreferredSize(new Dimension(STAGE_W, STAGE_H));
+        layeredStage.setLayout(null);
+        layeredStage.setOpaque(true);
+        layeredStage.setPreferredSize(new Dimension(STAGE_W, STAGE_H));
+        this.stage = new JPanel(new BorderLayout()); // Wrapper for legacy references if any
+        this.stage.setOpaque(false);
+        this.stage.add(layeredStage);
 
-        // Left rail: absolute left edge
-        stage.add(leftRail);
-        // Board: centre
-        stage.add(boardPanel);
-        // Right rail: right edge
-        stage.add(rightRail);
-        // Hand bar: bottom strip
-        stage.add(handBar);
-        // Score panel (hidden until game ends)
-        stage.add(scorePanel);
+        // Game components -> DEFAULT_LAYER
+        layeredStage.add(leftRail,    JLayeredPane.DEFAULT_LAYER);
+        layeredStage.add(boardPanel,  JLayeredPane.DEFAULT_LAYER);
+        layeredStage.add(rightRail,   JLayeredPane.DEFAULT_LAYER);
+        layeredStage.add(handBar,     JLayeredPane.DEFAULT_LAYER);
+        layeredStage.add(scorePanel,  JLayeredPane.DEFAULT_LAYER);
         scorePanel.setVisible(false);
-        // Toast overlay
-        stage.add(toast);
-        // Pass-device overlay — added last so it sits above everything
+
+        // Toast -> PALETTE_LAYER (above board)
+        layeredStage.add(toast,       JLayeredPane.PALETTE_LAYER);
+
+        // Pass-device overlay -> POPUP_LAYER (highest)
         passOverlay = new PassDeviceOverlay(() -> passOverlay.setVisible(false));
-        stage.add(passOverlay);
+        layeredStage.add(passOverlay, JLayeredPane.POPUP_LAYER);
         passOverlay.setVisible(false);
 
         // ── Scale wrapper ──────────────────────────────────────────────────
@@ -136,8 +163,8 @@ public class GameWindow extends JFrame implements GameStateListener {
                 int ox = (pw - sw) / 2, oy = (ph - sh) / 2;
                 for (Component c : getComponents()) {
                     c.setBounds(ox, oy, sw, sh);
-                    if (c instanceof JPanel p) {
-                        layoutStage(p, sw, sh);
+                    if (c == stage) {
+                        layoutStage(layeredStage, sw, sh);
                     }
                 }
             }
@@ -146,7 +173,7 @@ public class GameWindow extends JFrame implements GameStateListener {
             }
         };
         scaleWrap.setOpaque(true);
-        scaleWrap.setBackground(new Color(0x0C, 0x12, 0x20));
+        scaleWrap.setBackground(new Color(0x0C, 0x10, 0x1E)); // Matches stage bottom color
         scaleWrap.add(stage);
 
         setContentPane(scaleWrap);
@@ -155,7 +182,7 @@ public class GameWindow extends JFrame implements GameStateListener {
         lastKnownPlayer = GameManager.getInstance().getCurrentPlayer();
     }
 
-    private void layoutStage(JPanel p, int w, int h) {
+    private void layoutStage(JLayeredPane p, int w, int h) {
         int leftW  = 220;
         int rightW = 120;
         int handH  = 100;

@@ -140,6 +140,8 @@ public class RightRailPanel extends JPanel implements GameStateListener {
         Color fill   = card != null ? UiTheme.routeColour(card.getColour()) : UiTheme.PANEL_BG;
         Image img    = card != null ? cardImages.get(card.getColour()) : null;
         String label = card != null ? (card.isWild() ? "WILD" : card.getColour().badge()) : "";
+        DrawSource source = DrawSource.values()[index];
+        boolean selectable = card != null && canSelect(source);
 
         JPanel panel = new JPanel() {
             @Override
@@ -179,20 +181,20 @@ public class RightRailPanel extends JPanel implements GameStateListener {
         panel.setOpaque(false);
         panel.setMaximumSize(new Dimension(96, 56));
         panel.setPreferredSize(new Dimension(96, 56));
-        panel.setCursor(card != null ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
-                                     : Cursor.getDefaultCursor());
+        panel.setCursor(selectable ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
+                                   : Cursor.getDefaultCursor());
 
-        final int idx = index;
         panel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseClicked(java.awt.event.MouseEvent e) {
-                if (card == null) return;
-                handleCardClick(DrawSource.values()[idx]);
+                if (!selectable) return;
+                handleCardClick(source);
             }
         });
         return panel;
     }
 
     private JPanel makeDeckCard() {
+        boolean selectable = canSelect(DrawSource.BLIND_DECK);
         JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -231,9 +233,11 @@ public class RightRailPanel extends JPanel implements GameStateListener {
         panel.setPreferredSize(new Dimension(96, 56));
         panel.add(badge(GameManager.getInstance().getTrainDeck().size(), UiTheme.PANEL_BORDER),
             BorderLayout.SOUTH);
-        panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        panel.setCursor(selectable ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
+                                   : Cursor.getDefaultCursor());
         panel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (!selectable) return;
                 handleCardClick(DrawSource.BLIND_DECK);
             }
         });
@@ -250,20 +254,52 @@ public class RightRailPanel extends JPanel implements GameStateListener {
         Player      you = gm.getCurrentPlayer();
 
         if (inProgressDraw != null && inProgressDraw.awaitingSecondDraw()) {
+            if (!inProgressDraw.canUseSourceForCurrentPhase(source)) {
+                return;
+            }
+
             // Phase 2: feed second source into the existing action and re-submit
             inProgressDraw.setSecondSource(source);
-            gm.submitAction(inProgressDraw);
-            inProgressDraw = null;
+            ActionResult result = gm.submitAction(inProgressDraw);
+            if (result.isSuccess()) {
+                inProgressDraw = null;
+            }
         } else {
+            if (!canSelect(source)) {
+                return;
+            }
+
             // Phase 1: start a fresh draw action
             DrawTrainCardAction action = new DrawTrainCardAction(
                     you, source, gm.getTrainDeck(), gm.getFaceUpPool());
             ActionResult result = gm.submitAction(action);
             inProgressDraw = result.isPending() ? action : null;
         }
+        refreshCards();
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private boolean canSelect(DrawSource source) {
+        if (inProgressDraw != null && inProgressDraw.awaitingSecondDraw()) {
+            return inProgressDraw.canUseSourceForCurrentPhase(source);
+        }
+
+        GameManager gm = GameManager.getInstance();
+        if (source == DrawSource.BLIND_DECK) {
+            return !gm.getTrainDeck().isCompletelyEmpty();
+        }
+
+        int index = source.ordinal();
+        List<TrainCard> slots = gm.getFaceUpPool().getSlots();
+        return index < slots.size() && slots.get(index) != null;
+    }
+
+    private void refreshCards() {
+        rebuild();
+        revalidate();
+        repaint();
+    }
 
     private JPanel makeCardShell(Color bg) {
         JPanel p = new JPanel();

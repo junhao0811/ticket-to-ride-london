@@ -88,22 +88,15 @@ public class PassDeviceOverlay extends JPanel {
 
     int centreY = (band1Y + band2Y) / 2;
 
-    // Instruction text above avatar
-    g2.setFont(UiTheme.display(20));
-    g2.setColor(Color.WHITE);
-    String instruction = "Pass the device to  " + name;
-    FontMetrics fm = g2.getFontMetrics();
-    g2.drawString(instruction, (w - fm.stringWidth(instruction)) / 2, band1Y + 44);
-
     // Coloured avatar rect
-    int rectW = 180, rectH = 165;
+    int rectW = 180, rectH = 180;
     int rx = (w - rectW) / 2;
-    int ry = centreY - rectH / 2 + 8;
+    int ry = centreY - rectH / 2 - 40;
     g2.setColor(playerColour);
     g2.fillRoundRect(rx, ry, rectW, rectH, 28, 28);
 
     // Initial letter centred in rect
-    g2.setFont(new Font("SansSerif", Font.BOLD, 56));
+    g2.setFont(new Font("SansSerif", Font.BOLD, 64));
     g2.setColor(UiTheme.inkOn(playerColour));
     FontMetrics ifm = g2.getFontMetrics();
     g2.drawString(initial,
@@ -111,18 +104,25 @@ public class PassDeviceOverlay extends JPanel {
         ry + (rectH - ifm.getHeight()) / 2 + ifm.getAscent());
 
     // Name pill below avatar
-    g2.setFont(UiTheme.display(18));
+    g2.setFont(UiTheme.display(20));
     FontMetrics nfm = g2.getFontMetrics();
-    int pillW = nfm.stringWidth(name) + 36;
-    int pillH = 40;
+    int pillW = Math.max(220, nfm.stringWidth(name) + 48);
+    int pillH = 48;
     int px = (w - pillW) / 2;
-    int py = ry + rectH + 14;
+    int py = ry + rectH + 16;
     g2.setColor(playerColour);
     g2.fillRoundRect(px, py, pillW, pillH, pillH, pillH);
     g2.setColor(UiTheme.inkOn(playerColour));
     g2.drawString(name,
         px + (pillW - nfm.stringWidth(name)) / 2,
         py + (pillH - nfm.getHeight()) / 2 + nfm.getAscent());
+
+    // Instruction text below name pill
+    g2.setFont(UiTheme.display(22));
+    g2.setColor(Color.WHITE);
+    String instruction = "Pass the device to " + name;
+    FontMetrics fm = g2.getFontMetrics();
+    g2.drawString(instruction, (w - fm.stringWidth(instruction)) / 2, py + pillH + 48);
   }
 
   private JButton buildReadyButton(Runnable onReady) {

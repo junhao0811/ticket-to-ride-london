@@ -296,21 +296,39 @@ public class PlayerLobbyScreen extends JFrame {
   // ── Background ────────────────────────────────────────────────────────────
 
   private JPanel buildBg() {
+    final Image street = ConfigLoader.get().loadImage("/randomLondonStreet.png");
     return new JPanel() {
       @Override protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         int w = getWidth(), h = getHeight();
-        g2.setPaint(new GradientPaint(0, 0, new Color(0x1A, 0x24, 0x3E),
-                                      0, h, new Color(0x0C, 0x10, 0x1E)));
-        g2.fillRect(0, 0, w, h);
-        if (w > 0 && h > 0) {
-          g2.setPaint(new RadialGradientPaint(
-              w / 2f, h * 0.38f, w * 0.52f,
-              new float[]{0f, 1f},
-              new Color[]{new Color(0x28, 0x42, 0x7A, 55), new Color(0, 0, 0, 0)}));
+
+        if (street != null) {
+          double imgW = street.getWidth(null);
+          double imgH = street.getHeight(null);
+          double scale = Math.max((double) w / imgW, (double) h / imgH);
+          int sw = (int) (imgW * scale);
+          int sh = (int) (imgH * scale);
+          int ox = (w - sw) / 2;
+          int oy = (h - sh) / 2;
+          g2.drawImage(street, ox, oy, sw, sh, null);
+
+          // Dark overlay for readability
+          g2.setColor(new Color(0, 0, 0, 110));
           g2.fillRect(0, 0, w, h);
+        } else {
+          g2.setPaint(new GradientPaint(0, 0, new Color(0x1A, 0x24, 0x3E),
+                                        0, h, new Color(0x0C, 0x10, 0x1E)));
+          g2.fillRect(0, 0, w, h);
+          if (w > 0 && h > 0) {
+            g2.setPaint(new RadialGradientPaint(
+                w / 2f, h * 0.38f, w * 0.52f,
+                new float[]{0f, 1f},
+                new Color[]{new Color(0x28, 0x42, 0x7A, 55), new Color(0, 0, 0, 0)}));
+            g2.fillRect(0, 0, w, h);
+          }
         }
+
         g2.setColor(new Color(0xFF, 0xFF, 0xFF, 7));
         g2.setStroke(new BasicStroke(0.5f));
         for (int x = 0; x < w; x += 64) g2.drawLine(x, 0, x, h);
