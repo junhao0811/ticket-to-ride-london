@@ -133,7 +133,7 @@ public class HandBarPanel extends JPanel implements GameStateListener {
         Color  ink = UiTheme.inkOn(bg);
 
         return new JPanel() {
-            { setPreferredSize(new Dimension(58, 76)); setOpaque(false); }
+            { setPreferredSize(new Dimension(100, 72)); setOpaque(false); }
 
             @Override
             protected void paintComponent(Graphics g) {
@@ -165,11 +165,11 @@ public class HandBarPanel extends JPanel implements GameStateListener {
                 }
 
                 // Count badge
-                g2.setFont(UiTheme.display(15));
+                g2.setFont(UiTheme.display(16));
                 g2.setColor(Color.WHITE);
                 FontMetrics fm = g2.getFontMetrics();
                 String s = "×" + count;
-                g2.drawString(s, w / 2 - fm.stringWidth(s) / 2, h - 7);
+                g2.drawString(s, w / 2 - fm.stringWidth(s) / 2, h - 8);
 
                 // Border
                 g2.setColor(new Color(255, 255, 255, 40));

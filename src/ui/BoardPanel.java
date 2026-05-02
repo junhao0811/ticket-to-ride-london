@@ -29,7 +29,7 @@ public class BoardPanel extends JPanel implements GameStateListener {
     private static final double MAP_H = 1200.0;
 
     // Node display sizes (screen pixels, not scaled — stay readable at all sizes)
-    private static final int NODE_R   = 10;
+    private static final int NODE_R   = 14;
     private static final int HUB_R    = 14;
     private static final int FONT_NODE = 9;
 
@@ -225,7 +225,7 @@ public class BoardPanel extends JPanel implements GameStateListener {
     }
 
     private void drawNode(Graphics2D g2, String name, int cx, int cy, boolean hub) {
-        int r = hub ? HUB_R : NODE_R;
+        int r = HUB_R;
         // Drop shadow
         g2.setColor(new Color(0, 0, 0, 40));
         g2.fillOval(cx - r + 2, cy - r + 2, r * 2, r * 2);
@@ -233,25 +233,9 @@ public class BoardPanel extends JPanel implements GameStateListener {
         g2.setColor(UiTheme.MAP_CREAM2);
         g2.fillOval(cx - r, cy - r, r * 2, r * 2);
         // Border
-        g2.setColor(hub ? UiTheme.INK : UiTheme.INK_DIM);
-        g2.setStroke(new BasicStroke(hub ? 2f : 1.2f));
-        drawOval(g2, cx - r, cy - r, r * 2, r * 2);
-        // Abbreviation inside node
-        String abbr = abbreviate(name);
-        g2.setFont(UiTheme.mono(FONT_NODE));
         g2.setColor(UiTheme.INK);
-        FontMetrics fm = g2.getFontMetrics();
-        g2.drawString(abbr, cx - fm.stringWidth(abbr) / 2, cy + fm.getAscent() / 2 - 1);
-        // City name below node (two lines)
-        g2.setFont(UiTheme.body(8));
-        g2.setColor(UiTheme.INK_DIM);
-        fm = g2.getFontMetrics();
-        String[] words = name.split(" ");
-        String line1 = words[0];
-        String line2 = words.length > 1 ? words[words.length - 1] : "";
-        g2.drawString(line1, cx - fm.stringWidth(line1) / 2, cy + r + 10);
-        if (!line2.isEmpty() && !line2.equals(line1))
-            g2.drawString(line2, cx - fm.stringWidth(line2) / 2, cy + r + 20);
+        g2.setStroke(new BasicStroke(2f));
+        drawOval(g2, cx - r, cy - r, r * 2, r * 2);
     }
 
     private void drawOval(Graphics2D g2, int x, int y, int w, int h) {
