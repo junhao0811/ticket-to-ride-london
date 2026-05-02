@@ -1,0 +1,18 @@
+out/
+*.class
+META-INF/
+
+# IntelliJ
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/
+
+# Claude Code
+.claude/
+CLAUDE.md
+*.md
+
+# Build helpers
+compile_args.txt
+sources.txt
+sources_ps.txt

@@ -1,0 +1,2292 @@
+{
+	"game_config": {
+		"destination_tickets": [
+			{
+				"from_city_id": "piccadillyCircus",
+				"image_path": "img/destination_01.png",
+				"points": 2,
+				"to_city_id": "britishMuseum"
+			},
+			{
+				"from_city_id": "piccadillyCircus",
+				"image_path": "img/destination_02.png",
+				"points": 3,
+				"to_city_id": "waterloo"
+			},
+			{
+				"from_city_id": "hydePark",
+				"image_path": "img/destination_03.png",
+				"points": 3,
+				"to_city_id": "coventGarden"
+			},
+			{
+				"from_city_id": "globeTheatre",
+				"image_path": "img/destination_04.png",
+				"points": 4,
+				"to_city_id": "brickLane"
+			},
+			{
+				"from_city_id": "britishMuseum",
+				"image_path": "img/destination_05.png",
+				"points": 4,
+				"to_city_id": "stPauls"
+			},
+			{
+				"from_city_id": "trafalgarSquare",
+				"image_path": "img/destination_06.png",
+				"points": 4,
+				"to_city_id": "stPauls"
+			},
+			{
+				"from_city_id": "britishMuseum",
+				"image_path": "img/destination_07.png",
+				"points": 4,
+				"to_city_id": "waterloo"
+			},
+			{
+				"from_city_id": "trafalgarSquare",
+				"image_path": "img/destination_08.png",
+				"points": 4,
+				"to_city_id": "globeTheatre"
+			},
+			{
+				"from_city_id": "bigBen",
+				"image_path": "img/destination_09.png",
+				"points": 5,
+				"to_city_id": "charterhouse"
+			},
+			{
+				"from_city_id": "bakerStreet",
+				"image_path": "img/destination_10.png",
+				"points": 5,
+				"to_city_id": "trafalgarSquare"
+			},
+			{
+				"from_city_id": "buckinghamPalace",
+				"image_path": "img/destination_11.png",
+				"points": 5,
+				"to_city_id": "elephantAndCastle"
+			},
+			{
+				"from_city_id": "regentsPark",
+				"image_path": "img/destination_12.png",
+				"points": 5,
+				"to_city_id": "piccadillyCircus"
+			},
+			{
+				"from_city_id": "hydePark",
+				"image_path": "img/destination_13.png",
+				"points": 6,
+				"to_city_id": "stPauls"
+			},
+			{
+				"from_city_id": "bigBen",
+				"image_path": "img/destination_14.png",
+				"points": 6,
+				"to_city_id": "towerOfLondon"
+			},
+			{
+				"from_city_id": "coventGarden",
+				"image_path": "img/destination_15.png",
+				"points": 6,
+				"to_city_id": "towerOfLondon"
+			},
+			{
+				"from_city_id": "kingsCross",
+				"image_path": "img/destination_16.png",
+				"points": 6,
+				"to_city_id": "buckinghamPalace"
+			},
+			{
+				"from_city_id": "kingsCross",
+				"image_path": "img/destination_17.png",
+				"points": 7,
+				"to_city_id": "towerOfLondon"
+			},
+			{
+				"from_city_id": "regentsPark",
+				"image_path": "img/destination_18.png",
+				"points": 9,
+				"to_city_id": "elephantAndCastle"
+			},
+			{
+				"from_city_id": "buckinghamPalace",
+				"image_path": "img/destination_19.png",
+				"points": 9,
+				"to_city_id": "brickLane"
+			},
+			{
+				"from_city_id": "bakerStreet",
+				"image_path": "img/destination_20.png",
+				"points": 11,
+				"to_city_id": "towerOfLondon"
+			}
+		],
+		"trains_per_player": 17,
+		"transport_cards": [
+			{
+				"card_count": 6,
+				"cart_type": "ORANGE",
+				"image_path": "img/transport_orange.png"
+			},
+			{
+				"card_count": 6,
+				"cart_type": "YELLOW",
+				"image_path": "img/transport_yellow.png"
+			},
+			{
+				"card_count": 6,
+				"cart_type": "GREEN",
+				"image_path": "img/transport_green.png"
+			},
+			{
+				"card_count": 6,
+				"cart_type": "BLUE",
+				"image_path": "img/transport_blue.png"
+			},
+			{
+				"card_count": 6,
+				"cart_type": "PURPLE",
+				"image_path": "img/transport_purple.png"
+			},
+			{
+				"card_count": 6,
+				"cart_type": "BLACK",
+				"image_path": "img/transport_black.png"
+			},
+			{
+				"card_count": 8,
+				"cart_type": "LOCOMOTIVE",
+				"image_path": "img/transport_locomotive.png"
+			}
+		]
+	},
+	"map": {
+		"cities": [
+			{
+				"display_name": "Regent's  Park",
+				"id": "regentsPark",
+				"position": {
+					"x": 341.0,
+					"y": 188.0
+				}
+			},
+			{
+				"display_name": "Baker Street",
+				"id": "bakerStreet",
+				"position": {
+					"x": 138.0,
+					"y": 366.0
+				}
+			},
+			{
+				"display_name": "King's Cross",
+				"id": "kingsCross",
+				"position": {
+					"x": 711.0,
+					"y": 177.0
+				}
+			},
+			{
+				"display_name": "British Museum",
+				"id": "britishMuseum",
+				"position": {
+					"x": 611.0,
+					"y": 445.0
+				}
+			},
+			{
+				"display_name": "Hyde Park",
+				"id": "hydePark",
+				"position": {
+					"x": 210.0,
+					"y": 860.0
+				}
+			},
+			{
+				"display_name": "The Charterhouse",
+				"id": "charterhouse",
+				"position": {
+					"x": 1050.0,
+					"y": 333.0
+				}
+			},
+			{
+				"display_name": "ST Paul's",
+				"id": "stPauls",
+				"position": {
+					"x": 1071.0,
+					"y": 551.0
+				}
+			},
+			{
+				"display_name": "Brick Lane",
+				"id": "brickLane",
+				"position": {
+					"x": 1417.0,
+					"y": 349.0
+				}
+			},
+			{
+				"display_name": "Tower Of London",
+				"id": "towerOfLondon",
+				"position": {
+					"x": 1419.0,
+					"y": 715.0
+				}
+			},
+			{
+				"display_name": "Globe Theatre",
+				"id": "globeTheatre",
+				"position": {
+					"x": 1091.0,
+					"y": 738.0
+				}
+			},
+			{
+				"display_name": "Waterloo",
+				"id": "waterloo",
+				"position": {
+					"x": 859.0,
+					"y": 828.0
+				}
+			},
+			{
+				"display_name": "Elephant & Castle",
+				"id": "elephantAndCastle",
+				"position": {
+					"x": 1041.0,
+					"y": 1023.0
+				}
+			},
+			{
+				"display_name": "Covent Garden",
+				"id": "coventGarden",
+				"position": {
+					"x": 692.0,
+					"y": 611.0
+				}
+			},
+			{
+				"display_name": "Piccadilly Circus",
+				"id": "piccadillyCircus",
+				"position": {
+					"x": 480.0,
+					"y": 678.0
+				}
+			},
+			{
+				"display_name": "Trafalgar Square",
+				"id": "trafalgarSquare",
+				"position": {
+					"x": 611.0,
+					"y": 769.0
+				}
+			},
+			{
+				"display_name": "Big Ben",
+				"id": "bigBen",
+				"position": {
+					"x": 677.0,
+					"y": 928.0
+				}
+			},
+			{
+				"display_name": "Buckingham Palace",
+				"id": "buckinghamPalace",
+				"position": {
+					"x": 393.0,
+					"y": 949.0
+				}
+			}
+		],
+		"map_id": "london_map",
+		"map_size": {
+			"x": 1550.0,
+			"y": 1200.0
+		},
+		"normalization_offset": {
+			"x": 0.0,
+			"y": 0.0
+		},
+		"normalized": true,
+		"routes": [
+			{
+				"cart_type": "BLUE",
+				"from_city_id": "regentsPark",
+				"node_name": "Regent's_Park_to_Baker_Street",
+				"points": [
+					{
+						"x": 341.0,
+						"y": 188.0
+					},
+					{
+						"x": 275.0,
+						"y": 241.0
+					},
+					{
+						"x": 195.0,
+						"y": 308.0
+					},
+					{
+						"x": 138.0,
+						"y": 366.0
+					}
+				],
+				"route_length": 2,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 275.0,
+							"y": 241.0
+						},
+						"rotation_radians": 2.4536293
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 195.0,
+							"y": 308.0
+						},
+						"rotation_radians": 2.401964
+					}
+				],
+				"to_city_id": "bakerStreet"
+			},
+			{
+				"cart_type": "GREEN",
+				"from_city_id": "regentsPark",
+				"node_name": "Regent's_Park_to_King's_Cross",
+				"points": [
+					{
+						"x": 341.0,
+						"y": 188.0
+					},
+					{
+						"x": 419.0,
+						"y": 175.0
+					},
+					{
+						"x": 523.0,
+						"y": 166.0
+					},
+					{
+						"x": 627.0,
+						"y": 170.0
+					},
+					{
+						"x": 711.0,
+						"y": 177.0
+					}
+				],
+				"route_length": 3,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 419.0,
+							"y": 175.0
+						},
+						"rotation_radians": -0.12029548
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 523.0,
+							"y": 166.0
+						},
+						"rotation_radians": -0.024033833
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 627.0,
+							"y": 170.0
+						},
+						"rotation_radians": 0.058444005
+					}
+				],
+				"to_city_id": "kingsCross"
+			},
+			{
+				"cart_type": "BLACK",
+				"from_city_id": "kingsCross",
+				"node_name": "King's_Cross_to_British_Museum",
+				"points": [
+					{
+						"x": 711.0,
+						"y": 177.0
+					},
+					{
+						"x": 688.0,
+						"y": 262.0
+					},
+					{
+						"x": 650.0,
+						"y": 360.0
+					},
+					{
+						"x": 611.0,
+						"y": 445.0
+					}
+				],
+				"route_length": 2,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 688.0,
+							"y": 262.0
+						},
+						"rotation_radians": 1.8925469
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 650.0,
+							"y": 360.0
+						},
+						"rotation_radians": 1.9690745
+					}
+				],
+				"to_city_id": "britishMuseum"
+			},
+			{
+				"cart_type": "YELLOW",
+				"from_city_id": "regentsPark",
+				"node_name": "Regent's_Park_to_British_Museum",
+				"points": [
+					{
+						"x": 341.0,
+						"y": 188.0
+					},
+					{
+						"x": 400.0,
+						"y": 237.0
+					},
+					{
+						"x": 478.0,
+						"y": 300.0
+					},
+					{
+						"x": 554.0,
+						"y": 370.0
+					},
+					{
+						"x": 611.0,
+						"y": 445.0
+					}
+				],
+				"route_length": 3,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 400.0,
+							"y": 237.0
+						},
+						"rotation_radians": 0.6853319
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 478.0,
+							"y": 300.0
+						},
+						"rotation_radians": 0.7123576
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 554.0,
+							"y": 370.0
+						},
+						"rotation_radians": 0.82853687
+					}
+				],
+				"to_city_id": "britishMuseum"
+			},
+			{
+				"cart_type": "ORANGE",
+				"from_city_id": "bakerStreet",
+				"node_name": "Baker_Street_to_British_Museum",
+				"points": [
+					{
+						"x": 138.0,
+						"y": 366.0
+					},
+					{
+						"x": 231.0,
+						"y": 373.0
+					},
+					{
+						"x": 329.0,
+						"y": 390.0
+					},
+					{
+						"x": 426.0,
+						"y": 409.0
+					},
+					{
+						"x": 528.0,
+						"y": 428.0
+					},
+					{
+						"x": 611.0,
+						"y": 445.0
+					}
+				],
+				"route_length": 4,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 231.0,
+							"y": 373.0
+						},
+						"rotation_radians": 0.12499932
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 329.0,
+							"y": 390.0
+						},
+						"rotation_radians": 0.18255985
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 426.0,
+							"y": 409.0
+						},
+						"rotation_radians": 0.18868329
+					},
+					{
+						"index": 3,
+						"position": {
+							"x": 528.0,
+							"y": 428.0
+						},
+						"rotation_radians": 0.19219269
+					}
+				],
+				"to_city_id": "britishMuseum"
+			},
+			{
+				"cart_type": "PURPLE",
+				"from_city_id": "kingsCross",
+				"node_name": "King's_Cross_to_The_Charterhouse",
+				"points": [
+					{
+						"x": 711.0,
+						"y": 177.0
+					},
+					{
+						"x": 793.0,
+						"y": 193.0
+					},
+					{
+						"x": 887.0,
+						"y": 231.0
+					},
+					{
+						"x": 975.0,
+						"y": 286.0
+					},
+					{
+						"x": 1050.0,
+						"y": 333.0
+					}
+				],
+				"route_length": 3,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 793.0,
+							"y": 193.0
+						},
+						"rotation_radians": 0.2977002
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 887.0,
+							"y": 231.0
+						},
+						"rotation_radians": 0.47240013
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 975.0,
+							"y": 286.0
+						},
+						"rotation_radians": 0.5591506
+					}
+				],
+				"to_city_id": "charterhouse"
+			},
+			{
+				"cart_type": "BLUE",
+				"from_city_id": "britishMuseum",
+				"node_name": "British_Museum_to_The_Charterhouse",
+				"points": [
+					{
+						"x": 611.0,
+						"y": 445.0
+					},
+					{
+						"x": 687.0,
+						"y": 443.0
+					},
+					{
+						"x": 789.0,
+						"y": 439.0
+					},
+					{
+						"x": 888.0,
+						"y": 420.0
+					},
+					{
+						"x": 983.0,
+						"y": 379.0
+					},
+					{
+						"x": 1050.0,
+						"y": 333.0
+					}
+				],
+				"route_length": 4,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 687.0,
+							"y": 443.0
+						},
+						"rotation_radians": -0.03369511
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 789.0,
+							"y": 439.0
+						},
+						"rotation_radians": -0.11393232
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 888.0,
+							"y": 420.0
+						},
+						"rotation_radians": -0.29994714
+					},
+					{
+						"index": 3,
+						"position": {
+							"x": 983.0,
+							"y": 379.0
+						},
+						"rotation_radians": -0.4928364
+					}
+				],
+				"to_city_id": "charterhouse"
+			},
+			{
+				"cart_type": "GREEN",
+				"from_city_id": "charterhouse",
+				"node_name": "The_Charterhouse_to_Brick_Lane",
+				"points": [
+					{
+						"x": 1050.0,
+						"y": 333.0
+					},
+					{
+						"x": 1128.0,
+						"y": 318.0
+					},
+					{
+						"x": 1230.0,
+						"y": 307.0
+					},
+					{
+						"x": 1333.0,
+						"y": 321.0
+					},
+					{
+						"x": 1417.0,
+						"y": 349.0
+					}
+				],
+				"route_length": 3,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 1128.0,
+							"y": 318.0
+						},
+						"rotation_radians": -0.14345226
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 1230.0,
+							"y": 307.0
+						},
+						"rotation_radians": 0.014633101
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 1333.0,
+							"y": 321.0
+						},
+						"rotation_radians": 0.22093266
+					}
+				],
+				"to_city_id": "brickLane"
+			},
+			{
+				"cart_type": "ORANGE",
+				"from_city_id": "brickLane",
+				"node_name": "Brick_Lane_to_ST_Paul's",
+				"points": [
+					{
+						"x": 1417.0,
+						"y": 349.0
+					},
+					{
+						"x": 1329.0,
+						"y": 398.0
+					},
+					{
+						"x": 1239.0,
+						"y": 445.0
+					},
+					{
+						"x": 1149.0,
+						"y": 498.0
+					},
+					{
+						"x": 1071.0,
+						"y": 551.0
+					}
+				],
+				"route_length": 3,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 1329.0,
+							"y": 398.0
+						},
+						"rotation_radians": 2.6469815
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 1239.0,
+							"y": 445.0
+						},
+						"rotation_radians": 2.634494
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 1149.0,
+							"y": 498.0
+						},
+						"rotation_radians": 2.5787244
+					}
+				],
+				"to_city_id": "stPauls"
+			},
+			{
+				"cart_type": "BLUE",
+				"from_city_id": "brickLane",
+				"node_name": "Brick_Lane_to_Tower_Of_London",
+				"points": [
+					{
+						"x": 1417.0,
+						"y": 349.0
+					},
+					{
+						"x": 1419.0,
+						"y": 430.0
+					},
+					{
+						"x": 1417.0,
+						"y": 534.0
+					},
+					{
+						"x": 1418.0,
+						"y": 636.0
+					},
+					{
+						"x": 1419.0,
+						"y": 715.0
+					}
+				],
+				"route_length": 3,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 1419.0,
+							"y": 430.0
+						},
+						"rotation_radians": 1.5707964
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 1417.0,
+							"y": 534.0
+						},
+						"rotation_radians": 1.5756507
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 1418.0,
+							"y": 636.0
+						},
+						"rotation_radians": 1.5597471
+					}
+				],
+				"to_city_id": "towerOfLondon"
+			},
+			{
+				"cart_type": "YELLOW",
+				"from_city_id": "stPauls",
+				"node_name": "ST_Paul's_to_Tower_Of_London",
+				"points": [
+					{
+						"x": 1071.0,
+						"y": 551.0
+					},
+					{
+						"x": 1166.0,
+						"y": 568.0
+					},
+					{
+						"x": 1260.0,
+						"y": 598.0
+					},
+					{
+						"x": 1348.0,
+						"y": 648.0
+					},
+					{
+						"x": 1419.0,
+						"y": 715.0
+					}
+				],
+				"route_length": 3,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 1166.0,
+							"y": 568.0
+						},
+						"rotation_radians": 0.24373333
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 1260.0,
+							"y": 598.0
+						},
+						"rotation_radians": 0.41413856
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 1348.0,
+							"y": 648.0
+						},
+						"rotation_radians": 0.63438284
+					}
+				],
+				"to_city_id": "towerOfLondon"
+			},
+			{
+				"cart_type": "PURPLE",
+				"from_city_id": "towerOfLondon",
+				"node_name": "Tower_Of_London_to_ST_Paul's",
+				"points": [
+					{
+						"x": 1419.0,
+						"y": 715.0
+					},
+					{
+						"x": 1327.0,
+						"y": 696.0
+					},
+					{
+						"x": 1229.0,
+						"y": 669.0
+					},
+					{
+						"x": 1139.0,
+						"y": 616.0
+					},
+					{
+						"x": 1071.0,
+						"y": 551.0
+					}
+				],
+				"route_length": 3,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 1327.0,
+							"y": 696.0
+						},
+						"rotation_radians": -2.904058
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 1229.0,
+							"y": 669.0
+						},
+						"rotation_radians": -2.7392716
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 1139.0,
+							"y": 616.0
+						},
+						"rotation_radians": -2.50012
+					}
+				],
+				"to_city_id": "stPauls"
+			},
+			{
+				"cart_type": "BLACK",
+				"from_city_id": "towerOfLondon",
+				"node_name": "Tower_Of_London_to_Elephant_&_Castle",
+				"points": [
+					{
+						"x": 1419.0,
+						"y": 715.0
+					},
+					{
+						"x": 1380.0,
+						"y": 809.0
+					},
+					{
+						"x": 1308.0,
+						"y": 887.0
+					},
+					{
+						"x": 1222.0,
+						"y": 946.0
+					},
+					{
+						"x": 1131.0,
+						"y": 995.0
+					},
+					{
+						"x": 1041.0,
+						"y": 1023.0
+					}
+				],
+				"route_length": 4,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 1380.0,
+							"y": 809.0
+						},
+						"rotation_radians": 2.143895
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 1308.0,
+							"y": 887.0
+						},
+						"rotation_radians": 2.427261
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 1222.0,
+							"y": 946.0
+						},
+						"rotation_radians": 2.593729
+					},
+					{
+						"index": 3,
+						"position": {
+							"x": 1131.0,
+							"y": 995.0
+						},
+						"rotation_radians": 2.739371
+					}
+				],
+				"to_city_id": "elephantAndCastle"
+			},
+			{
+				"cart_type": "BLACK",
+				"from_city_id": "bakerStreet",
+				"node_name": "Baker_Street_to_Hyde_Park",
+				"points": [
+					{
+						"x": 138.0,
+						"y": 366.0
+					},
+					{
+						"x": 126.0,
+						"y": 450.0
+					},
+					{
+						"x": 130.0,
+						"y": 551.0
+					},
+					{
+						"x": 139.0,
+						"y": 649.0
+					},
+					{
+						"x": 169.0,
+						"y": 754.0
+					},
+					{
+						"x": 210.0,
+						"y": 860.0
+					}
+				],
+				"route_length": 4,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 126.0,
+							"y": 450.0
+						},
+						"rotation_radians": 1.6140126
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 130.0,
+							"y": 551.0
+						},
+						"rotation_radians": 1.5055624
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 139.0,
+							"y": 649.0
+						},
+						"rotation_radians": 1.3809907
+					},
+					{
+						"index": 3,
+						"position": {
+							"x": 169.0,
+							"y": 754.0
+						},
+						"rotation_radians": 1.2462049
+					}
+				],
+				"to_city_id": "hydePark"
+			},
+			{
+				"cart_type": "GREEN",
+				"from_city_id": "buckinghamPalace",
+				"node_name": "Buckingham_Palace_to_Big_Ben",
+				"points": [
+					{
+						"x": 393.0,
+						"y": 949.0
+					},
+					{
+						"x": 491.0,
+						"y": 959.0
+					},
+					{
+						"x": 595.0,
+						"y": 948.0
+					},
+					{
+						"x": 677.0,
+						"y": 928.0
+					}
+				],
+				"route_length": 2,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 491.0,
+							"y": 959.0
+						},
+						"rotation_radians": -0.0049504545
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 595.0,
+							"y": 948.0
+						},
+						"rotation_radians": -0.16514868
+					}
+				],
+				"to_city_id": "bigBen"
+			},
+			{
+				"cart_type": "YELLOW",
+				"from_city_id": "bigBen",
+				"node_name": "Big_Ben_to_Elephant_&_Castle",
+				"points": [
+					{
+						"x": 677.0,
+						"y": 928.0
+					},
+					{
+						"x": 755.0,
+						"y": 952.0
+					},
+					{
+						"x": 851.0,
+						"y": 987.0
+					},
+					{
+						"x": 950.0,
+						"y": 1015.0
+					},
+					{
+						"x": 1041.0,
+						"y": 1023.0
+					}
+				],
+				"route_length": 3,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 755.0,
+							"y": 952.0
+						},
+						"rotation_radians": 0.326914
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 851.0,
+							"y": 987.0
+						},
+						"rotation_radians": 0.31249157
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 950.0,
+							"y": 1015.0
+						},
+						"rotation_radians": 0.18725392
+					}
+				],
+				"to_city_id": "elephantAndCastle"
+			},
+			{
+				"cart_type": "ORANGE",
+				"from_city_id": "waterloo",
+				"node_name": "Waterloo_to_Elephant_&_Castle",
+				"points": [
+					{
+						"x": 859.0,
+						"y": 828.0
+					},
+					{
+						"x": 914.0,
+						"y": 880.0
+					},
+					{
+						"x": 985.0,
+						"y": 952.0
+					},
+					{
+						"x": 1041.0,
+						"y": 1023.0
+					}
+				],
+				"route_length": 2,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 914.0,
+							"y": 880.0
+						},
+						"rotation_radians": 0.77739835
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 985.0,
+							"y": 952.0
+						},
+						"rotation_radians": 0.8445882
+					}
+				],
+				"to_city_id": "elephantAndCastle"
+			},
+			{
+				"cart_type": "GREEN",
+				"from_city_id": "elephantAndCastle",
+				"node_name": "Elephant_&_Castle_to_Globe_Theatre",
+				"points": [
+					{
+						"x": 1041.0,
+						"y": 1023.0
+					},
+					{
+						"x": 1061.0,
+						"y": 931.0
+					},
+					{
+						"x": 1075.0,
+						"y": 828.0
+					},
+					{
+						"x": 1091.0,
+						"y": 738.0
+					}
+				],
+				"route_length": 2,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 1061.0,
+							"y": 931.0
+						},
+						"rotation_radians": -1.3981727
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 1075.0,
+							"y": 828.0
+						},
+						"rotation_radians": -1.41659
+					}
+				],
+				"to_city_id": "globeTheatre"
+			},
+			{
+				"cart_type": "PURPLE",
+				"from_city_id": "waterloo",
+				"node_name": "Waterloo_to_Globe_Theatre",
+				"points": [
+					{
+						"x": 859.0,
+						"y": 828.0
+					},
+					{
+						"x": 915.0,
+						"y": 772.0
+					},
+					{
+						"x": 1007.0,
+						"y": 737.0
+					},
+					{
+						"x": 1091.0,
+						"y": 738.0
+					}
+				],
+				"route_length": 2,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 915.0,
+							"y": 772.0
+						},
+						"rotation_radians": -0.55127794
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 1007.0,
+							"y": 737.0
+						},
+						"rotation_radians": -0.19083111
+					}
+				],
+				"to_city_id": "globeTheatre"
+			},
+			{
+				"cart_type": "PURPLE",
+				"from_city_id": "buckinghamPalace",
+				"node_name": "Buckingham_Palace_to_Piccadilly_Circus",
+				"points": [
+					{
+						"x": 393.0,
+						"y": 949.0
+					},
+					{
+						"x": 407.0,
+						"y": 862.0
+					},
+					{
+						"x": 443.0,
+						"y": 764.0
+					},
+					{
+						"x": 480.0,
+						"y": 678.0
+					}
+				],
+				"route_length": 2,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 407.0,
+							"y": 862.0
+						},
+						"rotation_radians": -1.3068326
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 443.0,
+							"y": 764.0
+						},
+						"rotation_radians": -1.1931041
+					}
+				],
+				"to_city_id": "piccadillyCircus"
+			},
+			{
+				"cart_type": "ORANGE",
+				"from_city_id": "piccadillyCircus",
+				"node_name": "Piccadilly_Circus_to_Trafalgar_Square",
+				"points": [
+					{
+						"x": 480.0,
+						"y": 678.0
+					},
+					{
+						"x": 531.0,
+						"y": 749.0
+					},
+					{
+						"x": 611.0,
+						"y": 769.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 531.0,
+							"y": 749.0
+						},
+						"rotation_radians": 0.6071307
+					}
+				],
+				"to_city_id": "trafalgarSquare"
+			},
+			{
+				"cart_type": "BLUE",
+				"from_city_id": "trafalgarSquare",
+				"node_name": "Trafalgar_Square_to_Piccadilly_Circus",
+				"points": [
+					{
+						"x": 611.0,
+						"y": 769.0
+					},
+					{
+						"x": 558.0,
+						"y": 711.0
+					},
+					{
+						"x": 480.0,
+						"y": 678.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 558.0,
+							"y": 711.0
+						},
+						"rotation_radians": -2.534462
+					}
+				],
+				"to_city_id": "piccadillyCircus"
+			},
+			{
+				"cart_type": "PURPLE",
+				"from_city_id": "coventGarden",
+				"node_name": "Covent_Garden_to_Trafalgar_Square",
+				"points": [
+					{
+						"x": 692.0,
+						"y": 611.0
+					},
+					{
+						"x": 680.0,
+						"y": 702.0
+					},
+					{
+						"x": 611.0,
+						"y": 769.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 680.0,
+							"y": 702.0
+						},
+						"rotation_radians": 2.0445192
+					}
+				],
+				"to_city_id": "trafalgarSquare"
+			},
+			{
+				"cart_type": "BLACK",
+				"from_city_id": "trafalgarSquare",
+				"node_name": "Trafalgar_Square_to_Covent_Garden",
+				"points": [
+					{
+						"x": 611.0,
+						"y": 769.0
+					},
+					{
+						"x": 641.0,
+						"y": 683.0
+					},
+					{
+						"x": 692.0,
+						"y": 611.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 641.0,
+							"y": 683.0
+						},
+						"rotation_radians": -1.0970734
+					}
+				],
+				"to_city_id": "coventGarden"
+			},
+			{
+				"cart_type": "YELLOW",
+				"from_city_id": "buckinghamPalace",
+				"node_name": "Buckingham_Palace_to_Hyde_Park",
+				"points": [
+					{
+						"x": 393.0,
+						"y": 949.0
+					},
+					{
+						"x": 306.0,
+						"y": 886.0
+					},
+					{
+						"x": 210.0,
+						"y": 860.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 306.0,
+							"y": 886.0
+						},
+						"rotation_radians": -2.6889336
+					}
+				],
+				"to_city_id": "hydePark"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "coventGarden",
+				"node_name": "Covent_Garden_to_ST_Paul's",
+				"points": [
+					{
+						"x": 692.0,
+						"y": 611.0
+					},
+					{
+						"x": 790.0,
+						"y": 634.0
+					},
+					{
+						"x": 896.0,
+						"y": 630.0
+					},
+					{
+						"x": 993.0,
+						"y": 598.0
+					},
+					{
+						"x": 1071.0,
+						"y": 551.0
+					}
+				],
+				"route_length": 3,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 790.0,
+							"y": 634.0
+						},
+						"rotation_radians": 0.09286934
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 896.0,
+							"y": 630.0
+						},
+						"rotation_radians": -0.17551513
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 993.0,
+							"y": 598.0
+						},
+						"rotation_radians": -0.4240413
+					}
+				],
+				"to_city_id": "stPauls"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "stPauls",
+				"node_name": "ST_Paul's_to_Covent_Garden",
+				"points": [
+					{
+						"x": 1071.0,
+						"y": 551.0
+					},
+					{
+						"x": 980.0,
+						"y": 545.0
+					},
+					{
+						"x": 882.0,
+						"y": 554.0
+					},
+					{
+						"x": 788.0,
+						"y": 580.0
+					},
+					{
+						"x": 692.0,
+						"y": 611.0
+					}
+				],
+				"route_length": 3,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 980.0,
+							"y": 545.0
+						},
+						"rotation_radians": 3.125721
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 882.0,
+							"y": 554.0
+						},
+						"rotation_radians": 2.9612808
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 788.0,
+							"y": 580.0
+						},
+						"rotation_radians": 2.8501358
+					}
+				],
+				"to_city_id": "coventGarden"
+			},
+			{
+				"cart_type": "ORANGE",
+				"from_city_id": "hydePark",
+				"node_name": "Hyde_Park_to_Buckingham_Palace",
+				"points": [
+					{
+						"x": 210.0,
+						"y": 860.0
+					},
+					{
+						"x": 290.0,
+						"y": 926.0
+					},
+					{
+						"x": 393.0,
+						"y": 949.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 290.0,
+							"y": 926.0
+						},
+						"rotation_radians": 0.45265904
+					}
+				],
+				"to_city_id": "buckinghamPalace"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "hydePark",
+				"node_name": "Hyde_Park_to_Piccadilly_Circus",
+				"points": [
+					{
+						"x": 210.0,
+						"y": 860.0
+					},
+					{
+						"x": 264.0,
+						"y": 771.0
+					},
+					{
+						"x": 356.0,
+						"y": 715.0
+					},
+					{
+						"x": 480.0,
+						"y": 678.0
+					}
+				],
+				"route_length": 2,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 264.0,
+							"y": 771.0
+						},
+						"rotation_radians": -0.78196174
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 356.0,
+							"y": 715.0
+						},
+						"rotation_radians": -0.40656683
+					}
+				],
+				"to_city_id": "piccadillyCircus"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "piccadillyCircus",
+				"node_name": "Piccadilly_Circus_to_Hyde_Park",
+				"points": [
+					{
+						"x": 480.0,
+						"y": 678.0
+					},
+					{
+						"x": 378.0,
+						"y": 761.0
+					},
+					{
+						"x": 293.0,
+						"y": 815.0
+					},
+					{
+						"x": 210.0,
+						"y": 860.0
+					}
+				],
+				"route_length": 2,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 378.0,
+							"y": 761.0
+						},
+						"rotation_radians": 2.5093076
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 293.0,
+							"y": 815.0
+						},
+						"rotation_radians": 2.6090887
+					}
+				],
+				"to_city_id": "hydePark"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "bakerStreet",
+				"node_name": "Baker_Street_to_Piccadilly_Circus",
+				"points": [
+					{
+						"x": 138.0,
+						"y": 366.0
+					},
+					{
+						"x": 190.0,
+						"y": 433.0
+					},
+					{
+						"x": 254.0,
+						"y": 508.0
+					},
+					{
+						"x": 328.0,
+						"y": 580.0
+					},
+					{
+						"x": 413.0,
+						"y": 641.0
+					},
+					{
+						"x": 480.0,
+						"y": 678.0
+					}
+				],
+				"route_length": 4,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 190.0,
+							"y": 433.0
+						},
+						"rotation_radians": 0.8858343
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 254.0,
+							"y": 508.0
+						},
+						"rotation_radians": 0.8169666
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 328.0,
+							"y": 580.0
+						},
+						"rotation_radians": 0.69659126
+					},
+					{
+						"index": 3,
+						"position": {
+							"x": 413.0,
+							"y": 641.0
+						},
+						"rotation_radians": 0.5726664
+					}
+				],
+				"to_city_id": "piccadillyCircus"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "britishMuseum",
+				"node_name": "British_Museum_to_Piccadilly_Circus",
+				"points": [
+					{
+						"x": 611.0,
+						"y": 445.0
+					},
+					{
+						"x": 542.0,
+						"y": 506.0
+					},
+					{
+						"x": 492.0,
+						"y": 595.0
+					},
+					{
+						"x": 480.0,
+						"y": 678.0
+					}
+				],
+				"route_length": 2,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 542.0,
+							"y": 506.0
+						},
+						"rotation_radians": 2.241459
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 492.0,
+							"y": 595.0
+						},
+						"rotation_radians": 1.9167635
+					}
+				],
+				"to_city_id": "piccadillyCircus"
+			},
+			{
+				"cart_type": "GREEN",
+				"from_city_id": "piccadillyCircus",
+				"node_name": "Piccadilly_Circus_to_Covent_Garden",
+				"points": [
+					{
+						"x": 480.0,
+						"y": 678.0
+					},
+					{
+						"x": 574.0,
+						"y": 608.0
+					},
+					{
+						"x": 692.0,
+						"y": 611.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 574.0,
+							"y": 608.0
+						},
+						"rotation_radians": -0.3061046
+					}
+				],
+				"to_city_id": "coventGarden"
+			},
+			{
+				"cart_type": "YELLOW",
+				"from_city_id": "coventGarden",
+				"node_name": "Covent_Garden_to_Piccadilly_Circus",
+				"points": [
+					{
+						"x": 692.0,
+						"y": 611.0
+					},
+					{
+						"x": 585.0,
+						"y": 648.0
+					},
+					{
+						"x": 480.0,
+						"y": 678.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 585.0,
+							"y": 648.0
+						},
+						"rotation_radians": 2.835488
+					}
+				],
+				"to_city_id": "piccadillyCircus"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "globeTheatre",
+				"node_name": "Globe_Theatre_to_Tower_Of_London",
+				"points": [
+					{
+						"x": 1091.0,
+						"y": 738.0
+					},
+					{
+						"x": 1155.0,
+						"y": 782.0
+					},
+					{
+						"x": 1251.0,
+						"y": 794.0
+					},
+					{
+						"x": 1341.0,
+						"y": 765.0
+					},
+					{
+						"x": 1419.0,
+						"y": 715.0
+					}
+				],
+				"route_length": 3,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 1155.0,
+							"y": 782.0
+						},
+						"rotation_radians": 0.3366748
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 1251.0,
+							"y": 794.0
+						},
+						"rotation_radians": -0.09114462
+					},
+					{
+						"index": 2,
+						"position": {
+							"x": 1341.0,
+							"y": 765.0
+						},
+						"rotation_radians": -0.43955588
+					}
+				],
+				"to_city_id": "towerOfLondon"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "trafalgarSquare",
+				"node_name": "Trafalgar_Square_to_Waterloo",
+				"points": [
+					{
+						"x": 611.0,
+						"y": 769.0
+					},
+					{
+						"x": 689.0,
+						"y": 785.0
+					},
+					{
+						"x": 785.0,
+						"y": 809.0
+					},
+					{
+						"x": 859.0,
+						"y": 828.0
+					}
+				],
+				"route_length": 2,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 689.0,
+							"y": 785.0
+						},
+						"rotation_radians": 0.22595921
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 785.0,
+							"y": 809.0
+						},
+						"rotation_radians": 0.2477449
+					}
+				],
+				"to_city_id": "waterloo"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "bigBen",
+				"node_name": "Big_Ben_to_Trafalgar_Square",
+				"points": [
+					{
+						"x": 677.0,
+						"y": 928.0
+					},
+					{
+						"x": 640.0,
+						"y": 849.0
+					},
+					{
+						"x": 611.0,
+						"y": 769.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 640.0,
+							"y": 849.0
+						},
+						"rotation_radians": -1.964247
+					}
+				],
+				"to_city_id": "trafalgarSquare"
+			},
+			{
+				"cart_type": "BLUE",
+				"from_city_id": "waterloo",
+				"node_name": "Waterloo_to_Big_Ben",
+				"points": [
+					{
+						"x": 859.0,
+						"y": 828.0
+					},
+					{
+						"x": 763.0,
+						"y": 875.0
+					},
+					{
+						"x": 677.0,
+						"y": 928.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 763.0,
+							"y": 875.0
+						},
+						"rotation_radians": 2.6391714
+					}
+				],
+				"to_city_id": "bigBen"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "buckinghamPalace",
+				"node_name": "Buckingham_Palace_to_Trafalgar_Square",
+				"points": [
+					{
+						"x": 393.0,
+						"y": 949.0
+					},
+					{
+						"x": 466.0,
+						"y": 897.0
+					},
+					{
+						"x": 546.0,
+						"y": 834.0
+					},
+					{
+						"x": 611.0,
+						"y": 769.0
+					}
+				],
+				"route_length": 2,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 466.0,
+							"y": 897.0
+						},
+						"rotation_radians": -0.64454603
+					},
+					{
+						"index": 1,
+						"position": {
+							"x": 546.0,
+							"y": 834.0
+						},
+						"rotation_radians": -0.7232074
+					}
+				],
+				"to_city_id": "trafalgarSquare"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "britishMuseum",
+				"node_name": "British_Museum_to_Covent_Garden",
+				"points": [
+					{
+						"x": 611.0,
+						"y": 445.0
+					},
+					{
+						"x": 658.0,
+						"y": 519.0
+					},
+					{
+						"x": 692.0,
+						"y": 611.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 658.0,
+							"y": 519.0
+						},
+						"rotation_radians": 1.1168337
+					}
+				],
+				"to_city_id": "coventGarden"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "coventGarden",
+				"node_name": "Covent_Garden_to_British_Museum",
+				"points": [
+					{
+						"x": 692.0,
+						"y": 611.0
+					},
+					{
+						"x": 620.0,
+						"y": 536.0
+					},
+					{
+						"x": 611.0,
+						"y": 445.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 620.0,
+							"y": 536.0
+						},
+						"rotation_radians": -2.024759
+					}
+				],
+				"to_city_id": "britishMuseum"
+			},
+			{
+				"cart_type": "BLACK",
+				"from_city_id": "charterhouse",
+				"node_name": "The_Charterhouse_to_ST_Paul's",
+				"points": [
+					{
+						"x": 1050.0,
+						"y": 333.0
+					},
+					{
+						"x": 1057.0,
+						"y": 449.0
+					},
+					{
+						"x": 1071.0,
+						"y": 551.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 1057.0,
+							"y": 449.0
+						},
+						"rotation_radians": 1.4747623
+					}
+				],
+				"to_city_id": "stPauls"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "stPauls",
+				"node_name": "ST_Paul's_to_Globe_Theatre",
+				"points": [
+					{
+						"x": 1071.0,
+						"y": 551.0
+					},
+					{
+						"x": 1083.0,
+						"y": 655.0
+					},
+					{
+						"x": 1091.0,
+						"y": 738.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 1083.0,
+							"y": 655.0
+						},
+						"rotation_radians": 1.4642495
+					}
+				],
+				"to_city_id": "globeTheatre"
+			},
+			{
+				"cart_type": "GRAY",
+				"from_city_id": "globeTheatre",
+				"node_name": "Globe_Theatre_to_The_Charterhouse",
+				"points": [
+					{
+						"x": 1091.0,
+						"y": 738.0
+					},
+					{
+						"x": 1043.0,
+						"y": 659.0
+					},
+					{
+						"x": 1050.0,
+						"y": 333.0
+					}
+				],
+				"route_length": 1,
+				"segment_points": [
+					{
+						"index": 0,
+						"position": {
+							"x": 1043.0,
+							"y": 659.0
+						},
+						"rotation_radians": -1.6716871
+					}
+				],
+				"to_city_id": "charterhouse"
+			}
+		]
+	}
+}
