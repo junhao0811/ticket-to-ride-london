@@ -53,6 +53,14 @@ public class RightRailPanel extends JPanel implements GameStateListener {
         rebuild();
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        // Subtle dark wash for consistency with other panels
+        g.setColor(new Color(0, 0, 0, 12));
+        g.fillRect(0, 0, getWidth(), getHeight());
+        super.paintComponent(g);
+    }
+
     public void setOnEndTurn(Runnable r) { this.onEndTurn = r; }
 
     @Override

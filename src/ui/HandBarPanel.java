@@ -47,12 +47,18 @@ public class HandBarPanel extends JPanel implements GameStateListener {
     public HandBarPanel(Player you) {
         this.you        = you;
         this.cardImages = loadCardImages();
-        setOpaque(true);
-        setBackground(new Color(0x0F, 0x16, 0x28));
-        setBorder(BorderFactory.createMatteBorder(2, 0, 0, 0, UiTheme.PANEL_BORDER));
+        setOpaque(false);
         setPreferredSize(new Dimension(0, 100));
         GameManager.getInstance().addListener(this);
         buildLayout();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        // Subtle dark wash for consistency with rails
+        g.setColor(new Color(0, 0, 0, 12));
+        g.fillRect(0, 0, getWidth(), getHeight());
+        super.paintComponent(g);
     }
 
     public void setOnClaim(Consumer<Route> callback)  { this.onClaim = callback; }
@@ -75,7 +81,9 @@ public class HandBarPanel extends JPanel implements GameStateListener {
 
     private void buildLayout() {
         setLayout(new BorderLayout(8, 0));
-        setBorder(BorderFactory.createEmptyBorder(12, 16, 12, 16));
+        setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(2, 0, 0, 0, UiTheme.PANEL_BORDER),
+            BorderFactory.createEmptyBorder(12, 16, 12, 16)));
 
         JPanel cardsArea = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
         cardsArea.setOpaque(false);
