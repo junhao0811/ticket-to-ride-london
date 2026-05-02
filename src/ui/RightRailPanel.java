@@ -1,5 +1,6 @@
 package ui;
 
+import actions.ActionResult;
 import actions.DrawTrainCardAction;
 import actions.DrawTrainCardAction.DrawSource;
 import game.GameManager;
@@ -32,13 +33,20 @@ public class RightRailPanel extends JPanel implements GameStateListener {
         "LOCOMOTIVE", CardColour.WILD
     );
 
-    private final Runnable              onDrawTickets;
-    private       Runnable              onEndTurn;
+    private final Runnable               onDrawTickets;
+    private       Runnable               onEndTurn;
     private final Map<CardColour, Image> cardImages;
+    private final Image                  trainCardBack;
+    private final Image                  ticketCardBack;
+
+    /** Non-null while a draw action is mid-way (phase 1 done, phase 2 pending). */
+    private DrawTrainCardAction inProgressDraw = null;
 
     public RightRailPanel(Runnable onDrawTickets) {
-        this.onDrawTickets = onDrawTickets;
-        this.cardImages    = loadCardImages();
+        this.onDrawTickets  = onDrawTickets;
+        this.cardImages     = loadCardImages();
+        this.trainCardBack  = ConfigLoader.get().loadImage("trainCarCardRear.png");
+        this.ticketCardBack = ConfigLoader.get().loadImage("ticketCardFaceDown.png");
         setOpaque(false);
         setPreferredSize(new Dimension(110, 0));
         GameManager.getInstance().addListener(this);
@@ -48,7 +56,16 @@ public class RightRailPanel extends JPanel implements GameStateListener {
     public void setOnEndTurn(Runnable r) { this.onEndTurn = r; }
 
     @Override
-    public void onStateChanged() { rebuild(); revalidate(); repaint(); }
+    public void onStateChanged() {
+        // Clear stale pending draw if the turn has moved on
+        if (inProgressDraw != null
+                && GameManager.getInstance().getCurrentPlayer() != inProgressDraw.getPlayer()) {
+            inProgressDraw = null;
+        }
+        rebuild();
+        revalidate();
+        repaint();
+    }
 
     // ── Panel assembly ────────────────────────────────────────────────────────
 
@@ -72,21 +89,51 @@ public class RightRailPanel extends JPanel implements GameStateListener {
     // ── Card panels ───────────────────────────────────────────────────────────
 
     private JPanel makeTicketDeck() {
-        JPanel card = makeCardShell(UiTheme.MAP_CREAM);
-        card.setLayout(new BorderLayout());
-        JLabel lbl = new JLabel("<html><center>🎫<br>Tickets</center></html>", SwingConstants.CENTER);
-        lbl.setFont(UiTheme.body(10));
-        lbl.setForeground(UiTheme.INK);
-        card.add(lbl, BorderLayout.CENTER);
-        card.add(badge(GameManager.getInstance().getTicketDeck().size(), UiTheme.ACCENT_RED),
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                int w = getWidth(), h = getHeight();
+                Shape clip = new RoundRectangle2D.Float(1, 1, w - 2, h - 2, 6, 6);
+
+                if (ticketCardBack != null) {
+                    g2.setClip(clip);
+                    g2.drawImage(ticketCardBack, 0, 0, w, h, null);
+                    g2.setClip(null);
+                } else {
+                    g2.setColor(UiTheme.MAP_CREAM);
+                    g2.fill(clip);
+                }
+
+                // Label overlay
+                g2.setColor(new Color(0, 0, 0, 100));
+                g2.fillRoundRect(w / 2 - 25, h / 2 - 8, 50, 16, 4, 4);
+                g2.setFont(UiTheme.mono(9));
+                g2.setColor(Color.WHITE);
+                FontMetrics fm = g2.getFontMetrics();
+                g2.drawString("TICKETS", w / 2 - fm.stringWidth("TICKETS") / 2, h / 2 + fm.getAscent() / 2 - 1);
+
+                // Border
+                g2.setColor(new Color(255, 255, 255, 40));
+                g2.setStroke(new BasicStroke(1f));
+                g2.draw(clip);
+            }
+        };
+        panel.setLayout(new BorderLayout());
+        panel.setOpaque(false);
+        panel.setMaximumSize(new Dimension(96, 56));
+        panel.setPreferredSize(new Dimension(96, 56));
+        panel.add(badge(GameManager.getInstance().getTicketDeck().size(), UiTheme.ACCENT_RED),
             BorderLayout.SOUTH);
-        card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        card.addMouseListener(new java.awt.event.MouseAdapter() {
+        panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        panel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseClicked(java.awt.event.MouseEvent e) {
                 if (onDrawTickets != null) onDrawTickets.run();
             }
         });
-        return card;
+        return panel;
     }
 
     private JPanel makeFaceUpCard(TrainCard card, int index) {
@@ -139,38 +186,81 @@ public class RightRailPanel extends JPanel implements GameStateListener {
         panel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseClicked(java.awt.event.MouseEvent e) {
                 if (card == null) return;
-                Player you = GameManager.getInstance().getCurrentPlayer();
-                DrawTrainCardAction action = new DrawTrainCardAction(
-                    you, List.of(DrawSource.values()[idx]),
-                    GameManager.getInstance().getTrainDeck(),
-                    GameManager.getInstance().getFaceUpPool());
-                GameManager.getInstance().submitAction(action);
+                handleCardClick(DrawSource.values()[idx]);
             }
         });
         return panel;
     }
 
     private JPanel makeDeckCard() {
-        JPanel card = makeCardShell(UiTheme.PANEL_BG);
-        card.setLayout(new BorderLayout());
-        JLabel lbl = new JLabel("DECK", SwingConstants.CENTER);
-        lbl.setFont(UiTheme.mono(10));
-        lbl.setForeground(new Color(0xFF, 0xFF, 0xFF, 150));
-        card.add(lbl, BorderLayout.CENTER);
-        card.add(badge(GameManager.getInstance().getTrainDeck().size(), UiTheme.PANEL_BORDER),
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                int w = getWidth(), h = getHeight();
+                Shape clip = new RoundRectangle2D.Float(1, 1, w - 2, h - 2, 6, 6);
+
+                if (trainCardBack != null) {
+                    g2.setClip(clip);
+                    g2.drawImage(trainCardBack, 0, 0, w, h, null);
+                    g2.setClip(null);
+                } else {
+                    g2.setColor(UiTheme.PANEL_BG);
+                    g2.fill(clip);
+                }
+
+                // Label overlay
+                g2.setColor(new Color(0, 0, 0, 100));
+                g2.fillRoundRect(w / 2 - 20, h / 2 - 8, 40, 16, 4, 4);
+                g2.setFont(UiTheme.mono(9));
+                g2.setColor(Color.WHITE);
+                FontMetrics fm = g2.getFontMetrics();
+                g2.drawString("DECK", w / 2 - fm.stringWidth("DECK") / 2, h / 2 + fm.getAscent() / 2 - 1);
+
+                // Border
+                g2.setColor(new Color(255, 255, 255, 40));
+                g2.setStroke(new BasicStroke(1f));
+                g2.draw(clip);
+            }
+        };
+        panel.setLayout(new BorderLayout());
+        panel.setOpaque(false);
+        panel.setMaximumSize(new Dimension(96, 56));
+        panel.setPreferredSize(new Dimension(96, 56));
+        panel.add(badge(GameManager.getInstance().getTrainDeck().size(), UiTheme.PANEL_BORDER),
             BorderLayout.SOUTH);
-        card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        card.addMouseListener(new java.awt.event.MouseAdapter() {
+        panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        panel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseClicked(java.awt.event.MouseEvent e) {
-                Player you = GameManager.getInstance().getCurrentPlayer();
-                DrawTrainCardAction action = new DrawTrainCardAction(
-                    you, List.of(DrawSource.BLIND_DECK, DrawSource.BLIND_DECK),
-                    GameManager.getInstance().getTrainDeck(),
-                    GameManager.getInstance().getFaceUpPool());
-                GameManager.getInstance().submitAction(action);
+                handleCardClick(DrawSource.BLIND_DECK);
             }
         });
-        return card;
+        return panel;
+    }
+
+    /**
+     * Handles a card-draw click for either a face-up slot or the blind deck.
+     * Manages the two-phase draw flow: submits phase 1 on first click and
+     * phase 2 on the subsequent click (using the same action instance).
+     */
+    private void handleCardClick(DrawSource source) {
+        GameManager gm  = GameManager.getInstance();
+        Player      you = gm.getCurrentPlayer();
+
+        if (inProgressDraw != null && inProgressDraw.awaitingSecondDraw()) {
+            // Phase 2: feed second source into the existing action and re-submit
+            inProgressDraw.setSecondSource(source);
+            gm.submitAction(inProgressDraw);
+            inProgressDraw = null;
+        } else {
+            // Phase 1: start a fresh draw action
+            DrawTrainCardAction action = new DrawTrainCardAction(
+                    you, source, gm.getTrainDeck(), gm.getFaceUpPool());
+            ActionResult result = gm.submitAction(action);
+            inProgressDraw = result.isPending() ? action : null;
+        }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

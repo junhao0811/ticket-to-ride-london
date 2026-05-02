@@ -45,7 +45,7 @@ public class BoardPanel extends JPanel implements GameStateListener {
 
     public BoardPanel() {
         setOpaque(true);
-        bgImage = cfg.loadImage("/londonMap2.png");
+        bgImage = cfg.loadImage("/londonMap.png");
         GameManager.getInstance().addListener(this);
         addMouseListener(new MouseAdapter() {
             @Override public void mouseClicked(MouseEvent e) { handleClick(e); }
