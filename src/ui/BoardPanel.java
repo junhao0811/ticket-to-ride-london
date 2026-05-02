@@ -195,27 +195,6 @@ public class BoardPanel extends JPanel implements GameStateListener {
             g2.draw(new RoundRectangle2D.Double(-slotLen / 2, -slotH / 2, slotLen, slotH, arc, arc));
         }
         g2.setTransform(saved);
-
-        // Cost badge on routes with ≥ 3 slots
-        if (segments.size() >= 3) {
-            drawCostBadge(g2, segments, route.getLength(), w, h);
-        }
-    }
-
-    private void drawCostBadge(Graphics2D g2, List<SegmentPoint> segments, int len, int w, int h) {
-        SegmentPoint mid = segments.get(segments.size() / 2);
-        int mx = (int)(mid.x() * w / MAP_W);
-        int my = (int)(mid.y() * h / MAP_H);
-        g2.setColor(new Color(UiTheme.MAP_CREAM.getRGB() & 0xFFFFFF | 0xCC000000, true));
-        g2.fillOval(mx - 9, my - 9, 18, 18);
-        g2.setColor(new Color(0, 0, 0, 50));
-        g2.setStroke(new BasicStroke(0.8f));
-        g2.drawOval(mx - 9, my - 9, 18, 18);
-        g2.setColor(UiTheme.INK_DIM);
-        g2.setFont(UiTheme.mono(9));
-        String s = String.valueOf(len);
-        FontMetrics fm = g2.getFontMetrics();
-        g2.drawString(s, mx - fm.stringWidth(s) / 2, my + fm.getAscent() / 2 - 1);
     }
 
     private Color getRouteFill(Route route) {
