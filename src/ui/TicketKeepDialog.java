@@ -85,7 +85,7 @@ public class TicketKeepDialog extends JDialog {
         root.add(cardsPanel, c);
 
         // ── Confirm button ──
-        JButton confirm = new JButton(isInitial ? "START JOURNEY" : "CONTINUE PLAYING") {
+        JButton confirm = new JButton(isInitial ? "LOCK IN" : "CONTINUE PLAYING") {
             @Override protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

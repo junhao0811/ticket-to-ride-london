@@ -17,23 +17,23 @@ public class ToastOverlay extends JPanel {
         setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 
         messageLabel = new JLabel();
-        messageLabel.setFont(UiTheme.body(12));
+        messageLabel.setFont(UiTheme.display(18));
         messageLabel.setForeground(Color.WHITE);
         messageLabel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(UiTheme.PANEL_BORDER, 1, true),
-            BorderFactory.createEmptyBorder(8, 16, 8, 16)));
+            BorderFactory.createLineBorder(UiTheme.GOLD, 2, true),
+            BorderFactory.createEmptyBorder(12, 24, 12, 24)));
         messageLabel.setOpaque(true);
-        messageLabel.setBackground(new Color(0x1A, 0x24, 0x3C, 230));
+        messageLabel.setBackground(new Color(0x0C, 0x12, 0x24, 240));
         add(messageLabel);
         setVisible(false);
 
-        hideTimer = new Timer(2400, e -> setVisible(false));
+        hideTimer = new Timer(4000, e -> setVisible(false));
         hideTimer.setRepeats(false);
     }
 
-    /** Shows the toast message for 2.4 seconds. */
+    /** Shows the toast message for 4 seconds. */
     public void show(String message) {
-        messageLabel.setText("  ● " + message);
+        messageLabel.setText("  ◈  " + message.toUpperCase());
         setVisible(true);
         hideTimer.restart();
         revalidate();

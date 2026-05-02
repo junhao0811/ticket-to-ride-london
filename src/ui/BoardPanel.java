@@ -41,6 +41,7 @@ public class BoardPanel extends JPanel implements GameStateListener {
     private final ConfigLoader    cfg = ConfigLoader.get();
     private final Image           bgImage;
     private final Image           streetBg;
+    private final java.util.Map<model.player.PlayerColour, Image> busImages;
     private       String          selectedRouteId;
     private       Consumer<Route> onRouteClick;
 
@@ -48,6 +49,13 @@ public class BoardPanel extends JPanel implements GameStateListener {
         setOpaque(false);
         bgImage = cfg.loadImage("/londonMap.png");
         streetBg = cfg.loadImage("/randomLondonStreet.png");
+        
+        busImages = new java.util.EnumMap<>(model.player.PlayerColour.class);
+        busImages.put(model.player.PlayerColour.RED, cfg.loadImage("/busPiece/redbus.png"));
+        busImages.put(model.player.PlayerColour.BLUE, cfg.loadImage("/busPiece/blueBus.png"));
+        busImages.put(model.player.PlayerColour.WHITE, cfg.loadImage("/busPiece/whiteBus.png"));
+        busImages.put(model.player.PlayerColour.PURPLE, cfg.loadImage("/busPiece/purpleBus.png"));
+
         GameManager.getInstance().addListener(this);
         addMouseListener(new MouseAdapter() {
             @Override public void mouseClicked(MouseEvent e) { handleClick(e); }
@@ -157,16 +165,20 @@ public class BoardPanel extends JPanel implements GameStateListener {
         List<SegmentPoint> segments = route.getSegmentPoints();
         if (segments.isEmpty()) return;
 
-        double scaleX = w / MAP_W;
-        double scaleY = h / MAP_H;
-        // Uniform scale for slot shape so aspect ratio stays correct after rotation
+        double scaleX = (double) w / MAP_W;
+        double scaleY = (double) h / MAP_H;
         double scale  = Math.min(scaleX, scaleY);
         double slotLen = 86 * scale;
         double slotH   = 24 * scale;
         int    arc     = Math.max(3, (int)(6 * scale));
 
-        Color   fill     = getRouteFill(route);
         boolean selected = route.getId().equals(selectedRouteId);
+        boolean claimed  = route.isClaimed();
+        Image busImg = claimed ? busImages.get(route.getClaimedBy().getColour()) : null;
+
+        // In the classic board game, the route color is always visible under the piece.
+        // We always use the route's required color for the slot background.
+        Color routeColor = UiTheme.routeColour(route.getRequiredColour());
 
         AffineTransform saved = g2.getTransform();
         for (SegmentPoint sp : segments) {
@@ -177,22 +189,25 @@ public class BoardPanel extends JPanel implements GameStateListener {
             g2.translate(cx, cy);
             g2.rotate(sp.rotationRadians());
 
-            // Selection glow
+            // 1. Draw the slot background (Original route color)
             if (selected) {
-                g2.setColor(new Color(0xFF, 0xD7, 0x00, 160));
+                g2.setColor(new Color(0xFF, 0xD7, 0x00, 180));
                 g2.fill(new RoundRectangle2D.Double(
-                    -slotLen / 2 - 3, -slotH / 2 - 3,
-                    slotLen + 6, slotH + 6, arc + 2, arc + 2));
+                    -slotLen / 2 - 4, -slotH / 2 - 4,
+                    slotLen + 8, slotH + 8, arc + 2, arc + 2));
             }
 
-            // Slot fill
-            g2.setColor(fill);
+            g2.setColor(routeColor);
             g2.fill(new RoundRectangle2D.Double(-slotLen / 2, -slotH / 2, slotLen, slotH, arc, arc));
 
-            // Slot outline
-            g2.setColor(new Color(0, 0, 0, 80));
-            g2.setStroke(new BasicStroke(0.9f));
+            g2.setColor(new Color(0, 0, 0, 60));
+            g2.setStroke(new BasicStroke(1.2f));
             g2.draw(new RoundRectangle2D.Double(-slotLen / 2, -slotH / 2, slotLen, slotH, arc, arc));
+
+            // 2. Draw the bus piece on top (Exactly same size as slot)
+            if (claimed && busImg != null) {
+                g2.drawImage(busImg, (int)(-slotLen / 2), (int)(-slotH / 2), (int)slotLen, (int)slotH, null);
+            }
         }
         g2.setTransform(saved);
     }
