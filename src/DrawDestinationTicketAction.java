@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public final class DrawDestinationTicketAction {
     private static final int DRAW_COUNT = 3;
@@ -29,7 +31,9 @@ public final class DrawDestinationTicketAction {
             return false;
         }
 
-        List<DestinationTicketCard> keptTickets = selectKeptTickets(lastDrawnTickets, keepIndexes);
+        List<DestinationTicketCard> keptTickets =
+                selectKeptTickets(lastDrawnTickets, keepIndexes);
+
         if (keptTickets.isEmpty()) {
             deck.returnToBottom(lastDrawnTickets);
             lastDrawnTickets = new ArrayList<>();
@@ -61,11 +65,17 @@ public final class DrawDestinationTicketAction {
             List<Integer> keepIndexes) {
 
         List<DestinationTicketCard> keptTickets = new ArrayList<>();
+        Set<Integer> usedIndexes = new HashSet<>();
 
         for (Integer index : keepIndexes) {
             if (index == null || index < 0 || index >= availableTickets.size()) {
                 return new ArrayList<>();
             }
+
+            if (!usedIndexes.add(index)) {
+                return new ArrayList<>();
+            }
+
             keptTickets.add(availableTickets.get(index));
         }
 
