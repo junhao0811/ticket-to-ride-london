@@ -1,3 +1,5 @@
+import game.EndGame.EndGameScorer;
+
 public class GameController {
 
     private final Game game;

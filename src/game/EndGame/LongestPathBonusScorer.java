@@ -1,3 +1,8 @@
+package game.EndGame;
+
+import model.player.MapGraph;
+import model.player.Player;
+
 import java.util.*;
 
 public class LongestPathBonusScorer {

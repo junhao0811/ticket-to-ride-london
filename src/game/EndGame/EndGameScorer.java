@@ -1,3 +1,9 @@
+package game.EndGame;
+
+import model.board.Route;
+import model.player.MapGraph;
+import model.player.Player;
+
 import java.util.List;
 import java.util.Map;
 
@@ -18,10 +24,12 @@ public class EndGameScorer {
 
     public void endScore(Game game){
         //build the player graphs
-        Map<Player, MapGraph> playerGraphs = builder.buildPlayerGraphs(game.getPlayers(), game.getBoardGraph());
+        List<Player> players = null;
+        List<Route> routes = null;
+        Map<Player, MapGraph> playerGraphs = builder.buildPlayerGraphs(players, routes);
 
         // add up all the tickets scores and deduct for those uncompleted
-        for (Player player : game.getPlayers()){
+        for (Player player : players)){
             int totalScore =  ticketScorer.calculateDestinationTickets(player, playerGraphs.get(player));
             player.addScore(totalScore);
         }

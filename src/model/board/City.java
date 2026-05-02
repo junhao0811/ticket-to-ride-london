@@ -2,6 +2,7 @@ package model.board;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A named London city node on the game board.
@@ -29,5 +30,23 @@ public class City {
         if (route != null) {
             routes.add(route);
         }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof City city)) {
+            return false;
+        }
+
+        return this.name.equals(city.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

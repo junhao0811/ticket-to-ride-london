@@ -1,13 +1,14 @@
+import model.player.MapGraph;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class Game {
 
     private final MapGraph boardGraph;
     private final List<Player> players;
-    //private EndGameScorer endGameScorer;
+    //private game.EndGame.EndGameScorer endGameScorer;
 
 
     public Game(MapGraph boardGraph, List<Player> players) {

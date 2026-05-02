@@ -1,3 +1,8 @@
+package model.player;
+
+import model.board.City;
+import model.board.Route;
+
 import java.util.*;
 
 public class MapGraph{
@@ -108,7 +113,7 @@ public class MapGraph{
         return maxDist;
     }
 
-    private DequeResult dfsFindMax( Set<Route> discoveredSet, City source, Deque<City> currentPath, int currentDist) {
+    private DequeResult dfsFindMax(Set<Route> discoveredSet, City source, Deque<City> currentPath, int currentDist) {
 
 
         int maxDist = currentDist;
