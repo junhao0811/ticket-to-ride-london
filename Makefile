@@ -17,7 +17,7 @@ $(OUT_DIR):
 
 compile: $(OUT_DIR)
 	find $(SRC_DIR) -name "*.java" > sources.txt
-	javac -d $(OUT_DIR) @sources.txt
+	javac --release 17 -d $(OUT_DIR) @sources.txt
 	rm sources.txt
 
 jar:

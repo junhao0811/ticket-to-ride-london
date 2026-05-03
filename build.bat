@@ -19,7 +19,7 @@ mkdir %OUT_DIR%
 echo Compiling source files...
 :: Find all Java files recursively and write to sources.txt
 dir /s /b "%SRC_DIR%\*.java" > sources.txt
-javac -d %OUT_DIR% @sources.txt
+javac --release 17 -d %OUT_DIR% @sources.txt
 if %ERRORLEVEL% neq 0 (
     echo Compilation failed!
     del sources.txt

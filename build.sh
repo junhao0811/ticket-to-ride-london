@@ -18,7 +18,7 @@ mkdir -p "$OUT_DIR"
 echo "Compiling source files..."
 # Find all Java files and compile them
 find "$SRC_DIR" -name "*.java" > sources.txt
-javac -d "$OUT_DIR" @sources.txt
+javac --release 17 -d "$OUT_DIR" @sources.txt
 rm sources.txt
 
 if [ $? -ne 0 ]; then
