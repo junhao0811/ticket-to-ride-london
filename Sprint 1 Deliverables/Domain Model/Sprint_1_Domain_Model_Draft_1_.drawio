@@ -438,7 +438,7 @@
         <mxCell id="tE2m9LSKkN3bt12h4hcW-105" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="1" vertex="1">
           <mxGeometry height="30" width="60" x="650" y="500" as="geometry" />
         </mxCell>
-        <mxCell id="tE2m9LSKkN3bt12h4hcW-106" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Total Score" vertex="1">
+        <mxCell id="tE2m9LSKkN3bt12h4hcW-106" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Total model.player.Score" vertex="1">
           <mxGeometry height="60" width="120" x="1040" y="715" as="geometry" />
         </mxCell>
         <mxCell id="tE2m9LSKkN3bt12h4hcW-107" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="1" vertex="1">

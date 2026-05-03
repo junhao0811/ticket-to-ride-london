@@ -2,7 +2,6 @@ package ui;
 
 import game.GameManager;
 import game.GameStateListener;
-import game.ScoreManager.FinalScore;
 
 import javax.swing.*;
 import java.awt.*;

@@ -158,7 +158,7 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
         chip.setMaximumSize(new Dimension(200, 56));
         chip.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Score Badge (Consistent Square)
+        // model.player.Score Badge (Consistent Square)
         JLabel scoreBadge = makeScoreBadge(p, colour, 38);
         chip.add(scoreBadge, BorderLayout.WEST);
 
@@ -253,7 +253,7 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
         panel.add(toggle);
         panel.setComponentZOrder(toggle, 0);
 
-        // Score Badge (Consistent Square, moved to the left of the name)
+        // model.player.Score Badge (Consistent Square, moved to the left of the name)
         JLabel scoreBadge = makeScoreBadge(p, colour, 42);
         scoreBadge.setBounds(10, 50, 42, 42);
         panel.add(scoreBadge);

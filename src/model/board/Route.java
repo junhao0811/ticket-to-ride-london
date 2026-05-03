@@ -97,6 +97,14 @@ public class Route {
         return claimedBy;
     }
 
+    public City getOppositeCity(City currentCity) {
+        if (this.cityA.equals(currentCity)) {
+            return this.cityB;
+        } else {
+            return this.cityA;
+        }
+    }
+
     /** @return pixel positions of each train-car slot on this route, in order */
     public List<SegmentPoint> getSegmentPoints() {
         return segmentPoints;

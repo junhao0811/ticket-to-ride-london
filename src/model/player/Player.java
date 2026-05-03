@@ -86,9 +86,13 @@ public class Player {
         return Collections.unmodifiableList(tickets);
     }
 
-    /** @return the player's mutable Score object */
+    /** @return the player's mutable model.player.Score object */
     public Score getScore() {
         return score;
+    }
+
+    public void addScore(int points){
+        this.score.addPoints(points);
     }
 
     /** @return number of train pieces remaining */
