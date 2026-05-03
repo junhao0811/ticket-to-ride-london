@@ -41,13 +41,23 @@ public class ScoreManager {
         for (Player p : players) {
             int routePts  = p.getScore().getPoints();
             
-            // Tally tickets and count completed ones
+            // Tally tickets and count completed/incomplete ones separately for breakdown
             int ticketPts = 0;
             int completedCount = 0;
+            int incompleteCount = 0;
+            int completedPts = 0;
+            int incompletePts = 0;
+
             for (DestinationTicketCard ticket : p.getTickets()) {
                 int score = strategy.scoreTicket(ticket, p, board);
                 ticketPts += score;
-                if (score > 0) completedCount++;
+                if (score > 0) {
+                    completedCount++;
+                    completedPts += score;
+                } else {
+                    incompleteCount++;
+                    incompletePts += score;
+                }
             }
             
             int pathBonus = strategy.scoreLongestPath(p, board);
@@ -57,7 +67,9 @@ public class ScoreManager {
             p.getScore().addPoints(ticketPts);
             p.getScore().addPoints(pathBonus);
 
-            results.add(new FinalScore(p, routePts, ticketPts, pathBonus, p.getScore().getPoints(), completedCount, pathDist));
+            results.add(new FinalScore(
+                p, routePts, ticketPts, completedPts, incompletePts,
+                pathBonus, p.getScore().getPoints(), completedCount, incompleteCount, pathDist));
         }
 
         // Tie-breaking rules:
@@ -119,27 +131,37 @@ public class ScoreManager {
         private final Player player;
         private final int routePoints;
         private final int ticketPoints;
+        private final int completedPoints;
+        private final int incompletePoints;
         private final int pathBonus;
         private final int total;
         private final int completedTickets;
+        private final int incompleteTickets;
         private final int longestPathDistance;
 
-        FinalScore(Player player, int routePoints, int ticketPoints, int pathBonus, int total, int completedTickets, int longestPathDistance) {
+        FinalScore(Player player, int routePoints, int ticketPoints, int completedPoints, int incompletePoints,
+                   int pathBonus, int total, int completedTickets, int incompleteTickets, int longestPathDistance) {
             this.player       = player;
             this.routePoints  = routePoints;
             this.ticketPoints = ticketPoints;
+            this.completedPoints = completedPoints;
+            this.incompletePoints = incompletePoints;
             this.pathBonus    = pathBonus;
             this.total        = total;
             this.completedTickets = completedTickets;
+            this.incompleteTickets = incompleteTickets;
             this.longestPathDistance = longestPathDistance;
         }
 
         public Player getPlayer()             { return player; }
         public int routePoints()              { return routePoints; }
         public int ticketPoints()             { return ticketPoints; }
+        public int completedPoints()          { return completedPoints; }
+        public int incompletePoints()         { return incompletePoints; }
         public int pathBonus()                { return pathBonus; }
         public int total()                    { return total; }
         public int completedTickets()         { return completedTickets; }
+        public int incompleteTickets()        { return incompleteTickets; }
         public int longestPathDistance()      { return longestPathDistance; }
     }
 }

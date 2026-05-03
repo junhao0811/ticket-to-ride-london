@@ -240,7 +240,7 @@ public class GameWindow extends JFrame implements GameStateListener {
         boardPanel.setBounds(leftW, 0, boardW, boardH);
         rightRail.setBounds(w - rightW, 0, rightW, h);
         handBar.setBounds(leftW, boardH, boardW, handH);
-        scorePanel.setBounds(leftW, 0, boardW, boardH);
+        scorePanel.setBounds(0, 0, w, h);
 
         int toastW = 800, toastH = 70;
         toast.setBounds((w - toastW) / 2, h - handH - toastH - 8, toastW, toastH);
@@ -314,10 +314,10 @@ public class GameWindow extends JFrame implements GameStateListener {
         }
 
         boolean passVisible = passOverlay.isVisible();
-        // Board and left rail stay visible during game over for verification
-        boardPanel.setVisible(true);
+        // Hide board and rail when game ends to focus on the scoreboard
+        boardPanel.setVisible(!ended);
         scorePanel.setVisible(ended);
-        leftRail.setVisible(!passVisible);
+        leftRail.setVisible(!ended && !passVisible);
         
         // Hide turn-active components when game ends or during pass-device
         rightRail.setVisible(!ended && !passVisible);

@@ -72,12 +72,23 @@ public class TurnManager {
     // ── private helpers ──────────────────────────────────────────────────────
 
     private void checkEndCondition(Player justPlayed) {
-        if (phase == GamePhase.PLAYING
-                && justPlayed.getTrainPieces() <= FINAL_ROUND_TRAIN_THRESHOLD) {
-            phase = GamePhase.FINAL_ROUND;
-            finalRoundTurnsLeft = players.size();
-        }
-        if (phase == GamePhase.FINAL_ROUND) {
+        if (phase == GamePhase.PLAYING) {
+            // Only evaluate end-of-game at the end of a full round
+            if (currentIdx == players.size() - 1) {
+                boolean thresholdMet = false;
+                for (Player p : players) {
+                    if (p.getTrainPieces() <= FINAL_ROUND_TRAIN_THRESHOLD) {
+                        thresholdMet = true;
+                        break;
+                    }
+                }
+                
+                if (thresholdMet) {
+                    phase = GamePhase.FINAL_ROUND;
+                    finalRoundTurnsLeft = players.size();
+                }
+            }
+        } else if (phase == GamePhase.FINAL_ROUND) {
             finalRoundTurnsLeft--;
             if (finalRoundTurnsLeft <= 0) {
                 phase = GamePhase.ENDED;

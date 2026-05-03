@@ -11,6 +11,8 @@ public class ToastOverlay extends JPanel {
 
     private JLabel messageLabel;
     private Timer hideTimer;
+    private final java.util.Queue<String> messageQueue = new java.util.LinkedList<>();
+    private boolean isDisplaying = false;
 
     public ToastOverlay() {
         setOpaque(false);
@@ -35,16 +37,32 @@ public class ToastOverlay extends JPanel {
         add(messageLabel);
         setVisible(false);
 
-        hideTimer = new Timer(4000, e -> setVisible(false));
+        hideTimer = new Timer(2500, e -> {
+            setVisible(false);
+            isDisplaying = false;
+            processNext();
+        });
         hideTimer.setRepeats(false);
     }
 
-    /** Shows the toast message for 4 seconds. */
+    /** Shows the toast message for 2.5 seconds, or queues it if one is already showing. */
     public void show(String message) {
-        messageLabel.setText("  ◈  " + message.toUpperCase());
-        setVisible(true);
-        hideTimer.restart();
-        revalidate();
-        repaint();
+        if (message == null || message.isEmpty()) return;
+        messageQueue.add(message);
+        if (!isDisplaying) {
+            processNext();
+        }
+    }
+
+    private void processNext() {
+        String msg = messageQueue.poll();
+        if (msg != null) {
+            isDisplaying = true;
+            messageLabel.setText("  ◈  " + msg.toUpperCase());
+            setVisible(true);
+            hideTimer.restart();
+            revalidate();
+            repaint();
+        }
     }
 }

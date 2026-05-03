@@ -48,11 +48,11 @@ public class City {
             return false;
         }
 
-        return this.name.equals(city.name);
+        return this.name.equalsIgnoreCase(city.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(name.toLowerCase());
     }
 }
