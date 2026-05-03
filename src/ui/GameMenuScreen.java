@@ -296,7 +296,7 @@ public class GameMenuScreen extends JFrame {
   private void onMyGames() {
     JOptionPane.showMessageDialog(
         this,
-        "Saved Games will be available in a future update.",
+        "This feature will be available in a future update.",
         "Coming Soon",
         JOptionPane.INFORMATION_MESSAGE);
   }

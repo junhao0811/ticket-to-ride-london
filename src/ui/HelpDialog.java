@@ -134,15 +134,18 @@ public class HelpDialog extends JDialog {
                     + "<li><b>Take 2 Transport cards</b> from the face-up display or the deck (or 1 from each).</li>"
                     + "<li><b>Claim a route</b> using Transport cards. You must use as many cards as there are sections on the route, "
                     + "and they must match the color of the route.</li>"
-                    + "<li><b>Draw 3 new Tickets</b>. You must keep at least 1. Remember - incomplete tickets are worth negative points!</li>"
+                    + "<li><b>Draw more Tickets</b>. Draw 2 cards and keep at least 1. Remember - incomplete tickets are worth negative points!</li>"
                     + "</ul>";
         new HelpDialog(owner, "TURN ACTIONS", html).setVisible(true);
     }
 
     public static void showTicketsRule(Frame owner) {
-        String html = "<p>As a turn action you can draw 3 new Tickets from the deck. You must keep at least 1.</p>"
-                    + "<div style='text-align: center; margin: 20px;'><span style='font-size: 40px;'>🎫 🚂</span></div>"
-                    + "<p>Remember, incomplete Tickets are worth negative points!</p>";
+        String html = "<p>This action allows you to draw more Destination Ticket cards. To do so, "
+                    + "draw <b>two cards</b> from the top of the Destination Ticket cards deck. You "
+                    + "must keep at least one of those cards, but may keep both of them if you want.</p>"
+                    + "<p>Any returned cards are placed at the bottom of the deck. You cannot discard a Ticket card once you have chosen to keep it.</p>"
+                    + "<p>If there is only one card left in the deck, you can still do this action but must keep the card.</p>"
+                    + "<p>Tickets and their completion must be kept secret until the end of the game.</p>";
         new HelpDialog(owner, "TICKETS", html).setVisible(true);
     }
 

@@ -2,16 +2,16 @@ package ui;
 
 import model.board.Route;
 import model.cards.TransportationCard;
+import model.cards.TransportationTypes;
 import model.player.Player;
 import strategy.RouteScoreStrategy;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Modal that previews a route claim and lets the player select which cards to spend.
@@ -103,12 +103,15 @@ public class ClaimDialog extends JDialog {
         int pts = new RouteScoreStrategy().scoreRoute(route);
         String colourName = route.getRequiredColour() != null
             ? route.getRequiredColour().displayName() : "Any colour";
-        long handCount = player.getHand().stream()
-            .filter(c -> route.getRequiredColour() == null || c.matches(route.getRequiredColour()))
+
+        // Count non-wild matching cards
+        long matching = player.getHand().stream()
+            .filter(c -> !c.isLocomotive() && (route.getRequiredColour() == null || c.getColour() == route.getRequiredColour()))
             .count();
         long wilds = player.getHand().stream().filter(TransportationCard::isLocomotive).count();
+
         String text = "Pay " + route.getLength() + "× " + colourName
-            + "  ·  You hold " + handCount + " matching + " + wilds + " wild  ·  +" + pts + " pts";
+            + "  ·  You hold " + matching + " matching + " + wilds + " wild  ·  +" + pts + " pts";
         JLabel lbl = new JLabel(text);
         lbl.setFont(UiTheme.mono(10));
         lbl.setForeground(new Color(0xAA, 0xBB, 0xCC));
@@ -119,34 +122,60 @@ public class ClaimDialog extends JDialog {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 2));
         panel.setOpaque(false);
 
-        // Group hand by colour
-        Map<String, List<TransportationCard>> groups = new TreeMap<>();
-        for (TransportationCard c : player.getHand()) {
-            if (c.matches(route.getRequiredColour())) {
-                groups.computeIfAbsent(c.getColour().displayName(), k -> new ArrayList<>()).add(c);
-            }
+        List<TransportationCard> hand = player.getHand();
+        List<TransportationCard> locomotives = hand.stream()
+            .filter(TransportationCard::isLocomotive)
+            .collect(Collectors.toList());
+
+        // Determine candidate colors that could satisfy this route
+        Set<TransportationTypes> candidateColors = new LinkedHashSet<>();
+        if (route.getRequiredColour() != null) {
+            candidateColors.add(route.getRequiredColour());
+        } else {
+            // For gray routes, any color present in hand is a candidate
+            hand.stream()
+                .filter(c -> !c.isLocomotive())
+                .map(TransportationCard::getColour)
+                .forEach(candidateColors::add);
         }
 
         ButtonGroup bg = new ButtonGroup();
-        for (Map.Entry<String, List<TransportationCard>> entry : groups.entrySet()) {
-            List<TransportationCard> group = entry.getValue();
-            if (group.size() < route.getLength()) continue;
-            JToggleButton btn = new JToggleButton(
-                entry.getKey() + " ×" + group.size());
-            btn.setFont(UiTheme.mono(10));
-            btn.setForeground(Color.WHITE);
-            btn.setBackground(UiTheme.PANEL_BORDER);
-            btn.setFocusPainted(false);
-            btn.addActionListener(e -> {
-                if (btn.isSelected()) {
-                    selectedCards = group.subList(0, route.getLength());
-                } else {
-                    selectedCards.clear();
+
+        for (TransportationTypes color : candidateColors) {
+            List<TransportationCard> colorCards = hand.stream()
+                .filter(c -> !c.isLocomotive() && c.getColour() == color)
+                .collect(Collectors.toList());
+
+            if (colorCards.size() + locomotives.size() >= route.getLength()) {
+                // Build selection: use as many color cards as possible, then fill with locomotives
+                List<TransportationCard> selection = new ArrayList<>(colorCards);
+                if (selection.size() > route.getLength()) {
+                    selection = new ArrayList<>(selection.subList(0, route.getLength()));
+                } else if (selection.size() < route.getLength()) {
+                    int needed = route.getLength() - selection.size();
+                    selection.addAll(locomotives.subList(0, needed));
                 }
-            });
-            bg.add(btn);
-            panel.add(btn);
+
+                addOptionButton(panel, bg, color.displayName(), colorCards.size() + locomotives.size(), selection);
+            }
         }
+
+        // Also allow "All Locomotives" if enough to cover the route independently
+        if (locomotives.size() >= route.getLength()) {
+            // Check if we already added a "Locomotive" option (can happen if color == LOCOMOTIVE which shouldn't happen)
+            boolean alreadyHasLoco = false;
+            for (Component c : panel.getComponents()) {
+                if (c instanceof JToggleButton b && b.getText().startsWith("Locomotive")) {
+                    alreadyHasLoco = true;
+                    break;
+                }
+            }
+            if (!alreadyHasLoco) {
+                List<TransportationCard> selection = new ArrayList<>(locomotives.subList(0, route.getLength()));
+                addOptionButton(panel, bg, "Locomotive", locomotives.size(), selection);
+            }
+        }
+
         if (panel.getComponentCount() == 0) {
             JLabel none = new JLabel("Insufficient matching cards.");
             none.setFont(UiTheme.mono(10));
@@ -154,5 +183,22 @@ public class ClaimDialog extends JDialog {
             panel.add(none);
         }
         return panel;
+    }
+
+    private void addOptionButton(JPanel panel, ButtonGroup bg, String label, int count, List<TransportationCard> selection) {
+        JToggleButton btn = new JToggleButton(label + " ×" + count);
+        btn.setFont(UiTheme.mono(10));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(UiTheme.PANEL_BORDER);
+        btn.setFocusPainted(false);
+        btn.addActionListener(e -> {
+            if (btn.isSelected()) {
+                selectedCards = selection;
+            } else {
+                selectedCards = new ArrayList<>();
+            }
+        });
+        bg.add(btn);
+        panel.add(btn);
     }
 }

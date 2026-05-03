@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Command: draw up to 3 destination tickets; player keeps ≥ 1, rest return to bottom.
+ * Command: draw up to 2 destination tickets; player keeps ≥ 1, rest return to bottom.
  * The UI sets the kept list via {@link #setKeptTickets(List)} before execute() is called.
  */
 public class DrawDestinationTicketAction extends PlayerAction {
 
-    private static final int DRAW_COUNT = 3;
+    private static final int DRAW_COUNT = 2;
 
     private final DestinationTicketCardDeck ticketDeck;
     private final int minKeep;

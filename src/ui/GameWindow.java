@@ -6,6 +6,7 @@ import actions.PauseAction;
 import game.GameManager;
 import game.GamePhase;
 import game.GameStateListener;
+import model.board.GameBoard;
 import model.board.Route;
 import model.cards.DestinationTicketCard;
 import model.player.Player;
@@ -60,6 +61,35 @@ public class GameWindow extends JFrame implements GameStateListener {
                     + route.getClaimedBy().getName() + ".");
                 selectedRoute = null;
                 handBar.setSelectedRoute(null);
+                return;
+            }
+
+            // Double Route Rules for UI feedback
+            GameBoard board = GameManager.getInstance().getBoard();
+            if (board != null) {
+                List<Route> routesBetween = board.getRoutes().stream()
+                    .filter(r -> (r.getCityA().equals(route.getCityA()) && r.getCityB().equals(route.getCityB())) ||
+                                 (r.getCityA().equals(route.getCityB()) && r.getCityB().equals(route.getCityA())))
+                    .toList();
+
+                if (routesBetween.size() > 1) {
+                    int playerCount = GameManager.getInstance().getPlayers().size();
+                    Player current = GameManager.getInstance().getCurrentPlayer();
+                    for (Route r : routesBetween) {
+                        if (r == route) continue;
+                        if (r.isClaimed()) {
+                            if (r.getClaimedBy().equals(current)) {
+                                toast.show("You cannot claim both routes of a double route.");
+                                selectedRoute = null;
+                                handBar.setSelectedRoute(null);
+                            } else if (playerCount <= 2) {
+                                toast.show("In a 2-player game, only one route of a double route can be claimed.");
+                                selectedRoute = null;
+                                handBar.setSelectedRoute(null);
+                            }
+                        }
+                    }
+                }
             }
         });
 

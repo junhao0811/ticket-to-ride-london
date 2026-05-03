@@ -1,6 +1,8 @@
 package actions;
 
+import game.GameManager;
 import game.ScoreManager;
+import model.board.GameBoard;
 import model.board.Route;
 import model.cards.TransportationCard;
 import model.deck.TrainCardDeck;
@@ -40,6 +42,34 @@ public class ClaimRouteAction extends PlayerAction {
         if (route == null || route.isClaimed()) {
             return false;
         }
+
+        // Double Route Rules
+        GameBoard board = GameManager.getInstance().getBoard();
+        if (board != null) {
+            List<Route> routesBetween = board.getRoutes().stream()
+                .filter(r -> (r.getCityA().equals(route.getCityA()) && r.getCityB().equals(route.getCityB())) ||
+                             (r.getCityA().equals(route.getCityB()) && r.getCityB().equals(route.getCityA())))
+                .toList();
+
+            if (routesBetween.size() > 1) {
+                int playerCount = GameManager.getInstance().getPlayers().size();
+                for (Route r : routesBetween) {
+                    if (r == route) continue;
+                    if (r.isClaimed()) {
+                        // Rule 1: A single player cannot claim both routes of a double route.
+                        if (r.getClaimedBy().equals(player)) {
+                            return false;
+                        }
+                        // Rule 2: In two-player games, once one Route of a Double Route is claimed,
+                        // the other one cannot be claimed by the other player.
+                        if (playerCount <= 2) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
         if (!route.canBeClaimedWith(cardsUsed)) {
             return false;
         }
