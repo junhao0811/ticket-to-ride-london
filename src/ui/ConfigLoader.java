@@ -122,20 +122,20 @@ public final class ConfigLoader {
     public List<TicketImageEntry> getTicketImages()          { return ticketImages; }
 
     /**
-     * Converts a Java Route city display name to its config camelCase ID.
-     * Returns an empty string if the name is not in the mapping.
+     * Converts a City to its config camelCase ID.
+     * Returns an empty string if the city is not in the mapping.
      */
-    public String javaNameToId(String javaName) {
-        return javaNameToId.getOrDefault(javaName, "");
+    public String javaNameToId(model.board.City city) {
+        return javaNameToId.getOrDefault(city.getName(), "");
     }
 
     /**
-     * Finds the RouteConfig whose endpoint city IDs match the given Java city name pair
+     * Finds the RouteConfig whose endpoint city IDs match the given City pair
      * (checked in both directions).  Returns null if no match is found.
      */
-    public RouteConfig findRoute(String cityAJava, String cityBJava) {
-        String fromId = javaNameToId(cityAJava);
-        String toId   = javaNameToId(cityBJava);
+    public RouteConfig findRoute(model.board.City cityA, model.board.City cityB) {
+        String fromId = javaNameToId(cityA);
+        String toId   = javaNameToId(cityB);
         for (RouteConfig rc : routes) {
             if ((rc.fromId().equals(fromId) && rc.toId().equals(toId))
              || (rc.fromId().equals(toId)   && rc.toId().equals(fromId))) {
@@ -146,12 +146,12 @@ public final class ConfigLoader {
     }
 
     /**
-     * Finds a TicketImageEntry whose city-pair matches the given Java city names
+     * Finds a TicketImageEntry whose city-pair matches the given Cities
      * (checked in both directions).  Returns null if no match exists.
      */
-    public TicketImageEntry findTicketImage(String cityAJava, String cityBJava) {
-        String fromId = javaNameToId(cityAJava);
-        String toId   = javaNameToId(cityBJava);
+    public TicketImageEntry findTicketImage(model.board.City cityA, model.board.City cityB) {
+        String fromId = javaNameToId(cityA);
+        String toId   = javaNameToId(cityB);
         for (TicketImageEntry t : ticketImages) {
             if ((t.fromId().equals(fromId) && t.toId().equals(toId))
              || (t.fromId().equals(toId)   && t.toId().equals(fromId))) {

@@ -101,10 +101,10 @@ public class LondonMapConfig implements MapConfiguration {
             TransportationTypes colour = parseColour(rc.cartType());
             Route route;
             if (colour == null) {
-                route = new Route(rc.nodeName(), fromName, toName, rc.routeLength(),
+                route = new Route(rc.nodeName(), from, to, rc.routeLength(),
                                   null, new AnyColourStrategy(), segs);
             } else {
-                route = new Route(rc.nodeName(), fromName, toName, rc.routeLength(),
+                route = new Route(rc.nodeName(), from, to, rc.routeLength(),
                                   colour, new SpecificColourStrategy(colour), segs);
             }
             routes.add(route);

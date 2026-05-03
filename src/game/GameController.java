@@ -22,7 +22,7 @@ import java.util.List;
  * Discarded when returning to menu or starting a new game.
  */
 public class GameController {
-
+    
     private final GameVariant variant;
     private final GameBoard board;
     private final List<Player> players;
@@ -34,7 +34,7 @@ public class GameController {
     private final ActionHistory history;
     private List<ScoreManager.FinalScore> finalScores;
     private EndGameScorer endGameScorer;
-
+    
     public GameController(GameVariant variant, List<Player> players) {
         this.variant = variant;
         this.players = new ArrayList<>(players);
@@ -46,23 +46,23 @@ public class GameController {
         this.history = new ActionHistory();
         this.turnManager = new TurnManager(this.players, this.history);
         this.finalScores = null;
-
+        
         this.endGameScorer = new EndGameScorer(new PlayerGraphsBuilder(), new DestinationTicketScorer(), new LongestPathBonusScorer());
-
+        
         dealInitialHands();
         faceUpPool.refill(trainDeck);
     }
-
+    
     public ActionResult submitAction(PlayerAction action) {
         ActionResult result = turnManager.playTurn(action);
         if (result.isSuccess() && turnManager.getPhase() == GamePhase.ENDED) {
             //finalScores = scoreManager.finalizeScores(players, board);
             this.endGameScorer.endScore(getPlayers(), getBoard().getRoutes());
-
+            
         }
         return result;
     }
-
+    
     private void dealInitialHands() {
         int handSize = variant.getInitialHandSize();
         for (Player p : players) {
@@ -71,7 +71,7 @@ public class GameController {
             }
         }
     }
-
+    
     // Getters
     public GameBoard getBoard() { return board; }
     public List<Player> getPlayers() { return List.copyOf(players); }

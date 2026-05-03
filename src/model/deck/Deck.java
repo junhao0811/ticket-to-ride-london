@@ -46,10 +46,33 @@ public abstract class Deck<T> {
         return cards.isEmpty() ? Optional.empty() : Optional.of(cards.poll());
     }
 
+    /**
+     * Draws up to {@code n} cards from the top of the deck.
+     *
+     * @param n maximum number of cards to draw
+     * @return list of drawn cards (may be fewer than {@code n} if deck is exhausted)
+     */
+    public List<T> drawN(int n) {
+        List<T> drawn = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            draw().ifPresent(drawn::add);
+        }
+        return drawn;
+    }
+
     /** Returns a card to the bottom of the deck. */
     public void returnToBottom(T card) {
         if (card != null) {
             cards.addLast(card);
+        }
+    }
+
+    /** Returns multiple cards to the bottom of the deck. */
+    public void returnToBottom(List<T> items) {
+        if (items != null) {
+            for (T item : items) {
+                returnToBottom(item);
+            }
         }
     }
 
