@@ -22,14 +22,12 @@ public class EndGameScorer {
     }
 
 
-    public void endScore(Game game){
+    public void endScore(List<Player> players, List<Route> routes){
         //build the player graphs
-        List<Player> players = null;
-        List<Route> routes = null;
         Map<Player, MapGraph> playerGraphs = builder.buildPlayerGraphs(players, routes);
 
         // add up all the tickets scores and deduct for those uncompleted
-        for (Player player : players)){
+        for (Player player : players){
             int totalScore =  ticketScorer.calculateDestinationTickets(player, playerGraphs.get(player));
             player.addScore(totalScore);
         }
