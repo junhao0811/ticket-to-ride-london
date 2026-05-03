@@ -11,11 +11,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
  * Bottom bar showing the player's hand of train cards with actual card images
- * where available, plus Claim Route and End Turn action buttons.
+ * where available. Supports the "Single Selection" route claim flow.
  */
 public class HandBarPanel extends JPanel implements GameStateListener {
 
@@ -37,11 +38,12 @@ public class HandBarPanel extends JPanel implements GameStateListener {
 
     private final Player              you;
     private final Map<TransportationTypes, Image> cardImages;
-    private       Route               selectedRoute;
-    private       Consumer<Route>     onClaim;
-    private       Runnable            onEndTurn;
+    private       TransportationTypes selectedColor;
+    private       Runnable            onConfirm;
+    private       Runnable            onCancel;
+    private       Consumer<TransportationTypes> onSelectionChanged;
     private       JButton             claimBtn;
-    private       JButton             endBtn;
+    private       Runnable            onEndTurn;
 
     public HandBarPanel(Player you) {
         this.you        = you;
@@ -60,23 +62,35 @@ public class HandBarPanel extends JPanel implements GameStateListener {
         super.paintComponent(g);
     }
 
-    public void setOnClaim(Consumer<Route> callback)  { this.onClaim = callback; }
-    public void setOnEndTurn(Runnable callback)        { this.onEndTurn = callback; }
+    public void setOnConfirm(Runnable callback) { this.onConfirm = callback; }
+    public void setOnCancel(Runnable callback)  { this.onCancel = callback; }
+    public void setOnSelectionChanged(Consumer<TransportationTypes> callback) { this.onSelectionChanged = callback; }
+    public void setOnEndTurn(Runnable callback) { this.onEndTurn = callback; }
 
-    public void setSelectedRoute(Route route) {
-        this.selectedRoute = route;
-        updateButtonState();
+    public void setConfirmVisible(boolean visible) {
+        claimBtn.setVisible(visible);
+        revalidate();
+        repaint();
+    }
+
+    public void clearSelection() {
+        selectedColor = null;
+        setConfirmVisible(false);
+        onStateChanged();
+    }
+
+    public TransportationTypes getSelectedColor() {
+        return selectedColor;
     }
 
     @Override
     public void onStateChanged() {
         rebuildCards();
-        updateButtonState();
         revalidate();
         repaint();
     }
 
-    // ── Layout ────────────────────────────────────────────────────────��──────
+    // ── Layout ────────────────────────────────────────────────────────────────
 
     private void buildLayout() {
         setLayout(new BorderLayout(8, 0));
@@ -84,22 +98,23 @@ public class HandBarPanel extends JPanel implements GameStateListener {
             BorderFactory.createMatteBorder(2, 0, 0, 0, UiTheme.PANEL_BORDER),
             BorderFactory.createEmptyBorder(12, 16, 12, 16)));
 
-        JPanel cardsArea = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
+        JPanel cardsArea = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
         cardsArea.setOpaque(false);
         cardsArea.setName("cardsArea");
         add(cardsArea, BorderLayout.CENTER);
 
+        claimBtn = makeButton("Claim Route", UiTheme.GOLD, UiTheme.INK);
+        claimBtn.setVisible(false);
+        claimBtn.addActionListener(e -> { if (onConfirm != null) onConfirm.run(); });
+
         JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         actions.setOpaque(false);
-
-        claimBtn = makeButton("Claim Route", UiTheme.GOLD, UiTheme.INK);
-        claimBtn.setEnabled(false);
-        claimBtn.addActionListener(e -> {
-            if (selectedRoute != null && onClaim != null) onClaim.accept(selectedRoute);
+        
+        JButton endBtn = makeButton("End Turn", UiTheme.PANEL_BORDER, Color.WHITE);
+        endBtn.addActionListener(e -> {
+            Player current = GameManager.getInstance().getCurrentPlayer();
+            GameManager.getInstance().submitAction(new actions.PauseAction(current));
         });
-
-        endBtn = makeButton("End Turn", UiTheme.ACCENT_RED, Color.WHITE);
-        endBtn.addActionListener(e -> { if (onEndTurn != null) onEndTurn.run(); });
 
         actions.add(claimBtn);
         actions.add(endBtn);
@@ -128,7 +143,9 @@ public class HandBarPanel extends JPanel implements GameStateListener {
         } else {
             for (TransportationTypes c : ORDER) {
                 Integer cnt = counts.get(c);
-                if (cnt != null) panel.add(makeHandCard(c, cnt));
+                if (cnt != null) {
+                    panel.add(makeHandCard(c, cnt));
+                }
             }
         }
     }
@@ -139,20 +156,27 @@ public class HandBarPanel extends JPanel implements GameStateListener {
         Image  img = cardImages.get(colour);
         Color  bg  = UiTheme.routeColour(colour);
         Color  ink = UiTheme.inkOn(bg);
+        boolean selected = (colour == selectedColor);
 
-        return new JPanel() {
+        JPanel panel = new JPanel() {
             { setPreferredSize(new Dimension(100, 72)); setOpaque(false); }
 
             @Override
             protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g;
+                Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,    RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,   RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                 int w = getWidth(), h = getHeight();
+
+                if (selected) {
+                    g2.rotate(Math.toRadians(-5), w / 2.0, h / 2.0);
+                    g2.setColor(new Color(0x2C, 0x8C, 0x4D)); // Accent green
+                    g2.fillRoundRect(-2, -2, w + 4, h + 4, 10, 10);
+                }
+
                 Shape clip = new RoundRectangle2D.Float(0, 0, w, h, 8, 8);
 
                 if (img != null) {
-                    // Card image with gradient overlay for count badge readability
                     g2.setClip(clip);
                     g2.drawImage(img, 0, 0, w, h, null);
                     g2.setClip(null);
@@ -162,7 +186,6 @@ public class HandBarPanel extends JPanel implements GameStateListener {
                     g2.setPaint(grad);
                     g2.fill(clip);
                 } else {
-                    // Colour-block fallback
                     g2.setColor(bg);
                     g2.fill(clip);
                     g2.setFont(UiTheme.mono(9));
@@ -180,14 +203,34 @@ public class HandBarPanel extends JPanel implements GameStateListener {
                 g2.drawString(s, w / 2 - fm.stringWidth(s) / 2, h - 8);
 
                 // Border
-                g2.setColor(new Color(255, 255, 255, 40));
-                g2.setStroke(new BasicStroke(1f));
+                g2.setColor(selected ? new Color(0x2C, 0x8C, 0x4D) : new Color(255, 255, 255, 40));
+                g2.setStroke(new BasicStroke(selected ? 3f : 1f));
                 g2.draw(clip);
+                g2.dispose();
             }
         };
+
+        panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        panel.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (selectedColor == colour) {
+                    selectedColor = null;
+                } else {
+                    selectedColor = colour;
+                }
+                setConfirmVisible(false); // Hide tick/cross when selection changes
+                if (onSelectionChanged != null) {
+                    onSelectionChanged.accept(selectedColor);
+                }
+                onStateChanged();
+            }
+        });
+
+        return panel;
     }
 
-    // ── Buttons ───────────────────────────��────────────────────────��─────────
+    // ── Buttons ───────────────────────────────────────────────────────────────
 
     private JButton makeButton(String text, Color bg, Color fg) {
         JButton btn = new JButton(text) {
@@ -210,15 +253,26 @@ public class HandBarPanel extends JPanel implements GameStateListener {
         return btn;
     }
 
-    private void updateButtonState() {
-        Player current = GameManager.getInstance().getCurrentPlayer();
-        boolean isYourTurn = current == you; // Actually, in a unified view, is it always 'your' turn? 
-        // Let's make it more robust: the HandBarPanel always shows the current player's actions.
-        claimBtn.setEnabled(selectedRoute != null); 
-        endBtn.setEnabled(true);
+    private JButton makeIconButton(String text, Color bg, Color fg) {
+        JButton btn = new JButton(text) {
+            @Override protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(bg);
+                g2.fillOval(0, 0, getWidth(), getHeight());
+                super.paintComponent(g);
+            }
+        };
+        btn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        btn.setForeground(fg);
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setOpaque(false);
+        btn.setPreferredSize(new Dimension(44, 44));
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return btn;
     }
-
-    // ── Image loading ──────────────────────────────���─────────────────────��───
 
     private static Map<TransportationTypes, Image> loadCardImages() {
         Map<TransportationTypes, Image> map = new EnumMap<>(TransportationTypes.class);

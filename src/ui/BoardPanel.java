@@ -4,6 +4,7 @@ import game.GameManager;
 import game.GameStateListener;
 import model.board.Route;
 import model.board.SegmentPoint;
+import model.cards.TransportationTypes;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,8 +46,10 @@ public class BoardPanel extends JPanel implements GameStateListener {
     private final Image           bgImage;
     private final Image           streetBg;
     private final java.util.Map<model.player.PlayerColour, Image> busImages;
-    private       String          selectedRouteId;
-    private       Consumer<Route> onRouteClick;
+    private       TransportationTypes selectedColor;
+    private       int             selectedTotalPower;
+    private       String          targetedRouteId;
+    private       Consumer<Route> onRouteTargeted;
 
     public BoardPanel() {
         setOpaque(false);
@@ -65,11 +68,35 @@ public class BoardPanel extends JPanel implements GameStateListener {
         });
     }
 
-    /** Registers a callback invoked when the user clicks an unclaimed route segment. */
-    public void setOnRouteClick(Consumer<Route> callback) { this.onRouteClick = callback; }
+    /** Sets the color and power for route highlighting. */
+    public void setSelectedColor(TransportationTypes color, int totalPower) {
+        this.selectedColor = color;
+        this.selectedTotalPower = totalPower;
+        this.targetedRouteId = null;
+        repaint();
+    }
 
-    /** Clears the yellow selection highlight. */
-    public void clearSelection() { selectedRouteId = null; repaint(); }
+    /** Sets the targeted route for confirmation. */
+    public void setTargetedRoute(Route route) {
+        this.targetedRouteId = (route != null) ? route.getId() : null;
+        repaint();
+    }
+
+    public Route getTargetedRoute() {
+        if (targetedRouteId == null) return null;
+        return GameManager.getInstance().getBoard().findRouteById(targetedRouteId).orElse(null);
+    }
+
+    /** Registers a callback invoked when the user targets a highlighted route. */
+    public void setOnRouteTargeted(Consumer<Route> callback) { this.onRouteTargeted = callback; }
+
+    /** Clears selection and targeting. */
+    public void clearSelection() { 
+        selectedColor = null; 
+        selectedTotalPower = 0;
+        targetedRouteId = null; 
+        repaint(); 
+    }
 
     @Override public void onStateChanged() { repaint(); }
 
@@ -105,6 +132,12 @@ public class BoardPanel extends JPanel implements GameStateListener {
             }
             drawRiver(g2, w, h);
             drawMapDecor(g2, w, h);
+        }
+
+        // Apply dimming overlay if a color is selected
+        if (selectedColor != null) {
+            g2.setColor(new Color(0, 0, 0, 160));
+            g2.fillRect(0, 0, w, h);
         }
 
         drawRoutes(g2, w, h);
@@ -175,10 +208,13 @@ public class BoardPanel extends JPanel implements GameStateListener {
         double slotH   = 24 * scale;
         int    arc     = Math.max(3, (int)(6 * scale));
 
-        boolean selected = route.getId().equals(selectedRouteId);
         boolean claimed  = route.isClaimed();
-        Image busImg = claimed ? busImages.get(route.getClaimedBy().getColour()) : null;
+        boolean targeted = route.getId().equals(targetedRouteId);
+        boolean highlighted = !claimed && selectedColor != null && 
+                            route.getLength() <= selectedTotalPower &&
+                            (route.getRequiredColour() == null || route.getRequiredColour() == selectedColor);
 
+        Image busImg = claimed ? busImages.get(route.getClaimedBy().getColour()) : null;
         Color routeColor = UiTheme.routeColour(route.getRequiredColour());
 
         AffineTransform saved = g2.getTransform();
@@ -190,15 +226,28 @@ public class BoardPanel extends JPanel implements GameStateListener {
             g2.translate(cx, cy);
             g2.rotate(sp.rotationRadians());
 
-            // Selection highlight
-            if (selected) {
-                g2.setColor(new Color(0xFF, 0xD7, 0x00, 180));
+            // Targeting glow (intense teal)
+            if (targeted) {
+                g2.setColor(new Color(0x3A, 0xBD, 0xD0, 220));
                 g2.fill(new RoundRectangle2D.Double(
-                    -slotLen / 2 - 4, -slotH / 2 - 4,
-                    slotLen + 8, slotH + 8, arc + 2, arc + 2));
+                    -slotLen / 2 - 8, -slotH / 2 - 8,
+                    slotLen + 16, slotH + 16, arc + 4, arc + 4));
+            } else if (highlighted) {
+                // Highlight glow (Golden yellowish)
+                g2.setColor(new Color(0xF0, 0xC4, 0x3A, 180));
+                g2.fill(new RoundRectangle2D.Double(
+                    -slotLen / 2 - 6, -slotH / 2 - 6,
+                    slotLen + 12, slotH + 12, arc + 2, arc + 2));
             }
 
-            // Slot background — darker when claimed so the bus stands out
+            // Dim non-relevant elements if a selection is active
+            float alpha = 1.0f;
+            if (selectedColor != null && !highlighted && !targeted) {
+                alpha = claimed ? 0.6f : 0.2f;
+            }
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+
+            // Slot background
             g2.setColor(claimed ? routeColor.darker() : routeColor);
             g2.fill(new RoundRectangle2D.Double(-slotLen / 2, -slotH / 2, slotLen, slotH, arc, arc));
 
@@ -206,13 +255,14 @@ public class BoardPanel extends JPanel implements GameStateListener {
             g2.setStroke(new BasicStroke(1.2f));
             g2.draw(new RoundRectangle2D.Double(-slotLen / 2, -slotH / 2, slotLen, slotH, arc, arc));
 
-            // Bus piece — transparent PNG drawn 1.55× taller than the slot so it
-            // sits visually above the track rather than being flush with it.
             if (claimed && busImg != null) {
                 double busH = slotH * 1.55;
                 double busW = slotLen * 0.98;
                 g2.drawImage(busImg, (int)(-busW / 2), (int)(-busH / 2), (int)busW, (int)busH, null);
             }
+            
+            // Reset alpha for next segment/element
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
         }
         g2.setTransform(saved);
     }
@@ -220,8 +270,6 @@ public class BoardPanel extends JPanel implements GameStateListener {
     /**
      * BFS flood-fill from every border pixel: any white/near-white pixel reachable
      * from the image edge is treated as background and made fully transparent.
-     * Interior white pixels (e.g. the body of the white bus) are preserved because
-     * they are enclosed by the bus outline and never touched by the fill.
      */
     private Image makeTransparent(Image src) {
         if (src == null) return null;
@@ -270,13 +318,6 @@ public class BoardPanel extends JPanel implements GameStateListener {
         }
     }
 
-    private Color getRouteFill(Route route) {
-        if (route.getClaimedBy() != null) {
-            return UiTheme.playerColour(route.getClaimedBy().getColour());
-        }
-        return UiTheme.routeColour(route.getRequiredColour());
-    }
-
     // ── City nodes ───────────────────────────────────────────────────────────
 
     private void drawNodes(Graphics2D g2, int w, int h) {
@@ -292,37 +333,31 @@ public class BoardPanel extends JPanel implements GameStateListener {
 
     private void drawNode(Graphics2D g2, String name, int cx, int cy, boolean hub) {
         int r = HUB_R;
-        // Drop shadow
         g2.setColor(new Color(0, 0, 0, 40));
         g2.fillOval(cx - r + 2, cy - r + 2, r * 2, r * 2);
-        // Fill
         g2.setColor(UiTheme.MAP_CREAM2);
         g2.fillOval(cx - r, cy - r, r * 2, r * 2);
-        // Border
         g2.setColor(UiTheme.INK);
         g2.setStroke(new BasicStroke(2f));
-        drawOval(g2, cx - r, cy - r, r * 2, r * 2);
-    }
-
-    private void drawOval(Graphics2D g2, int x, int y, int w, int h) {
-        g2.drawOval(x, y, w, h);
-    }
-
-    private String abbreviate(String name) {
-        String[] parts = name.split("[ '&]+");
-        StringBuilder sb = new StringBuilder();
-        for (String p : parts) if (!p.isEmpty()) sb.append(Character.toUpperCase(p.charAt(0)));
-        return sb.length() > 3 ? sb.substring(0, 3) : sb.toString();
+        g2.drawOval(cx - r, cy - r, r * 2, r * 2);
     }
 
     // ── Click handling ───────────────────────────────────────────────────────
 
     private void handleClick(MouseEvent e) {
         Route hit = hitTestRoutes(e.getX(), e.getY(), getWidth(), getHeight());
-        if (hit == null) return;
-        selectedRouteId = hit.getId();
-        repaint();
-        if (onRouteClick != null) onRouteClick.accept(hit);
+        if (hit == null || hit.isClaimed()) return;
+
+        // Only handle clicks on highlighted routes
+        boolean highlighted = selectedColor != null && 
+                            hit.getLength() <= selectedTotalPower &&
+                            (hit.getRequiredColour() == null || hit.getRequiredColour() == selectedColor);
+        
+        if (highlighted) {
+            targetedRouteId = hit.getId();
+            repaint();
+            if (onRouteTargeted != null) onRouteTargeted.accept(hit);
+        }
     }
 
     private Route hitTestRoutes(int px, int py, int w, int h) {

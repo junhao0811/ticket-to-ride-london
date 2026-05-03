@@ -53,60 +53,76 @@ public class GameWindow extends JFrame implements GameStateListener {
         scorePanel  = new ScorePanel();
 
         // ── Wire up action callbacks ────────────────────────────────────────
-        boardPanel.setOnRouteClick(route -> {
-            selectedRoute = route;
-            handBar.setSelectedRoute(route);
-            if (route.isClaimed()) {
-                toast.show("Already claimed by "
-                    + route.getClaimedBy().getName() + ".");
-                selectedRoute = null;
-                handBar.setSelectedRoute(null);
-                return;
-            }
+        boardPanel.setOnRouteTargeted(route -> {
+            handBar.setConfirmVisible(true);
+        });
 
-            // Double Route Rules for UI feedback
-            GameBoard board = GameManager.getInstance().getBoard();
-            if (board != null) {
-                List<Route> routesBetween = board.getRoutes().stream()
-                    .filter(r -> (r.getCityA().equals(route.getCityA()) && r.getCityB().equals(route.getCityB())) ||
-                                 (r.getCityA().equals(route.getCityB()) && r.getCityB().equals(route.getCityA())))
-                    .toList();
-
-                if (routesBetween.size() > 1) {
-                    int playerCount = GameManager.getInstance().getPlayers().size();
-                    Player current = GameManager.getInstance().getCurrentPlayer();
-                    for (Route r : routesBetween) {
-                        if (r == route) continue;
-                        if (r.isClaimed()) {
-                            if (r.getClaimedBy().equals(current)) {
-                                toast.show("You cannot claim both routes of a double route.");
-                                selectedRoute = null;
-                                handBar.setSelectedRoute(null);
-                            } else if (playerCount <= 2) {
-                                toast.show("In a 2-player game, only one route of a double route can be claimed.");
-                                selectedRoute = null;
-                                handBar.setSelectedRoute(null);
-                            }
-                        }
-                    }
-                }
+        handBar.setOnSelectionChanged(color -> {
+            if (color == null) {
+                boardPanel.clearSelection();
+            } else {
+                Player current = GameManager.getInstance().getCurrentPlayer();
+                int matching = (int) current.getHand().stream()
+                    .filter(c -> !c.isLocomotive() && c.getColour() == color)
+                    .count();
+                int locomotives = (int) current.getHand().stream()
+                    .filter(model.cards.TransportationCard::isLocomotive)
+                    .count();
+                // Special case: if LOCOMOTIVE itself is selected, total power is just locomotives
+                int totalPower = (color == model.cards.TransportationTypes.LOCOMOTIVE) ? locomotives : matching + locomotives;
+                boardPanel.setSelectedColor(color, totalPower);
             }
         });
 
-        handBar.setOnClaim(route -> {
-            if (route == null) return;
+        handBar.setOnConfirm(() -> {
+            Route route = boardPanel.getTargetedRoute();
+            model.cards.TransportationTypes color = handBar.getSelectedColor();
+            if (route == null || color == null) return;
+
             Player current = GameManager.getInstance().getCurrentPlayer();
-            new ClaimDialog(this, route, current, cards -> {
+            List<model.cards.TransportationCard> cardsToUse = new java.util.ArrayList<>();
+            List<model.cards.TransportationCard> hand = new java.util.ArrayList<>(current.getHand());
+
+            // 1. Gather all matching colored cards first (unless WILD was selected)
+            if (color != model.cards.TransportationTypes.LOCOMOTIVE) {
+                var it = hand.iterator();
+                while (it.hasNext() && cardsToUse.size() < route.getLength()) {
+                    model.cards.TransportationCard c = it.next();
+                    if (!c.isLocomotive() && c.getColour() == color) {
+                        cardsToUse.add(c);
+                        it.remove();
+                    }
+                }
+            }
+
+            // 2. Fill the rest with locomotives
+            var it = hand.iterator();
+            while (it.hasNext() && cardsToUse.size() < route.getLength()) {
+                model.cards.TransportationCard c = it.next();
+                if (c.isLocomotive()) {
+                    cardsToUse.add(c);
+                    it.remove();
+                }
+            }
+
+            if (cardsToUse.size() == route.getLength()) {
                 ClaimRouteAction action = new ClaimRouteAction(
-                    current, route, cards,
+                    current, route, cardsToUse,
                     GameManager.getInstance().getTrainDeck(),
                     GameManager.getInstance().getScoreManager());
                 var result = GameManager.getInstance().submitAction(action);
                 toast.show(result.getMessage());
-                selectedRoute = null;
+                
+                handBar.clearSelection();
                 boardPanel.clearSelection();
-                handBar.setSelectedRoute(null);
-            }).setVisible(true);
+            } else {
+                toast.show("Insufficient cards to claim route.");
+            }
+        });
+
+        handBar.setOnCancel(() -> {
+            boardPanel.setTargetedRoute(null);
+            handBar.setConfirmVisible(false);
         });
 
         handBar.setOnEndTurn(() -> {
