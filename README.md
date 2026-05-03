@@ -1,59 +1,46 @@
 # Ticket to Ride: London - Prototype
 
-A digital implementation of the Ticket to Ride: London board game, built as a self-contained Java application.
+A digital implementation of the Ticket to Ride: London board game, provided as a self-contained Java executable.
 
 ## Target Platforms
-* **Windows** (using Command Prompt, PowerShell, or Git Bash)
-* **macOS** (using Terminal)
-* **Linux** (using Terminal)
+* **Windows** 
+* **macOS**
+* **Linux** 
 
 ## Prerequisites
-* **Java Runtime Environment (JRE) or JDK 17 or higher** must be installed and available in your system's PATH.
-* No other tools (like Maven or Gradle) or third-party libraries are required.
+* **Java Runtime Environment (JRE) 17 or higher** must be installed and available in your system's PATH.
+* No IDE, JDK, Maven, Gradle, or third-party libraries are required to run the prototype.
 
-## Build Instructions
-This project has been configured to build without any external dependency managers.
+## Run Instructions (For Evaluators)
+This project is provided as a pre-compiled executable JAR file (`TicketToRideLondon.jar`), which contains all necessary logic, dependencies, and resources.
+
+1. Open a terminal (Command Prompt, PowerShell, or macOS/Linux Terminal) in the folder containing `TicketToRideLondon.jar`.
+2. Launch the game using the following command:
+   ```bash
+   java -jar TicketToRideLondon.jar
+   ```
+
+Alternatively, on most desktop environments, you can simply **double-click** the `TicketToRideLondon.jar` file to start the game.
+
+## Build Instructions (Optional - Requires JDK)
+If you wish to rebuild the executable from source, a **JDK (Java Development Kit) 17+** is required. 
 
 ### Windows Users
-1. Open the project root folder in File Explorer.
+1. Open the project root folder.
 2. **Double-click** the `build.bat` file.
-3. Once the script finishes, you will see `TicketToRideLondon.jar` in the folder.
+3. This will compile the source code and generate a fresh `TicketToRideLondon.jar`.
 
-### Mac/Linux/Git Bash Users
+### Mac/Linux Users
 1. Open a terminal in the project root directory.
-2. Grant execution permission (if needed):
+2. Run the build script:
    ```bash
    chmod +x build.sh
-   ```
-3. Run the build script:
-   ```bash
    ./build.sh
    ```
-
-### Using the Makefile (Alternative)
-If you have `make` installed on your system:
-```bash
-make
-```
-
-These scripts will compile the source code, bundle the game resources (images and configuration), and produce a single executable file: `TicketToRideLondon.jar`.
-
-## Run Instructions
-Once the build is complete, you can launch the game using the following command:
-
-```bash
-java -jar TicketToRideLondon.jar
-```
-
-Alternatively, on most desktop environments (Windows, macOS, Linux), you can simply **double-click** the `TicketToRideLondon.jar` file to start the game.
-
-## Troubleshooting: "Inaccessible JAR file"
-If your system says the JAR is missinDg or inaccessible:
-1. Ensure you have **built** the project first using `build.bat` (Windows) or `./build.sh` (Mac/Linux).
-2. Check that a file named `TicketToRideLondon.jar` appeared in your folder.
-3. Make sure you are running the command `java -jar TicketToRideLondon.jar` from the **project root folder**, where the JAR file is located.
+   *(Alternatively, run `make` if installed).*
 
 ## Submission Compliance
-* **No IDE Required:** The project can be built and run entirely from the command line.
-* **No Third-Party Libraries:** All dependencies (including the JSON parser) have been internalized into the source code.
-* **Self-Contained:** The JAR file contains all necessary assets and logic.
+* **Executable Provided:** A pre-compiled `.jar` file is included in the repository.
+* **JRE Only:** The executable runs purely on a standard JRE 17+.
+* **No Third-Party Libraries:** The JSON parser (`org.json`) has been internalized into the source code, removing any external dependencies.
+* **Self-Contained:** The JAR file bundles all necessary assets (images, configs) and logic.
