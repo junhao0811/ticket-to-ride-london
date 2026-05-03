@@ -32,6 +32,7 @@ public class City {
         }
     }
 
+    // change
     @Override
     public boolean equals(Object other) {
         if (this == other) {
