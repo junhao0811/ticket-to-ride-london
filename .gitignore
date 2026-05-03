@@ -12,7 +12,8 @@ META-INF/
 # Claude Code
 .claude/
 CLAUDE.md
-*.md
+GEMINI.md
+MEMORY.md
 
 # Build helpers
 compile_args.txt
