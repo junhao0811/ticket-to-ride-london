@@ -34,7 +34,6 @@ public class RightRailPanel extends JPanel implements GameStateListener {
     );
 
     private final Runnable               onDrawTickets;
-    private       Runnable               onEndTurn;
     private final Map<TransportationTypes, Image> cardImages;
     private final Image                  trainCardBack;
     private final Image                  ticketCardBack;
@@ -60,8 +59,6 @@ public class RightRailPanel extends JPanel implements GameStateListener {
         g.fillRect(0, 0, getWidth(), getHeight());
         super.paintComponent(g);
     }
-
-    public void setOnEndTurn(Runnable r) { this.onEndTurn = r; }
 
     @Override
     public void onStateChanged() {

@@ -2,7 +2,6 @@ package ui;
 
 import actions.ClaimRouteAction;
 import actions.DrawDestinationTicketAction;
-import actions.PauseAction;
 import game.GameManager;
 import game.GamePhase;
 import game.GameStateListener;
@@ -123,12 +122,6 @@ public class GameWindow extends JFrame implements GameStateListener {
         handBar.setOnCancel(() -> {
             boardPanel.setTargetedRoute(null);
             handBar.setConfirmVisible(false);
-        });
-
-        handBar.setOnEndTurn(() -> {
-            Player current = GameManager.getInstance().getCurrentPlayer();
-            var result = GameManager.getInstance().submitAction(new PauseAction(current));
-            toast.show(result.getMessage());
         });
 
         // ── Assemble stage (JLayeredPane for proper overlay z-ordering) ────

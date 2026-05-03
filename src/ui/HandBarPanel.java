@@ -43,7 +43,6 @@ public class HandBarPanel extends JPanel implements GameStateListener {
     private       Runnable            onCancel;
     private       Consumer<TransportationTypes> onSelectionChanged;
     private       JButton             claimBtn;
-    private       Runnable            onEndTurn;
 
     public HandBarPanel(Player you) {
         this.you        = you;
@@ -65,7 +64,6 @@ public class HandBarPanel extends JPanel implements GameStateListener {
     public void setOnConfirm(Runnable callback) { this.onConfirm = callback; }
     public void setOnCancel(Runnable callback)  { this.onCancel = callback; }
     public void setOnSelectionChanged(Consumer<TransportationTypes> callback) { this.onSelectionChanged = callback; }
-    public void setOnEndTurn(Runnable callback) { this.onEndTurn = callback; }
 
     public void setConfirmVisible(boolean visible) {
         claimBtn.setVisible(visible);
@@ -109,15 +107,8 @@ public class HandBarPanel extends JPanel implements GameStateListener {
 
         JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         actions.setOpaque(false);
-        
-        JButton endBtn = makeButton("End Turn", UiTheme.PANEL_BORDER, Color.WHITE);
-        endBtn.addActionListener(e -> {
-            Player current = GameManager.getInstance().getCurrentPlayer();
-            GameManager.getInstance().submitAction(new actions.PauseAction(current));
-        });
 
         actions.add(claimBtn);
-        actions.add(endBtn);
         add(actions, BorderLayout.EAST);
 
         rebuildCards();
