@@ -46,7 +46,7 @@ public class TurnManager {
             return ActionResult.failure("Game is over.");
         }
         if (!action.validate()) {
-            return ActionResult.failure("Action is not valid right now.");
+            return ActionResult.failure("Action is invalid!");
         }
         ActionResult result = action.execute();
         if (result.isSuccess()) {

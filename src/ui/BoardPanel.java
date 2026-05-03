@@ -179,7 +179,7 @@ public class BoardPanel extends JPanel implements GameStateListener {
         g2.setColor(UiTheme.INK_MUTE);
         g2.drawString("London", 20, h - 20);
         g2.setFont(UiTheme.mono(8));
-        g2.drawString("NETWORK MAP  ·  EDITION I  ·  MMXXVI", 20, h - 8);
+        g2.drawString("NETWORK MAP", 20, h - 8);
         g2.setFont(UiTheme.display(13));
         g2.setColor(UiTheme.INK_DIM);
         g2.drawString("N", w - 22, 24);
@@ -212,7 +212,7 @@ public class BoardPanel extends JPanel implements GameStateListener {
         boolean targeted = route.getId().equals(targetedRouteId);
         boolean highlighted = !claimed && selectedColor != null && 
                             route.getLength() <= selectedTotalPower &&
-                            (route.getRequiredColour() == null || route.getRequiredColour() == selectedColor);
+                            (route.getRequiredColour() == null || selectedColor == TransportationTypes.LOCOMOTIVE || route.getRequiredColour() == selectedColor);
 
         Image busImg = claimed ? busImages.get(route.getClaimedBy().getColour()) : null;
         Color routeColor = UiTheme.routeColour(route.getRequiredColour());
@@ -228,16 +228,16 @@ public class BoardPanel extends JPanel implements GameStateListener {
 
             // Targeting glow (intense teal)
             if (targeted) {
-                g2.setColor(new Color(0x3A, 0xBD, 0xD0, 220));
+                g2.setColor(new Color(0x7C, 0xC9, 0x6B, 220));
                 g2.fill(new RoundRectangle2D.Double(
-                    -slotLen / 2 - 8, -slotH / 2 - 8,
-                    slotLen + 16, slotH + 16, arc + 4, arc + 4));
+                    -slotLen / 2 - 4, -slotH / 2 - 4,
+                    slotLen + 8, slotH + 8, arc + 2, arc + 2));
             } else if (highlighted) {
                 // Highlight glow (Golden yellowish)
                 g2.setColor(new Color(0xF0, 0xC4, 0x3A, 180));
                 g2.fill(new RoundRectangle2D.Double(
-                    -slotLen / 2 - 6, -slotH / 2 - 6,
-                    slotLen + 12, slotH + 12, arc + 2, arc + 2));
+                    -slotLen / 2 - 4, -slotH / 2 - 4,
+                    slotLen + 8, slotH + 8, arc + 2, arc + 2));
             }
 
             // Dim non-relevant elements if a selection is active
@@ -351,7 +351,7 @@ public class BoardPanel extends JPanel implements GameStateListener {
         // Only handle clicks on highlighted routes
         boolean highlighted = selectedColor != null && 
                             hit.getLength() <= selectedTotalPower &&
-                            (hit.getRequiredColour() == null || hit.getRequiredColour() == selectedColor);
+                            (hit.getRequiredColour() == null || selectedColor == TransportationTypes.LOCOMOTIVE || hit.getRequiredColour() == selectedColor);
         
         if (highlighted) {
             targetedRouteId = hit.getId();

@@ -56,9 +56,9 @@ public class GameController {
     public ActionResult submitAction(PlayerAction action) {
         ActionResult result = turnManager.playTurn(action);
         if (result.isSuccess() && turnManager.getPhase() == GamePhase.ENDED) {
-            //finalScores = scoreManager.finalizeScores(players, board);
-            this.endGameScorer.endScore(getPlayers(), getBoard().getRoutes());
-            
+            this.finalScores = scoreManager.finalizeScores(players, board);
+            // We no longer need endGameScorer as scoreManager.finalizeScores handles it all
+            // including tie-breaking data preparation.
         }
         return result;
     }

@@ -34,6 +34,7 @@ public class GameWindow extends JFrame implements GameStateListener {
     private final ScorePanel scorePanel;
     private PassDeviceOverlay passOverlay;
     private Player lastKnownPlayer;
+    private GamePhase lastKnownPhase;
     private Route selectedRoute;
 
     public GameWindow() {
@@ -42,6 +43,7 @@ public class GameWindow extends JFrame implements GameStateListener {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         Player you = GameManager.getInstance().getPlayers().get(0);
+        lastKnownPhase = GameManager.getInstance().getPhase();
 
         // ── Build panels ───────────────────────────────────────────────────
         boardPanel  = new BoardPanel();
@@ -180,7 +182,9 @@ public class GameWindow extends JFrame implements GameStateListener {
         layeredStage.add(boardPanel,  JLayeredPane.DEFAULT_LAYER);
         layeredStage.add(rightRail,   JLayeredPane.DEFAULT_LAYER);
         layeredStage.add(handBar,     JLayeredPane.DEFAULT_LAYER);
-        layeredStage.add(scorePanel,  JLayeredPane.DEFAULT_LAYER);
+        
+        // Score Panel -> MODAL_LAYER (overlay above board)
+        layeredStage.add(scorePanel,  JLayeredPane.MODAL_LAYER);
         scorePanel.setVisible(false);
 
         // Toast -> PALETTE_LAYER (above board)
@@ -292,9 +296,14 @@ public class GameWindow extends JFrame implements GameStateListener {
 
     @Override
     public void onStateChanged() {
-        boolean ended = GameManager.getInstance().getPhase() == GamePhase.ENDED;
-        boardPanel.setVisible(!ended);
-        scorePanel.setVisible(ended);
+        GamePhase phase = GameManager.getInstance().getPhase();
+        boolean ended = phase == GamePhase.ENDED;
+
+        // Final Round Banner
+        if (phase == GamePhase.FINAL_ROUND && lastKnownPhase == GamePhase.PLAYING) {
+            toast.show("FINAL ROUND — Everyone gets one last turn!");
+        }
+        lastKnownPhase = phase;
 
         Player current = GameManager.getInstance().getCurrentPlayer();
         
@@ -303,9 +312,19 @@ public class GameWindow extends JFrame implements GameStateListener {
             passOverlay.setNextPlayer(current);
             passOverlay.setVisible(true);
         }
+
+        boolean passVisible = passOverlay.isVisible();
+        // Board and left rail stay visible during game over for verification
+        boardPanel.setVisible(true);
+        scorePanel.setVisible(ended);
+        leftRail.setVisible(!passVisible);
         
+        // Hide turn-active components when game ends or during pass-device
+        rightRail.setVisible(!ended && !passVisible);
+        handBar.setVisible(!ended && !passVisible);
+
         // Mandatory initial ticket draw
-        if (!ended && !passOverlay.isVisible() && current.getTickets().isEmpty() && !isDrawingInitial) {
+        if (!ended && !passVisible && current.getTickets().isEmpty() && !isDrawingInitial) {
             isDrawingInitial = true;
             SwingUtilities.invokeLater(this::drawInitialTickets);
         }
@@ -317,7 +336,7 @@ public class GameWindow extends JFrame implements GameStateListener {
         if (!ended) {
             String banner = currentName.equals(you.getName())
                 ? "It's your turn" : "Waiting on " + currentName + "…";
-            setTitle("Winner: " + banner);
+            setTitle("London Lines — " + banner);
         } else {
             setTitle("Game Over");
         }
