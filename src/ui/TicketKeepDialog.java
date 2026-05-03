@@ -58,7 +58,7 @@ public class TicketKeepDialog extends JDialog {
         c.anchor = GridBagConstraints.CENTER;
 
         // ── Title ──
-        String titleText = "PICK " + minKeep + " OR MORE TICKETS";
+        String titleText = (drawn.size() == 1) ? "KEEP YOUR TICKET" : "PICK " + minKeep + " OR MORE TICKETS";
         JLabel title = new JLabel(titleText);
         title.setFont(UiTheme.display(isInitial ? 32 : 24));
         title.setForeground(isInitial ? UiTheme.GOLD : Color.WHITE);
@@ -191,7 +191,8 @@ public class TicketKeepDialog extends JDialog {
             @Override public void mouseClicked(MouseEvent e) {
                 if (selectedIndices.contains(index)) {
                     // Only allow deselect if we still meet the minimum
-                    if (selectedIndices.size() > minKeep) {
+                    // and we have more than one card to choose from.
+                    if (selectedIndices.size() > minKeep && drawn.size() > 1) {
                         selectedIndices.remove(index);
                     }
                 } else {

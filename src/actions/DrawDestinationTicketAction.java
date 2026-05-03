@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Command: draw up to 2 destination tickets; player keeps ≥ 1, rest return to bottom.
+ * Command: draw up to 3 destination tickets; player keeps ≥ 1, rest return to bottom.
  * The UI sets the kept list via {@link #setKeptTickets(List)} before execute() is called.
  */
 public class DrawDestinationTicketAction extends PlayerAction {
 
-    private static final int DRAW_COUNT = 2;
+    private static final int DRAW_COUNT = 3;
 
     private final DestinationTicketCardDeck ticketDeck;
     private final int minKeep;
@@ -51,14 +51,17 @@ public class DrawDestinationTicketAction extends PlayerAction {
 
     @Override
     public boolean validate() {
-        if (ticketDeck.isEmpty()) {
+        if (ticketDeck.isEmpty() && drawnTickets.isEmpty()) {
             return false;
         }
         if (keptTickets == null) {
             // Tickets haven't been drawn/chosen yet — still valid to initiate
             return true;
         }
-        return keptTickets.size() >= minKeep;
+        // If we drew fewer cards than minKeep (due to empty deck), 
+        // the player must keep all of them.
+        int effectiveMin = Math.min(minKeep, drawnTickets.size());
+        return keptTickets.size() >= effectiveMin;
     }
 
     @Override

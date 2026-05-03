@@ -34,12 +34,12 @@ public class LondonVariant implements GameVariant {
 
     @Override
     public int getInitialTicketsDealt() {
-        return 2;
+        return 3;
     }
 
     @Override
     public int getMinTicketsKeptInitial() {
-        return 1;
+        return 2;
     }
 
     @Override
