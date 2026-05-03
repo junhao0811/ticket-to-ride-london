@@ -66,7 +66,7 @@ public class ClaimDialog extends JDialog {
         cancel.setBackground(UiTheme.PANEL_BORDER);
         cancel.addActionListener(e -> dispose());
 
-        JButton confirm = new JButton("Pay & Claim");
+        JButton confirm = new JButton("Claim");
         confirm.setFont(UiTheme.display(13));
         confirm.setForeground(UiTheme.INK);
         confirm.setBackground(UiTheme.GOLD);

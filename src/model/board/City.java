@@ -32,6 +32,11 @@ public class City {
         }
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     // change
     @Override
     public boolean equals(Object other) {

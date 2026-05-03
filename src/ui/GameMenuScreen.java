@@ -188,7 +188,7 @@ public class GameMenuScreen extends JFrame {
     JPanel bar = new JPanel(new FlowLayout(FlowLayout.CENTER, 32, 0));
     bar.setOpaque(false);
     bar.setBorder(BorderFactory.createEmptyBorder(24, 0, 0, 0));
-    bar.add(pillButton("SAVED GAMES", false, this::onMyGames));
+    bar.add(pillButton("LOAD GAME", false, this::onMyGames));
     bar.add(pillButton("NEW GAME", true,  this::onNewGame));
     return bar;
   }
