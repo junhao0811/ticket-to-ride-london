@@ -1,8 +1,6 @@
-package game.EndGame;
+package model.player;
 
 import model.board.Route;
-import model.player.MapGraph;
-import model.player.Player;
 
 import java.util.HashMap;
 import java.util.List;

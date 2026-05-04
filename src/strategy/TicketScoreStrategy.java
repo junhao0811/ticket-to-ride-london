@@ -1,6 +1,6 @@
 package strategy;
 
-import game.EndGame.PlayerGraphsBuilder;
+import model.player.PlayerGraphsBuilder;
 import model.board.GameBoard;
 import model.board.Route;
 import model.cards.DestinationTicketCard;

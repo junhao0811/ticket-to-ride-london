@@ -29,4 +29,9 @@ public class LondonScoringStrategy implements ScoringStrategy {
     public int scoreLongestPath(Player player, GameBoard board) {
         return pathScorer.scoreLongestPath(player, board);
     }
+
+    @Override
+    public int getLongestPathDistance(Player player, GameBoard board) {
+        return pathScorer.getLongestPathDistance(player, board);
+    }
 }

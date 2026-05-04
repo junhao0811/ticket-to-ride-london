@@ -3,10 +3,6 @@ package game;
 import actions.ActionHistory;
 import actions.ActionResult;
 import actions.PlayerAction;
-import game.EndGame.DestinationTicketScorer;
-import game.EndGame.EndGameScorer;
-import game.EndGame.LongestPathBonusScorer;
-import game.EndGame.PlayerGraphsBuilder;
 import model.board.GameBoard;
 import model.deck.DestinationTicketCardDeck;
 import model.deck.FaceUpTrainCardPool;
@@ -33,7 +29,6 @@ public class GameController {
     private final TurnManager turnManager;
     private final ActionHistory history;
     private List<ScoreManager.FinalScore> finalScores;
-    private EndGameScorer endGameScorer;
     
     public GameController(GameVariant variant, List<Player> players) {
         this.variant = variant;
@@ -47,7 +42,7 @@ public class GameController {
         this.turnManager = new TurnManager(this.players, this.history);
         this.finalScores = null;
         
-        this.endGameScorer = new EndGameScorer(new PlayerGraphsBuilder(), new DestinationTicketScorer(), new LongestPathBonusScorer());
+
         
         dealInitialHands();
         faceUpPool.refill(trainDeck);

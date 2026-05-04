@@ -1,15 +1,13 @@
 package strategy;
 
-import game.EndGame.PlayerGraphsBuilder;
+import model.player.PlayerGraphsBuilder;
 import model.board.GameBoard;
 import model.board.Route;
 import model.cards.DestinationTicketCard;
 import model.player.MapGraph;
 import model.player.Player;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Finds the longest continuous path for a player using the teammate's MapGraph.
