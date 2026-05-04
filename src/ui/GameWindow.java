@@ -81,32 +81,9 @@ public class GameWindow extends JFrame implements GameStateListener {
             if (route == null || color == null) return;
 
             Player current = GameManager.getInstance().getCurrentPlayer();
-            List<model.cards.TransportationCard> cardsToUse = new java.util.ArrayList<>();
-            List<model.cards.TransportationCard> hand = new java.util.ArrayList<>(current.getHand());
+            List<model.cards.TransportationCard> cardsToUse = ClaimRouteAction.getCardsToClaim(current, route, color);
 
-            // 1. Gather all matching colored cards first (unless WILD was selected)
-            if (color != model.cards.TransportationTypes.LOCOMOTIVE) {
-                var it = hand.iterator();
-                while (it.hasNext() && cardsToUse.size() < route.getLength()) {
-                    model.cards.TransportationCard c = it.next();
-                    if (!c.isLocomotive() && c.getColour() == color) {
-                        cardsToUse.add(c);
-                        it.remove();
-                    }
-                }
-            }
-
-            // 2. Fill the rest with locomotives
-            var it = hand.iterator();
-            while (it.hasNext() && cardsToUse.size() < route.getLength()) {
-                model.cards.TransportationCard c = it.next();
-                if (c.isLocomotive()) {
-                    cardsToUse.add(c);
-                    it.remove();
-                }
-            }
-
-            if (cardsToUse.size() == route.getLength()) {
+            if (!cardsToUse.isEmpty()) {
                 ClaimRouteAction action = new ClaimRouteAction(
                     current, route, cardsToUse,
                     GameManager.getInstance().getTrainDeck(),

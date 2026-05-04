@@ -28,6 +28,21 @@ public class ScoreManager {
     }
 
     /**
+     * @param player the player whose tickets to check
+     * @param board  the current game board
+     * @return number of completed destination tickets held by the player
+     */
+    public int getCompletedTicketCount(Player player, GameBoard board) {
+        int count = 0;
+        for (DestinationTicketCard t : player.getTickets()) {
+            if (strategy.scoreTicket(t, player, board) > 0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
      * Runs final scoring for all players.
      * Applies ticket +/- and longest-path bonus; returns a per-player breakdown.
      *
@@ -61,7 +76,7 @@ public class ScoreManager {
             }
             
             int pathBonus = strategy.scoreLongestPath(p, board);
-            int pathDist = calculateLongestPathDistance(p, board);
+            int pathDist = strategy.getLongestPathDistance(p, board);
 
             // Update player's actual score object for consistency
             p.getScore().addPoints(ticketPts);
@@ -83,45 +98,6 @@ public class ScoreManager {
         });
         
         return results;
-    }
-
-    private int calculateLongestPathDistance(Player player, GameBoard board) {
-        // We reuse the logic from LongestPathStrategy here or ideally would call it.
-        // For now, let's keep it simple and robust by calculating it.
-        List<Route> owned = new ArrayList<>();
-        for (Route r : board.getRoutes()) {
-            if (r.getClaimedBy() == player) owned.add(r);
-        }
-        if (owned.isEmpty()) return 0;
-
-        int[] best = {0};
-        Set<model.board.City> allCities = new HashSet<>();
-        for (Route r : owned) {
-            allCities.add(r.getCityA());
-            allCities.add(r.getCityB());
-        }
-        
-        Set<Route> visited = new HashSet<>();
-        for (model.board.City start : allCities) {
-            dfs(start, owned, visited, 0, best);
-        }
-        return best[0];
-    }
-
-    private void dfs(model.board.City city, List<Route> owned, Set<Route> visited, int length, int[] best) {
-        best[0] = Math.max(best[0], length);
-        for (Route r : owned) {
-            if (visited.contains(r)) continue;
-            model.board.City neighbour = null;
-            if (r.getCityA().equals(city)) neighbour = r.getCityB();
-            else if (r.getCityB().equals(city)) neighbour = r.getCityA();
-            
-            if (neighbour != null) {
-                visited.add(r);
-                dfs(neighbour, owned, visited, length + r.getLength(), best);
-                visited.remove(r);
-            }
-        }
     }
 
     // ── Inner record for final scoring breakdown ──────────────────────────────

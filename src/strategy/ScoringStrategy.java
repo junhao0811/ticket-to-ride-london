@@ -30,4 +30,13 @@ public interface ScoringStrategy {
      * @return bonus points for the longest continuous path (0 if not applicable)
      */
     int scoreLongestPath(Player player, GameBoard board);
+
+    /**
+     * @param player the player to evaluate
+     * @param board  the current game board
+     * @return the length of the longest continuous path of claimed routes
+     */
+    default int getLongestPathDistance(Player player, GameBoard board) {
+        return 0;
+    }
 }

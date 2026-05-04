@@ -206,12 +206,8 @@ public class LeftRailPanel extends JPanel implements GameStateListener {
         panel.add(bg);
 
         // Ticket Stats Overlay
-        int completed = 0;
         GameBoard board = GameManager.getInstance().getBoard();
-        strategy.ScoringStrategy scorer = GameManager.getInstance().getVariant().getScoring();
-        for (DestinationTicketCard t : p.getTickets()) {
-            if (scorer.scoreTicket(t, p, board) > 0) completed++;
-        }
+        int completed = GameManager.getInstance().getScoreManager().getCompletedTicketCount(p, board);
         int incomplete = p.getTickets().size() - completed;
 
         JPanel stats = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));

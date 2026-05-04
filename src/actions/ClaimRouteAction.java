@@ -37,6 +37,47 @@ public class ClaimRouteAction extends PlayerAction {
         this.scoreManager = scoreManager;
     }
 
+    /**
+     * Static helper to find which cards from a player's hand should be used to claim a route,
+     * given the player's choice of color/wild.
+     * 
+     * @param player the acting player
+     * @param route  the route to claim
+     * @param color  the color chosen by the player (matching route or wild)
+     * @return the list of cards to use, or an empty list if insufficient cards
+     */
+    public static List<TransportationCard> getCardsToClaim(Player player, Route route, model.cards.TransportationTypes color) {
+        List<TransportationCard> cardsToUse = new java.util.ArrayList<>();
+        List<TransportationCard> hand = new java.util.ArrayList<>(player.getHand());
+
+        // 1. Gather all matching colored cards first (unless WILD was selected)
+        if (color != model.cards.TransportationTypes.LOCOMOTIVE) {
+            var it = hand.iterator();
+            while (it.hasNext() && cardsToUse.size() < route.getLength()) {
+                TransportationCard c = it.next();
+                if (!c.isLocomotive() && c.getColour() == color) {
+                    cardsToUse.add(c);
+                    it.remove();
+                }
+            }
+        }
+
+        // 2. Fill the rest with locomotives
+        var it = hand.iterator();
+        while (it.hasNext() && cardsToUse.size() < route.getLength()) {
+            TransportationCard c = it.next();
+            if (c.isLocomotive()) {
+                cardsToUse.add(c);
+                it.remove();
+            }
+        }
+
+        if (cardsToUse.size() == route.getLength()) {
+            return cardsToUse;
+        }
+        return List.of();
+    }
+
     @Override
     public boolean validate() {
         if (route == null || route.isClaimed()) {
