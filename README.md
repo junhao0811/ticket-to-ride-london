@@ -1,46 +1,74 @@
-# Ticket to Ride: London - Prototype
+# 🚌 Ticket to Ride: London (Java Desktop Game)
 
-A digital implementation of the Ticket to Ride: London board game, provided as a self-contained Java executable.
+A digital version of the *Ticket to Ride: London* board game, built from scratch in **Java Swing**. Players collect coloured cards, claim bus routes across a map of London and race to complete secret destination tickets, all on one computer in pass-and-play style.
 
-## Target Platforms
-* **Windows** 
-* **macOS**
-* **Linux** 
+> Unofficial fan implementation for learning purposes. *Ticket to Ride* is a trademark of its respective owners.
 
-## Prerequisites
-* **Java Runtime Environment (JRE) 17 or higher** must be installed and available in your system's PATH.
-* No IDE, JDK, Maven, Gradle, or third-party libraries are required to run the prototype.
+---
 
-## Run Instructions (For Evaluators)
-This project is provided as a pre-compiled executable JAR file (`TicketToRideLondon.jar`), which contains all necessary logic, dependencies, and resources.
+## ✨ Features
 
-1. Open a terminal (Command Prompt, PowerShell, or macOS/Linux Terminal) in the folder containing `TicketToRideLondon.jar`.
-2. Launch the game using the following command:
-   ```bash
-   java -jar TicketToRideLondon.jar
-   ```
+- **Full game loop**: lobby, player colour selection, turns, end-game detection and final scoring
+- **Pass-and-play multiplayer**: a hand-off screen hides each player's cards between turns
+- **Route claiming** with colour-specific and any-colour routes, plus **double-route rules**
+- **Destination tickets**: draw up to three, choose which to keep, and get scored on completed and failed tickets
+- **Longest-path bonus**, computed with graph search over each player's claimed routes
+- **Interactive map UI**: clickable board, card hand bar, score panel, toast notifications and an in-game rules guide
+- **Data-driven board**: cities, routes and settings are loaded from a JSON config
 
-Alternatively, on most desktop environments, you can simply **double-click** the `TicketToRideLondon.jar` file to start the game.
+---
 
-## Build Instructions (Optional - Requires JDK)
-If you wish to rebuild the executable from source, a **JDK (Java Development Kit) 17+** is required. 
+## 🏗️ Design
 
-### Windows Users
-1. Open the project root folder.
-2. **Double-click** the `build.bat` file.
-3. This will compile the source code and generate a fresh `TicketToRideLondon.jar`.
+The codebase (60+ classes) is organised around classic OOP design patterns so new rules or maps can be added without touching the core:
 
-### Mac/Linux Users
-1. Open a terminal in the project root directory.
-2. Run the build script:
-   ```bash
-   chmod +x build.sh
-   ./build.sh
-   ```
-   *(Alternatively, run `make` if installed).*
+| Pattern | Where it's used |
+|---|---|
+| **Strategy** | Scoring (`RouteScoreStrategy`, `TicketScoreStrategy`, `LongestPathStrategy`) and route-claim rules (`AnyColourStrategy`, `SpecificColourStrategy`) |
+| **Command** | Player moves (`ClaimRouteAction`, `DrawTrainCardAction`, `DrawDestinationTicketAction`) with an action history |
+| **Observer** | `GameStateListener` keeps the UI in sync with the game state |
+| **Variant / config** | `GameVariant` and `MapConfiguration` make the London edition one pluggable variant |
 
-## Submission Compliance
-* **Executable Provided:** A pre-compiled `.jar` file is included in the repository.
-* **JRE Only:** The executable runs purely on a standard JRE 17+.
-* **No Third-Party Libraries:** The JSON parser (`org.json`) has been internalized into the source code, removing any external dependencies.
-* **Self-Contained:** The JAR file bundles all necessary assets (images, configs) and logic.
+```
+src/
+├── actions/    player moves (Command pattern)
+├── game/       game controller, turns, scoring
+├── model/      board, cities, routes, cards, decks, players
+├── strategy/   scoring and claiming rules (Strategy pattern)
+├── variant/    London edition rules and map config
+└── ui/         Swing screens, panels and dialogs
+```
+
+UML class, sequence and domain diagrams are in `docs/` and the sprint deliverable folders.
+
+---
+
+## 🚀 Run it
+
+**Requires Java 17+.**
+
+```bash
+java -jar TicketToRideLondon.jar
+```
+Or just double-click `TicketToRideLondon.jar`.
+
+### Build from source (JDK 17+)
+- **Windows:** double-click `build.bat`
+- **macOS / Linux:**
+  ```bash
+  chmod +x build.sh
+  ./build.sh      # or: make
+  ```
+
+There are no third-party dependencies. The JSON parser is bundled in the source.
+
+---
+
+## 👥 Team & my role
+
+Built by a team of three using an agile, sprint-based process. **I was the top contributor (83 of 189 commits).** My work included:
+- Designing the **scoring system** with the Strategy pattern (routes, tickets, longest path, London scoring)
+- Implementing **destination ticket** and **double-route** rules
+- Refactoring scoring onto a reusable **map graph** utility
+- **Build scripts** for Windows/macOS/Linux and the bundled **JSON parser**
+- UI polish across the score panel, dialogs and game menu
