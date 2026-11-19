@@ -45,20 +45,15 @@ UML class, sequence and domain diagrams are in `docs/` and the sprint deliverabl
 
 ## 🚀 Run it
 
-**Requires Java 17+.**
+**Requires JDK 17+.** Build the runnable jar, then launch it:
 
-```bash
-java -jar TicketToRideLondon.jar
-```
-Or just double-click `TicketToRideLondon.jar`.
-
-### Build from source (JDK 17+)
-- **Windows:** double-click `build.bat`
 - **macOS / Linux:**
   ```bash
   chmod +x build.sh
   ./build.sh      # or: make
+  java -jar TicketToRideLondon.jar
   ```
+- **Windows:** double-click `build.bat`, then double-click `TicketToRideLondon.jar`.
 
 There are no third-party dependencies. The JSON parser is bundled in the source.
 
@@ -66,7 +61,7 @@ There are no third-party dependencies. The JSON parser is bundled in the source.
 
 ## 👥 Team & my role
 
-Built by a team of three using an agile, sprint-based process. **I was the top contributor (83 of 189 commits).** My work included:
+Built by a team of three using an agile, sprint-based process. **I was the top contributor (82 of 173 commits).** My work included:
 - Designing the **scoring system** with the Strategy pattern (routes, tickets, longest path, London scoring)
 - Implementing **destination ticket** and **double-route** rules
 - Refactoring scoring onto a reusable **map graph** utility
